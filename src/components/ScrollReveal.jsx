@@ -6,8 +6,8 @@ const OFFSETS = {
   bottom: "translateY(30px)",
 };
 
-export default function ScrollReveal({ children, direction = "bottom", delay = 0, className = "" }) {
-  const [ref, isVisible] = useScrollReveal({ threshold: 0.15 });
+export default function ScrollReveal({ children, direction = "bottom", delay = 0, className = "", ready = true }) {
+  const [ref, isVisible] = useScrollReveal({ threshold: 0.15, ready });
 
   return (
     <div

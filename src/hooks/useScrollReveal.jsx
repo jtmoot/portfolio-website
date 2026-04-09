@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-export default function useScrollReveal({ threshold = 0.15, triggerOnce = true } = {}) {
+export default function useScrollReveal({ threshold = 0.15, triggerOnce = true, ready = true } = {}) {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -9,6 +9,8 @@ export default function useScrollReveal({ threshold = 0.15, triggerOnce = true }
       setIsVisible(true);
       return;
     }
+
+    if (!ready) return;
 
     const node = ref.current;
     if (!node) return;
@@ -25,7 +27,7 @@ export default function useScrollReveal({ threshold = 0.15, triggerOnce = true }
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [threshold, triggerOnce]);
+  }, [threshold, triggerOnce, ready]);
 
   return [ref, isVisible];
 }

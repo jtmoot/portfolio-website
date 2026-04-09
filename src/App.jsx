@@ -32,7 +32,7 @@ function App() {
       )}
       <div style={{ visibility: phase === 'ready' ? 'visible' : 'hidden' }}>
         <ThemeToggle />
-        <Portfolio />
+        <Portfolio ready={phase === 'ready'} />
       </div>
     </>
   );

@@ -51,7 +51,7 @@ const RESEARCH = [
   { title: "Deep Learning Solver", detail: "200x speedup over traditional methods" },
 ];
 
-export default function Portfolio() {
+export default function Portfolio({ ready = true }) {
   const [activeSkillCategory, setActiveSkillCategory] = useState(0);
 
   return (
@@ -160,7 +160,7 @@ export default function Portfolio() {
 
       <div className="bento-grid">
         {/* PROFILE CARD */}
-        <ScrollReveal className="profile-card" direction="left" delay={0}>
+        <ScrollReveal ready={ready} className="profile-card" direction="left" delay={0}>
           <Card style={{ height: "100%", display: "flex", flexDirection: "column" }}>
             <div style={{
               width: 90, height: 90, borderRadius: 22,
@@ -219,7 +219,7 @@ export default function Portfolio() {
         </ScrollReveal>
 
         {/* STATS CARD */}
-        <ScrollReveal className="stats-card" direction="bottom" delay={0.1}>
+        <ScrollReveal ready={ready} className="stats-card" direction="bottom" delay={0.1}>
           <Card style={{ height: "100%" }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-hint)", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 16 }}>
               By the numbers
@@ -243,7 +243,7 @@ export default function Portfolio() {
         </ScrollReveal>
 
         {/* CURRENT FOCUS CARD */}
-        <ScrollReveal className="focus-card" direction="right" delay={0.2}>
+        <ScrollReveal ready={ready} className="focus-card" direction="right" delay={0.2}>
           <Card style={{
             height: "100%",
             background: "var(--bg-dark-card)",
@@ -269,7 +269,7 @@ export default function Portfolio() {
 
         {/* PROJECT CARDS */}
         {PROJECTS.map((project, i) => (
-          <ScrollReveal key={i} className="project-card" direction={i === 0 ? "left" : i === 2 ? "right" : "bottom"} delay={i * 0.1}>
+          <ScrollReveal ready={ready} key={i} className="project-card" direction={i === 0 ? "left" : i === 2 ? "right" : "bottom"} delay={i * 0.1}>
             <Card style={{ height: "100%", display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>{project.name}</h3>
@@ -307,14 +307,14 @@ export default function Portfolio() {
         ))}
 
         {/* GITHUB PROJECTS */}
-        <ScrollReveal className="github-card" direction="bottom" delay={0}>
+        <ScrollReveal ready={ready} className="github-card" direction="bottom" delay={0}>
           <Card>
             <GitHubProjects />
           </Card>
         </ScrollReveal>
 
         {/* SKILLS CARD */}
-        <ScrollReveal className="skills-card" direction="left" delay={0}>
+        <ScrollReveal ready={ready} className="skills-card" direction="left" delay={0}>
           <Card style={{ height: "100%" }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-hint)", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 14 }}>
               Tech Stack
@@ -346,7 +346,7 @@ export default function Portfolio() {
         </ScrollReveal>
 
         {/* EDUCATION CARD */}
-        <ScrollReveal className="education-card" direction="right" delay={0.1}>
+        <ScrollReveal ready={ready} className="education-card" direction="right" delay={0.1}>
           <Card style={{ height: "100%" }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-hint)", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 16 }}>
               Education
@@ -374,7 +374,7 @@ export default function Portfolio() {
         </ScrollReveal>
 
         {/* RESEARCH CARD */}
-        <ScrollReveal className="research-card" direction="left" delay={0}>
+        <ScrollReveal ready={ready} className="research-card" direction="left" delay={0}>
           <Card style={{ height: "100%" }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-hint)", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 16 }}>
               Research & Projects
@@ -395,7 +395,7 @@ export default function Portfolio() {
         </ScrollReveal>
 
         {/* CONNECT CARD */}
-        <ScrollReveal className="links-card" direction="right" delay={0.1}>
+        <ScrollReveal ready={ready} className="links-card" direction="right" delay={0.1}>
           <Card style={{
             height: "100%",
             background: "linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-connect-end) 100%)",
