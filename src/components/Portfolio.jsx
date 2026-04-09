@@ -3,6 +3,7 @@ import Card from "./Card.jsx";
 import StatusBadge from "./StatusBadge.jsx";
 import AnimatedCounter from "./AnimatedCounter.jsx";
 import GitHubProjects from "./GitHubProjects.jsx";
+import ScrollReveal from "./ScrollReveal.jsx";
 
 const PROJECTS = [
   {
@@ -82,7 +83,7 @@ export default function Portfolio() {
           max-width: 1100px;
           margin: 0 auto;
           padding: 40px 24px 80px;
-          animation: fadeUp 0.6s ease-out;
+          overflow: hidden;
         }
 
         .profile-card { grid-column: span 4; grid-row: span 2; }
@@ -159,7 +160,7 @@ export default function Portfolio() {
 
       <div className="bento-grid">
         {/* PROFILE CARD */}
-        <div className="profile-card">
+        <ScrollReveal className="profile-card" direction="left" delay={0}>
           <Card style={{ height: "100%", display: "flex", flexDirection: "column" }}>
             <div style={{
               width: 90, height: 90, borderRadius: 22,
@@ -215,10 +216,10 @@ export default function Portfolio() {
               ))}
             </div>
           </Card>
-        </div>
+        </ScrollReveal>
 
         {/* STATS CARD */}
-        <div className="stats-card">
+        <ScrollReveal className="stats-card" direction="bottom" delay={0.1}>
           <Card style={{ height: "100%" }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-hint)", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 16 }}>
               By the numbers
@@ -239,10 +240,10 @@ export default function Portfolio() {
               ))}
             </div>
           </Card>
-        </div>
+        </ScrollReveal>
 
         {/* CURRENT FOCUS CARD */}
-        <div className="focus-card">
+        <ScrollReveal className="focus-card" direction="right" delay={0.2}>
           <Card style={{
             height: "100%",
             background: "var(--bg-dark-card)",
@@ -264,11 +265,11 @@ export default function Portfolio() {
               ))}
             </div>
           </Card>
-        </div>
+        </ScrollReveal>
 
         {/* PROJECT CARDS */}
         {PROJECTS.map((project, i) => (
-          <div key={i} className="project-card">
+          <ScrollReveal key={i} className="project-card" direction={i === 0 ? "left" : i === 2 ? "right" : "bottom"} delay={i * 0.1}>
             <Card style={{ height: "100%", display: "flex", flexDirection: "column" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                 <h3 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>{project.name}</h3>
@@ -302,18 +303,18 @@ export default function Portfolio() {
                 )}
               </div>
             </Card>
-          </div>
+          </ScrollReveal>
         ))}
 
         {/* GITHUB PROJECTS */}
-        <div className="github-card">
+        <ScrollReveal className="github-card" direction="bottom" delay={0}>
           <Card>
             <GitHubProjects />
           </Card>
-        </div>
+        </ScrollReveal>
 
         {/* SKILLS CARD */}
-        <div className="skills-card">
+        <ScrollReveal className="skills-card" direction="left" delay={0}>
           <Card style={{ height: "100%" }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-hint)", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 14 }}>
               Tech Stack
@@ -342,10 +343,10 @@ export default function Portfolio() {
               ))}
             </div>
           </Card>
-        </div>
+        </ScrollReveal>
 
         {/* EDUCATION CARD */}
-        <div className="education-card">
+        <ScrollReveal className="education-card" direction="right" delay={0.1}>
           <Card style={{ height: "100%" }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-hint)", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 16 }}>
               Education
@@ -370,10 +371,10 @@ export default function Portfolio() {
               ))}
             </div>
           </Card>
-        </div>
+        </ScrollReveal>
 
         {/* RESEARCH CARD */}
-        <div className="research-card">
+        <ScrollReveal className="research-card" direction="left" delay={0}>
           <Card style={{ height: "100%" }}>
             <p style={{ fontSize: 11, fontWeight: 600, color: "var(--text-hint)", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 16 }}>
               Research & Projects
@@ -391,10 +392,10 @@ export default function Portfolio() {
               ))}
             </div>
           </Card>
-        </div>
+        </ScrollReveal>
 
         {/* CONNECT CARD */}
-        <div className="links-card">
+        <ScrollReveal className="links-card" direction="right" delay={0.1}>
           <Card style={{
             height: "100%",
             background: "linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-connect-end) 100%)",
@@ -428,7 +429,7 @@ export default function Portfolio() {
               </a>
             </div>
           </Card>
-        </div>
+        </ScrollReveal>
       </div>
     </>
   );
