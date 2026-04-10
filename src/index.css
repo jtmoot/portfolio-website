@@ -16,6 +16,8 @@
   --text-active-tab: #ffffff;
   --bg-active-link: #1a1a1a;
   --text-active-link: #ffffff;
+  --accent-timeline: #1a1a1a;
+  --accent-timeline-pulse: rgba(26, 26, 26, 0.3);
 }
 
 [data-theme="dark"] {
@@ -36,6 +38,8 @@
   --text-active-tab: #1a1a1a;
   --bg-active-link: #e8e6e1;
   --text-active-link: #1a1a1a;
+  --accent-timeline: #e8e6e1;
+  --accent-timeline-pulse: rgba(232, 230, 225, 0.3);
 }
 
 body {
