@@ -86,8 +86,8 @@ export default function CareerTimeline() {
             y2="2"
             stroke="var(--accent-timeline)"
             strokeWidth="2"
-            strokeDasharray="1000"
-            strokeDashoffset={reducedMotion ? 0 : 1000 - (progress * 1000)}
+            strokeDasharray="2000"
+            strokeDashoffset={reducedMotion ? 0 : 2000 - (progress * 2000)}
             style={{
               transition: reducedMotion ? "none" : "stroke-dashoffset 1.5s ease-out",
             }}
@@ -101,9 +101,8 @@ export default function CareerTimeline() {
           position: "relative",
         }}>
           {MILESTONES.map((m, i) => {
-            const nodeProgress = progress;
             const nodeDelay = reducedMotion ? 0 : 0.3 + i * 0.18;
-            const isVisible = nodeProgress === 1;
+            const isVisible = progress === 1;
 
             return (
               <div
@@ -147,11 +146,7 @@ export default function CareerTimeline() {
                   width: m.current ? 16 : 12,
                   height: m.current ? 16 : 12,
                   borderRadius: "50%",
-                  background: m.future
-                    ? "transparent"
-                    : m.current
-                    ? "var(--accent-timeline)"
-                    : "var(--accent-timeline)",
+                  background: m.future ? "transparent" : "var(--accent-timeline)",
                   border: m.future ? "2px dashed var(--text-hint)" : "2px solid var(--accent-timeline)",
                   position: "relative",
                   zIndex: 1,
@@ -246,8 +241,8 @@ export default function CareerTimeline() {
             y2="100%"
             stroke="var(--accent-timeline)"
             strokeWidth="2"
-            strokeDasharray="1000"
-            strokeDashoffset={reducedMotion ? 0 : 1000 - (progress * 1000)}
+            strokeDasharray="2000"
+            strokeDashoffset={reducedMotion ? 0 : 2000 - (progress * 2000)}
             style={{
               transition: reducedMotion ? "none" : "stroke-dashoffset 1.5s ease-out",
             }}
