@@ -4,6 +4,7 @@ import StatusBadge from "./StatusBadge.jsx";
 import AnimatedCounter from "./AnimatedCounter.jsx";
 import GitHubProjects from "./GitHubProjects.jsx";
 import ScrollReveal from "./ScrollReveal.jsx";
+import CareerTimeline from "./CareerTimeline.jsx";
 
 const PROJECTS = [
   {
@@ -74,6 +75,11 @@ export default function Portfolio({ ready = true }) {
           100% { background-position: 200% center; }
         }
 
+        @keyframes timelinePulse {
+          0%, 100% { box-shadow: 0 0 0 4px var(--accent-timeline-pulse); }
+          50% { box-shadow: 0 0 0 8px transparent; }
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         .bento-grid {
@@ -95,6 +101,7 @@ export default function Portfolio({ ready = true }) {
         .research-card { grid-column: span 6; }
         .links-card { grid-column: span 6; }
         .github-card { grid-column: span 12; }
+        .timeline-card { grid-column: span 12; }
 
         .github-inner-grid {
           display: grid;
@@ -106,7 +113,7 @@ export default function Portfolio({ ready = true }) {
           .bento-grid { grid-template-columns: 1fr 1fr; }
           .profile-card, .stats-card, .focus-card, .project-card,
           .skills-card, .education-card, .research-card, .links-card,
-          .github-card {
+          .github-card, .timeline-card {
             grid-column: span 2;
           }
           .stats-card, .focus-card { grid-column: span 1; }
@@ -117,10 +124,12 @@ export default function Portfolio({ ready = true }) {
           .bento-grid { grid-template-columns: 1fr; gap: 12px; padding: 20px 16px 60px; }
           .profile-card, .stats-card, .focus-card, .project-card,
           .skills-card, .education-card, .research-card, .links-card,
-          .github-card {
+          .github-card, .timeline-card {
             grid-column: span 1;
           }
           .github-inner-grid { grid-template-columns: 1fr; }
+          .timeline-horizontal { display: none !important; }
+          .timeline-vertical { display: block !important; }
         }
 
         .social-link {
@@ -370,6 +379,13 @@ export default function Portfolio({ ready = true }) {
                 </div>
               ))}
             </div>
+          </Card>
+        </ScrollReveal>
+
+        {/* CAREER TIMELINE */}
+        <ScrollReveal ready={ready} className="timeline-card" direction="bottom" delay={0}>
+          <Card>
+            <CareerTimeline />
           </Card>
         </ScrollReveal>
 
