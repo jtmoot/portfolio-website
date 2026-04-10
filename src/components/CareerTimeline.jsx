@@ -156,13 +156,25 @@ export default function CareerTimeline() {
                   position: "relative",
                   zIndex: 1,
                   flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   animation: m.current && !reducedMotion
                     ? "timelinePulse 2s ease-in-out infinite"
                     : "none",
                   boxShadow: m.current
                     ? "0 0 0 4px var(--accent-timeline-pulse)"
                     : "none",
-                }} />
+                }}>
+                  {m.future && (
+                    <span style={{
+                      fontSize: 8,
+                      fontWeight: 700,
+                      color: "var(--text-hint)",
+                      lineHeight: 1,
+                    }}>?</span>
+                  )}
+                </div>
 
                 {/* Year label always visible below node */}
                 <div style={{
@@ -254,6 +266,7 @@ export default function CareerTimeline() {
                 alignItems: "flex-start",
                 gap: 16,
                 marginBottom: 24,
+                position: "relative",
                 opacity: isVisible ? 1 : 0,
                 transform: isVisible ? "translateX(0)" : "translateX(-10px)",
                 transition: reducedMotion
@@ -272,14 +285,27 @@ export default function CareerTimeline() {
                 border: m.future ? "2px dashed var(--text-hint)" : "2px solid var(--accent-timeline)",
                 position: "absolute",
                 left: m.current ? 0 : 2,
+                top: 2,
                 flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 animation: m.current && !reducedMotion
                   ? "timelinePulse 2s ease-in-out infinite"
                   : "none",
                 boxShadow: m.current
                   ? "0 0 0 4px var(--accent-timeline-pulse)"
                   : "none",
-              }} />
+              }}>
+                {m.future && (
+                  <span style={{
+                    fontSize: 8,
+                    fontWeight: 700,
+                    color: "var(--text-hint)",
+                    lineHeight: 1,
+                  }}>?</span>
+                )}
+              </div>
 
               {/* Text content */}
               <div>
