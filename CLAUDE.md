@@ -26,10 +26,16 @@ The old animation-library stack (GSAP, Lenis, Atropos, etc.) is still listed in
 
 ## Current Working State
 
-- Branch `rebuild/immersive-3d` holds the clean slate. `main` still points at the
-  last archived state (keeps Vercel production stable until the new site is ready).
-- `src/` is a minimal runnable stub: `main.jsx`, `App.jsx` (placeholder), `index.css` (reset).
-- `public/`, `index.html`, and build tooling are retained.
+- Branch `rebuild/immersive-3d` holds the build. `main` still points at the
+  last archived state (keeps Vercel production stable until cutover).
+- Studio scene chosen (Sept 2026); the diorama track was deleted. Spec in
+  `docs/design-spec.md`, plan in `plan.md`, Aura exports in `docs/reference/aura/`.
+- Layout: `src/lib/scroll.js` (beat timeline store) → `src/content/*` (DOM
+  sections, GSAP reveals, pinned projects) → `src/scenes/studio/*` (r3f scene
+  reading the store every frame). Camera keyframes are in `scroll.beat` units.
+- Palette is dusk indigo (`--navy: #151d3d`), lifted from the original deep
+  navy at Joshua's request.
+- Pending: resume-driven content refresh and a headshot in the hero cluster.
 
 ## Workflow Rules (from global config — follow exactly)
 

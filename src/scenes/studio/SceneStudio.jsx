@@ -30,7 +30,7 @@ const FORMATIONS = {
   line: [[-3.2, 0, 0], [-1.6, 0.3, 0], [0, 0, 0], [1.6, -0.3, 0], [3.2, 0, 0], [0, 1.8, -1]],
   tiers: [[-1.4, -1.2, 0.4], [1.4, -1.2, 0.4], [0, -0.2, 0], [-0.9, 0.8, -0.4], [0.9, 0.8, -0.4], [0, 2.0, -0.8]],
   orbit: [[2.0, 0.6, 0], [-2.0, -0.6, 0], [0, 1.9, 0.6], [0, -1.9, -0.6], [0, 0, 0], [1.4, 1.4, -1.4]],
-  spread: [[-5, 2, -3], [5, -1, -4], [-4, -3, -1], [4, 3, -2], [0, 4, -5], [0, -4, -3]],
+  spread: [[-6, 2.5, -2], [6, -1.5, -3], [-5, -3.5, 0], [5, 3.5, -1], [0, 4.5, -4], [0, -4.5, -2]],
 };
 
 const BODY_KEYS = Array.from({ length: 6 }, (_, i) => [
@@ -124,17 +124,17 @@ export default function SceneStudio() {
   useHeroMotion(hero, { float: 0.08, tilt: 0.12, spin: 0.05 });
 
   useFrame(({ scene }) => {
-    scene.environmentIntensity = 1.1 - scroll.dim * 0.85;
+    scene.environmentIntensity = 1.2 - scroll.dim * 0.7;
   });
 
   return (
     <>
-      <color attach="background" args={["#050a1c"]} />
+      <color attach="background" args={["#151d3d"]} />
       <Environment files={HDRI} />
       <Backdrop />
-      <ambientLight intensity={0.15} />
+      <ambientLight intensity={0.25} />
       <EmberLight />
-      <Sparkles count={500} scale={[16, 9, 6]} size={2.2} speed={0.25} opacity={0.5} color="#9db4ff" />
+      <Sparkles count={120} scale={[14, 8, 4]} size={1.6} speed={0.15} opacity={0.3} color="#c7d3ff" />
       <group ref={hero}>
         {BLOCKS.map((block, i) => (
           <GlassBlock key={i} index={i} size={block.size} radius={block.radius} />

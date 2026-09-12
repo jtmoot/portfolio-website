@@ -25,10 +25,10 @@ const fragmentShader = /* glsl */ `
     float d2 = exp(-3.2 * length(uv - c2));
     float d3 = exp(-3.8 * length(uv - c3));
     vec3 glow = vec3(0.13, 0.25, 0.78) * d1 + vec3(0.04, 0.50, 0.60) * d2 + vec3(0.98, 0.55, 0.25) * d3 * 0.5;
-    // Linear-space values: #050a1c is roughly (0.0015, 0.0031, 0.011) before sRGB encoding.
-    vec3 base = vec3(0.0015, 0.0031, 0.011);
-    float vignette = smoothstep(0.95, 0.35, length(uv - 0.5));
-    vec3 col = base + glow * 0.085 * vignette * (1.0 - uDim * 0.85);
+    // Linear-space values: #151d3d is roughly (0.0075, 0.013, 0.047) before sRGB encoding.
+    vec3 base = vec3(0.0075, 0.013, 0.047);
+    float vignette = smoothstep(1.0, 0.3, length(uv - 0.5));
+    vec3 col = base + glow * 0.16 * vignette * (1.0 - uDim * 0.7);
     gl_FragColor = vec4(col, 1.0);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>

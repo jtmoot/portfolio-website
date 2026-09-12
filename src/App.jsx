@@ -6,14 +6,12 @@ import About from "./content/About.jsx";
 import Projects from "./content/Projects.jsx";
 import Timeline from "./content/Timeline.jsx";
 import Contact from "./content/Contact.jsx";
-import SceneToggle from "./content/SceneToggle.jsx";
 import { useBeats } from "./content/useBeats.js";
 import { startSmoothScroll } from "./lib/smoothScroll.js";
-import { hasWebGL, readSceneParam, writeSceneParam } from "./lib/scene.js";
+import { hasWebGL } from "./lib/scene.js";
 import { scroll } from "./lib/scroll.js";
 
 export default function App() {
-  const [scene, setScene] = useState(readSceneParam);
   const [webgl] = useState(hasWebGL);
 
   useEffect(() => startSmoothScroll(), []);
@@ -29,14 +27,9 @@ export default function App() {
 
   useBeats();
 
-  const changeScene = (name) => {
-    writeSceneParam(name);
-    setScene(name);
-  };
-
   return (
     <>
-      {webgl ? <CanvasLayer scene={scene} /> : <div className="no-webgl" aria-hidden />}
+      {webgl ? <CanvasLayer /> : <div className="no-webgl" aria-hidden />}
       <div className="grain" aria-hidden />
       <Nav />
       <main className="content">
@@ -46,7 +39,6 @@ export default function App() {
         <Timeline />
         <Contact />
       </main>
-      {webgl && <SceneToggle scene={scene} onChange={changeScene} />}
     </>
   );
 }

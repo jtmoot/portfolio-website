@@ -1,12 +1,13 @@
 :root {
-  --navy: #050a1c;
-  --navy-2: #0a1128;
+  /* dusk indigo — lifted from the original #050a1c "deep space" */
+  --navy: #151d3d;
+  --navy-2: #1c2650;
   --orange-2: #fed7aa;
   --orange-3: #fdba74;
   --orange-4: #fb923c;
-  --text: #eef0f6;
-  --muted: #8b93a7;
-  --line: rgba(255, 255, 255, 0.08);
+  --text: #f3f4fa;
+  --muted: #a8b0c8;
+  --line: rgba(255, 255, 255, 0.12);
   --serif: "Instrument Serif", Georgia, serif;
   --sans: "Inter", system-ui, -apple-system, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
@@ -87,7 +88,7 @@ button {
   width: 200%;
   height: 200%;
   pointer-events: none;
-  opacity: 0.07;
+  opacity: 0.05;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: grain 0.8s steps(6) infinite;
@@ -506,37 +507,6 @@ button {
   color: var(--orange-2);
 }
 
-/* ---------- scene toggle ---------- */
-
-.scene-toggle {
-  position: fixed;
-  left: var(--gutter);
-  bottom: 1.25rem;
-  z-index: 5;
-  display: inline-flex;
-  padding: 0.25rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(5, 10, 28, 0.7);
-  backdrop-filter: blur(10px);
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.scene-toggle button {
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  color: var(--muted);
-  transition: color 0.2s ease, background 0.2s ease;
-}
-
-.scene-toggle button.is-on {
-  background: var(--orange-3);
-  color: var(--navy);
-}
-
 /* ---------- fallback ---------- */
 
 .no-webgl {
@@ -544,8 +514,8 @@ button {
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(60% 50% at 30% 40%, rgba(33, 64, 200, 0.35), transparent 70%),
-    radial-gradient(40% 40% at 75% 65%, rgba(251, 146, 60, 0.18), transparent 70%),
+    radial-gradient(60% 50% at 30% 40%, rgba(70, 100, 230, 0.35), transparent 70%),
+    radial-gradient(40% 40% at 75% 65%, rgba(251, 146, 60, 0.2), transparent 70%),
     var(--navy);
 }
 
