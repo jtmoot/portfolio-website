@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-width: 320px;
+}
+
+.aura-source-body {
+  min-height: 100vh;
+}
+
+.aura-empty-source {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+
+body { font-family: 'Inter', sans-serif; }
+.serif { font-family: 'Playfair Display', serif; }
+
+
+
+.flash-card { position: relative; --cursor-angle: 0deg; --proximity: 0; }
+.flash-card::before,
+.flash-card::after {
+content: "";
+position: absolute; inset: 0;
+border-radius: inherit;
+padding: 1px;
+background: conic-gradient(from var(--cursor-angle), rgba(253,186,116,.9), transparent 60deg, transparent 300deg, rgba(253,186,116,.9));
+-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+-webkit-mask-composite: xor;
+mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+mask-composite: exclude;
+opacity: var(--proximity);
+transition: opacity .25s ease;
+pointer-events: none;
+z-index: 20;
+}
+.flash-card::after {
+filter: blur(12px);
+opacity: calc(var(--proximity) * 0.6);
+z-index: 19;
+}
+
+
+
+.shell-card { --cursor-angle: 0deg; --glow-opacity: 0; }
+.shell-card.flash-card::before,
+.shell-card.flash-card::after { content: none; }
+
+
+
+            @keyframes laserPulse{0%,100%{opacity:.5}50%{opacity:1}}.laser-pulse{animation:laserPulse 3s ease-in-out infinite}
+          
