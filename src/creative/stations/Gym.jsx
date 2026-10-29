@@ -6,8 +6,8 @@ const Gym = artComponent("gym", svg);
 export const station = {
   id: "gym",
   label: "gym",
-  pos: { x: 66, y: 52 },
-  footprint: { x: 44, y: 41, w: 44, h: 23 },
+  pos: { x: 76, y: 50 },
+  footprint: { x: 54, y: 39, w: 44, h: 22 },
   link: "#running",
   Component: Gym,
 };

@@ -14,5 +14,61 @@
       127.62,
       221.96
     ]
+  },
+  "library": {
+    "width": 104.63,
+    "height": 164.28,
+    "anchor": [
+      39.23,
+      123.98
+    ]
+  },
+  "plants": {
+    "width": 140.69,
+    "height": 254.5,
+    "anchor": [
+      47.01,
+      197.88
+    ]
+  },
+  "kitchen": {
+    "width": 184.53,
+    "height": 301.04,
+    "anchor": [
+      114.89,
+      232.17
+    ]
+  },
+  "chess": {
+    "width": 159.08,
+    "height": 156.52,
+    "anchor": [
+      76.71,
+      109.7
+    ]
+  },
+  "corkboard": {
+    "width": 62.59,
+    "height": 81.89,
+    "anchor": [
+      30.16,
+      152.6
+    ]
+  },
+  "anatomy": {
+    "width": 44.35,
+    "height": 79.44,
+    "anchor": [
+      20.97,
+      164.44
+    ]
+  },
+  "walls": {
+    "width": 647.47,
+    "height": 400,
+    "anchor": [
+      9.07,
+      402.08
+    ]
   }
 }
