@@ -1,7 +1,8 @@
 // Joshua's kitchen run along the right wall: cabinets, a stone counter, a range with oven, a hood,
 // subway-tile backsplash, a spice shelf, and braised short ribs going in an enamelled Dutch oven.
 // Local world: wall plane y = 0, room toward +y, run spans x in [-90, 90]. Centimetres.
-// Animated parts carry data-part="lid" | "steam" | "spice" (CSS in src/styles/iso.css).
+// Animated parts carry data-part="lid" | "steam" (CSS in src/styles/iso.css); the seasoning
+// itself is his action (tools/stations/figure.mjs).
 import { station, k, G } from "./lib.mjs";
 
 const X0 = -90, X1 = 90, DEP = 60, CZ = 88, CT = 3.5; // counter top surface = CZ + CT
@@ -163,10 +164,6 @@ export default station("kitchen", {
       return `<path class="m-steam" d="${k.pathOf(pts)}" pathLength="100"/>`;
     };
     pot.push(`<g data-part="steam">${wisp(-6, -4, 0, 58)}${wisp(2, -6, 1.7, 66)}${wisp(7, 2, 3.1, 52)}${wisp(-1, 5, 4.4, 62)}${wisp(5, -1, 5.6, 70)}</g>`);
-    // A pinch of spice falling into the pot (shown while active).
-    const pinch = [];
-    for (let i = 0; i < 9; i++) pinch.push(at([POT.x - 2 + (i % 3) * 1.6, POT.y - 1 + ((i * 7) % 3) * 1.2, LZ + 18 + i * 1.6]));
-    pot.push(`<g data-part="spice">${D(pinch, { size: 0.55, tone: "hi" })}</g>`);
     put([POT.x, POT.y, TOP + 10], pot.join(""));
 
     // --- Left counter: cutting board with short ribs and a knife, a crock of spoons -------------------

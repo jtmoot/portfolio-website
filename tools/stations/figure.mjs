@@ -249,9 +249,25 @@ const book = (centre, lift = 0) => (h) => {
     { at: h.ptv(centre), svg: `<g class="fm-page">${S(left, { tone: "hi", crease: "lo" })}${S(right, { tone: "hi", crease: "lo" })}${lifted ? S(lifted, { tone: "hi", crease: "lo" }) : ""}</g>` },
   ];
 };
-const shaker = (hand) => (h) => {
-  const q = h.ptv(hand);
-  return [{ at: G.add3(q, [0, 0, 6]), svg: `<g class="fm-silver">${h.c.cyl(q[0], q[1], 2.1, q[2] + 2, q[2] + 9, { steps: 14, tone: "hi", crease: "lo" })}</g><g class="fm-dark">${h.c.cyl(q[0], q[1], 2.2, q[2] + 9, q[2] + 10.4, { steps: 14, tone: "hi", crease: "lo" })}</g>` }];
+/**
+ * A salt shaker gripped round its middle at `hand`, tipped `tilt` degrees forward from upright (180
+ * is upside down); `pour` (0, 1 or 2) drops flakes from its cap at one of two offsets.
+ */
+const shaker = (hand, tilt = 0, pour = 0) => (h) => {
+  const a = (tilt * Math.PI) / 180;
+  const up = [Math.sin(a), 0, Math.cos(a)];
+  const add = (p, q, k = 1) => [p[0] + q[0] * k, p[1] + q[1] * k, p[2] + q[2] * k];
+  const v = (q) => h.ptv(q);
+  const cap = add(hand, up, 9.5);
+  const items = [
+    { at: v(add(hand, [0, 2, 0])), svg: `<g class="fm-silver">${h.c.tube([v(add(hand, up, -7)), v(add(hand, up, 7.5))], 3.2, { tone: "hi", spacing: 3 })}</g><g class="fm-dark">${h.c.tube([v(add(hand, up, 7.5)), v(cap)], 3.3, { tone: "hi", spacing: 3 })}</g>` },
+  ];
+  if (pour) {
+    const offs = pour === 1 ? [3, 9, 15, 21, 27] : [6, 12, 18, 24, 30];
+    const flakes = offs.map((k, i) => h.S(G.sphereOf(v(add(cap, [(i % 2 ? 1.2 : -1.2), (i % 3) - 1, -k])), 1.05, h.P, { steps: 6 }), { tone: "hi", crease: "lo" })).join("");
+    items.push({ at: v(add(cap, [0, 0, -10])), svg: `<g class="fm-flake">${flakes}</g>` });
+  }
+  return items;
 };
 const bell = (centre) => (h) => {
   const q = h.ptv(centre);
@@ -292,9 +308,11 @@ const POSES = {
   book1: { arms: { L: hang(1), R: { elbow: [12, -19, 122], hand: [30, -13, 108] } } },
   book2: { arms: { L: { elbow: [10, 18, 122], hand: [22, 12, 132] }, R: { elbow: [10, -18, 122], hand: [22, -4, 132] } }, extras: book([24, 4, 128]) },
   book3: { arms: { L: { elbow: [10, 18, 122], hand: [22, 12, 132] }, R: { elbow: [12, -16, 126], hand: [21, 1, 140] } }, extras: book([24, 4, 128], 1) },
-  cook1: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [12, -18, 126], hand: [26, -8, 130] } }, extras: shaker([26, -8, 130]) },
-  cook2: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [16, -16, 124], hand: [34, -3, 123] } }, extras: shaker([34, -3, 123]) },
-  cook3: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [16, -16, 121], hand: [34, -3, 118] } }, extras: shaker([34, -3, 118]) },
+  // Seasoning, facing the stove with the left hand (the one on the room side): lift the shaker,
+  // tip it over the Dutch oven and shake it in short arcs, flakes falling into the pot.
+  cook1: { arms: { L: { elbow: [14, 22, 120], hand: [30, 18, 128] }, R: { elbow: [12, -19, 112], hand: [26, -14, 102] } }, extras: shaker([30, 18, 128]) },
+  cook2: { arms: { L: { elbow: [20, 22, 128], hand: [37, 20, 137] }, R: { elbow: [12, -19, 112], hand: [26, -14, 102] } }, extras: shaker([37, 20, 137], 150, 1) },
+  cook3: { arms: { L: { elbow: [20, 22, 124], hand: [37, 20, 129] }, R: { elbow: [12, -19, 112], hand: [26, -14, 102] } }, extras: shaker([37, 20, 129], 168, 2) },
   // Chess, from behind the board facing the room: reach for the queen on d4, carry it across to
   // g7 with the left hand (the one on the room side), the right on the table edge, then stand
   // back as the king falls.

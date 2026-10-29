@@ -30,6 +30,14 @@ describe("figure sprite sheet", () => {
     expect(over).not.toContain("<use");
   });
 
+  it("seasons the pot: a tipped shaker in the hand toward the room, flakes only while shaking", () => {
+    const sym = (id) => sheet.match(new RegExp(`<symbol id="${id}"[\\s\\S]*?</symbol>`))[0];
+    expect(sym("f-ur-cook1")).toContain("fm-silver");
+    expect(sym("f-ur-cook1")).not.toContain("fm-flake");
+    expect(sym("f-ur-cook2")).toContain("fm-flake");
+    expect(sym("f-ur-cook3")).toContain("fm-flake");
+  });
+
   it("bounces the body in the jog frames, and not in the walk", () => {
     const use = (id) => sheet.match(new RegExp(`<symbol id="${id}"[\\s\\S]*?<use ([^>]*)/>`))[1];
     expect(use("f-dr-j1")).toMatch(/y="-\d/);
