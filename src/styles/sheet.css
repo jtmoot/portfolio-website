@@ -92,17 +92,62 @@ a {
   scroll-margin-top: 4cqw;
 }
 
-/* Nav */
+/* Nav: a zero-height sticky dock keeps it at the top of the sheet; scrolled, it shrinks into a
+   frosted pill (garvitsingla.in's timing: 0.65 s on an ease-out-expo curve). */
+.nav-dock {
+  position: sticky;
+  top: 0;
+  height: 0;
+  z-index: 50;
+}
+
 .nav {
   position: absolute;
-  left: 22.6cqw;
+  left: 51.15cqw;
   top: 3.24cqw;
   width: 57.1cqw;
+  translate: -50% 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.794cqw;
   z-index: 5;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  --nav-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    width 0.65s var(--nav-ease),
+    top 0.65s var(--nav-ease),
+    padding 0.65s var(--nav-ease),
+    background-color 0.65s var(--nav-ease),
+    border-color 0.65s var(--nav-ease),
+    box-shadow 0.65s var(--nav-ease);
+}
+
+.nav[data-compact] {
+  top: 14px;
+  width: min(700px, 57.1cqw);
+  padding: 8px 24px;
+  background-color: color-mix(in srgb, var(--paper) 80%, transparent);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border-color: color-mix(in srgb, var(--ink) 12%, transparent);
+  box-shadow: 0 8px 30px var(--nav-shadow, rgba(0, 0, 0, 0.08));
+}
+
+.nav[data-compact] .nav-links {
+  gap: 1.3cqw;
+}
+
+[data-theme="night"] .nav {
+  --nav-shadow: rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav {
+    transition: none;
+  }
 }
 
 .nav-links {
@@ -185,19 +230,36 @@ button[aria-pressed="true"] .toggle-pill::after {
     margin-bottom: 12px;
   }
 
+  .nav-dock {
+    height: auto;
+  }
+
   .nav {
     position: relative;
     left: auto;
     top: auto;
     width: auto;
+    translate: none;
     font-size: 12px;
     padding: 16px 0;
+    border-radius: 18px;
     flex-wrap: wrap;
     gap: 12px;
   }
 
   .nav-links {
     gap: 14px;
+  }
+
+  .nav[data-compact] .nav-links {
+    gap: 14px;
+  }
+
+  .nav[data-compact] {
+    top: 8px;
+    width: auto;
+    margin: 0 -8px;
+    padding: 10px 14px;
   }
 
   .nav-right {
