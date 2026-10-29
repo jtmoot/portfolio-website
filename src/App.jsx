@@ -5,6 +5,8 @@ import Experience from "./pad/Experience.jsx";
 import Work from "./pad/Work.jsx";
 import Interests from "./pad/Interests.jsx";
 import Contact from "./pad/Contact.jsx";
+import HoverPreview from "./pad/HoverPreview.jsx";
+import Cursor from "./pad/Cursor.jsx";
 import { play, unlock } from "./lib/audio.js";
 import StationHarness from "./creative/StationHarness.jsx";
 import { getTheme, toggleTheme } from "./lib/theme.js";
@@ -58,6 +60,8 @@ export default function App() {
           <Contact />
         </div>
       </main>
+      <HoverPreview />
+      <Cursor />
     </div>
   );
 }
