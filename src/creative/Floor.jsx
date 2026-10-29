@@ -21,7 +21,7 @@ import { greetingFor, loadGreeting } from "../lib/greeting.js";
 const still = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** Stations with no margin traveler sketch themselves in a beat later. */
-const LATE = new Set(["desk", "plants", "kitchen"]);
+const LATE = new Set(["desk", "plants", "kitchen", "reading"]);
 
 const at = (p, view, meta) => {
   const s = floorToScreen(p, view);

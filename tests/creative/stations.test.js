@@ -8,8 +8,8 @@ const FLOOR = { w: 130, h: 100 };
 const WALL_PIECES = new Set(["anatomy", "corkboard"]);
 
 describe("STATIONS", () => {
-  it("has the eight stations in idle-route order", () => {
-    expect(STATIONS.map((s) => s.id)).toEqual(["desk", "library", "plants", "kitchen", "gym", "chess", "corkboard", "anatomy"]);
+  it("has the nine stations in idle-route order", () => {
+    expect(STATIONS.map((s) => s.id)).toEqual(["desk", "library", "plants", "kitchen", "gym", "chess", "reading", "corkboard", "anatomy"]);
   });
 
   it("footprints lie inside the floor", () => {
@@ -35,6 +35,7 @@ describe("STATIONS", () => {
       library: "/shelf",
       gym: "https://www.strava.com/athletes/121070736",
       kitchen: null,
+      reading: "/shelf",
       chess: "https://www.chess.com/member/breakfast_enjoyer",
       plants: null,
       corkboard: null,

@@ -65,6 +65,7 @@ const riseOf = (b, P) => k.iso([0, 0, b], P)[1] - k.iso([0, 0, 0], P)[1];
  *   without a gait (0 is standing);
  *   arms: elbow and hand points in (forward, his-left, z) cm, overriding the walk swing per arm;
  *   reach: "L" or "R", an arm drawn on its own layer (returned as `over`) to sit above the station;
+ *   sit: seated (with sink, the drop from standing hip height to the seat);
  *   front: both arms are in front of his body (a kettlebell between the legs), so draw them after it;
  *   extras: props he holds or touches, drawn in depth order with him
  */
@@ -99,12 +100,13 @@ function person(c, facing, pose = {}) {
     // The leg swinging forward lifts its foot and drives its knee; the planted one stays down.
     const lift = gait ? gait.lift * Math.max(0, -side * Math.sin(th)) : 0;
     const hip = pt(0, side * 9, 94 + b);
-    const knee = pt(reach * 0.55 + 1.5 + lift * 0.8 + sink * 0.9, side * 8.6, 50 + lift * 0.85 + b * 0.5);
-    const ankle = pt(reach - lift * 0.3, side * 8.4, 11 + lift);
+    // Seated: thighs run forward along the seat, shins drop to the floor.
+    const knee = pose.sit ? pt(40, side * 10, 96 + b + 2) : pt(reach * 0.55 + 1.5 + lift * 0.8 + sink * 0.9, side * 8.6, 50 + lift * 0.85 + b * 0.5);
+    const ankle = pose.sit ? pt(43, side * 9, 11) : pt(reach - lift * 0.3, side * 8.4, 11 + lift);
     put(G.lerp3(hip, knee, 0.5), `<g class="fm-jog">${c.tube([hip, knee], 7, { tone: "hi", spacing: 7 })}</g>`);
     put(G.lerp3(knee, ankle, 0.5), `<g class="fm-jog">${c.tube([knee, G.lerp3(knee, ankle, 0.85)], 5.6, { tone: "hi", spacing: 7 })}</g>`);
     put(G.lerp3(knee, ankle, 0.92), `<g class="fm-cuff">${c.tube([G.lerp3(knee, ankle, 0.85), ankle], 4.9, { tone: "hi", spacing: 7 })}</g>`);
-    const heel = pt(reach - lift * 0.3 - 8.5, side * 8.4, lift);
+    const heel = pose.sit ? pt(34.5, side * 8.4, 0) : pt(reach - lift * 0.3 - 8.5, side * 8.4, lift);
     const F = G.frameOf(heel, s, f, [0, 0, 1]);
     // Novablast: a deep, rockered foam stack under a knit upper.
     const sole = [[0, 0.6], [26, 0], [30, 1.8], [29.5, 4.4], [0, 5.8]];
@@ -154,7 +156,7 @@ function person(c, facing, pose = {}) {
           ? (centre, svg) => items.push({ d: 1e6 + G.dot3(centre, V), svg })
           : limbPut;
     const a = { ...arms[key], ...(pose.arms?.[key] || {}) };
-    const shoulder = pt(0, side * 20, 141);
+    const shoulder = pt(0, side * 20, 141 + b); // rides with the body: the bounce, a hinge, sitting
     const elbow = ptv(a.elbow);
     const hand = ptv(a.hand);
     const wrist = G.lerp3(elbow, hand, 0.86);
@@ -318,6 +320,12 @@ const can = (hand, tilt, pour = 0) => (h) => {
   }
   return items;
 };
+/** A mug of tea in his hand, rim up. */
+const mug = (hand) => (h) => {
+  const q = h.ptv([hand[0], hand[1], hand[2] - 4]);
+  const ring = k.circleRing(q[0], q[1], 3.2, 20).map(([x, y]) => h.at([x, y, q[2] + 7.6]));
+  return [{ at: G.add3(q, [0, 0, 4]), svg: `<g class="fm-mug">${h.c.cyl(q[0], q[1], 3.8, q[2], q[2] + 8.2, { steps: 20, tone: "hi", crease: "lo" })}</g><path class="fm-tea" d="${k.pathOf(ring, true)}"/>` }];
+};
 const POSES = {
   type1: { arms: { L: { elbow: [8, 18, 117], hand: [27, 9, 105] }, R: { elbow: [8, -18, 117], hand: [27, -10, 103.5] } } },
   type2: { arms: { L: { elbow: [8, 18, 117], hand: [27, 9.5, 103.4] }, R: { elbow: [8, -18, 117], hand: [27.5, -9.5, 105.5] } } },
@@ -343,6 +351,10 @@ const POSES = {
   water1: { arms: { L: hang(1), R: { elbow: [8, -21, 116], hand: [19, -17, 106] } }, extras: can([19, -18, 108], 0) },
   water2: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 1) },
   water3: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 2) },
+  // Reading in the chair: the book open on his lap, turning a page, a sip of tea.
+  sit1: { sit: true, sink: 44, front: true, arms: { L: { elbow: [10, 19, 78], hand: [24, 9, 86] }, R: { elbow: [10, -19, 78], hand: [24, -9, 86] } }, extras: book([27, 0, 88]) },
+  sit2: { sit: true, sink: 44, front: true, arms: { L: { elbow: [10, 19, 78], hand: [24, 9, 86] }, R: { elbow: [12, -17, 84], hand: [24, -3, 97] } }, extras: book([27, 0, 88], 1) },
+  sip: { sit: true, sink: 44, front: true, arms: { L: { elbow: [10, 19, 78], hand: [22, 6, 80] }, R: { elbow: [8, -20, 86], hand: [11, -7, 112] } }, extras: (h) => [...book([25, 4, 80])(h), ...mug([12, -7, 112])(h)] },
   wave1: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [8, -24, 178] } } },
   wave2: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [9, -33, 175] } } },
 };

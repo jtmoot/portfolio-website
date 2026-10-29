@@ -17,6 +17,25 @@ function lineClear(a, b, boxes) {
   return true;
 }
 
+/** How far from either end of a straight leg he may still be inside a lane (leaving or arriving). */
+const EASE = 4;
+
+/**
+ * True when the leg from a to b keeps to the lanes: near either end only the grown footprints
+ * (soft) must stay clear, so he can leave or reach a station; in between, the lanes must too.
+ */
+function laneClear(a, b, lanes, soft) {
+  const len = Math.hypot(b.x - a.x, b.y - a.y);
+  const n = Math.max(2, Math.ceil(len / 0.5));
+  for (let i = 1; i <= n; i++) {
+    const p = { x: a.x + ((b.x - a.x) * i) / n, y: a.y + ((b.y - a.y) * i) / n };
+    const d = (len * i) / n;
+    const boxes = d < EASE || len - d < EASE ? soft : lanes;
+    if (boxes.some((f) => collides(p, f))) return false;
+  }
+  return true;
+}
+
 /**
  * A walking route from `from` to `to` that goes round furniture: waypoints, ending at `to`.
  * A* over a 2-unit grid of the room, preferring cells a lane's width off the furniture, then
@@ -91,7 +110,7 @@ export function findPath(from, to, footprints, room) {
   let i = 0;
   while (i < cells.length) {
     let j = cells.length - 1;
-    while (j > i && !lineClear(at, cells[j], j === cells.length - 1 ? soft : lane.map((f, n) => (collides(at, f) || collides(cells[j], f) ? soft[n] : f)))) j--;
+    while (j > i && !(j === cells.length - 1 ? lineClear(at, cells[j], soft) : laneClear(at, cells[j], lane, soft))) j--;
     route.push(cells[j]);
     at = cells[j];
     i = j + 1;

@@ -219,3 +219,24 @@ html[data-theme="night"] .iso .m-steel{--anatomy-top:#3b3d40;--anatomy-shade-0:#
 .iso [data-sway]:nth-of-type(3n+1){animation-duration:6.2s}
 @keyframes p-sway{0%,100%{rotate:-1.2deg}50%{rotate:2.6deg}}
 @media (prefers-reduced-motion:reduce){.iso [data-part="code"],.iso [data-sway]{animation:none}}
+
+/* The reading corner. */
+.iso .m-velvet{--anatomy-paper:#7d8a6a;--anatomy-face:#7d8a6a;--anatomy-top:#94a080;--anatomy-shade-0:#5f6a50;--anatomy-shade-1:#677358;--anatomy-shade-2:#707c60;--anatomy-shade-3:#788566;--anatomy-lo:#4e5842}
+.iso .m-velvet-hi{--anatomy-paper:#8a9776;--anatomy-face:#8a9776;--anatomy-top:#a1ac8c;--anatomy-shade-0:#6a755a;--anatomy-shade-1:#737e62;--anatomy-shade-2:#7c886a;--anatomy-shade-3:#859172;--anatomy-lo:#56604a}
+.iso .m-rug{--anatomy-paper:#d9c7a6;--anatomy-face:#d9c7a6;--anatomy-top:#e2d2b4;--anatomy-shade-0:#c2ae8b;--anatomy-shade-1:#c9b693;--anatomy-shade-2:#d0bd9b;--anatomy-shade-3:#d6c4a2;--anatomy-faint:#b39d78}
+.iso .m-brass{--anatomy-paper:#c9a45c;--anatomy-face:#c9a45c;--anatomy-top:#e0c07c;--anatomy-shade-0:#a3813f;--anatomy-shade-1:#b08d48;--anatomy-shade-2:#bc9850;--anatomy-shade-3:#c6a158}
+.iso .m-shade{--anatomy-paper:#f1e9d6;--anatomy-face:#f1e9d6;--anatomy-top:#faf4e6;--anatomy-shade-0:#ddd2b9;--anatomy-shade-1:#e3d9c2;--anatomy-shade-2:#e8dfca;--anatomy-shade-3:#ede5d1}
+.iso .m-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;--anatomy-top:#fbf9f4;--anatomy-shade-0:#dcd8ce;--anatomy-shade-1:#e3dfd6;--anatomy-shade-2:#e9e6de;--anatomy-shade-3:#efece5}
+.iso .m-mug .tb-body{fill:#f4f1ea}.iso .m-mug .tb-shine{fill:#fbf9f4}.iso .m-mug .tb-shade{fill:#dcd8ce}
+.iso .m-tea{fill:#9a6a3a;stroke:none}
+.iso .m-tag{fill:#e8c35a;stroke:none}
+.iso .m-lamp-glow{fill:#ffe3a3;opacity:.75;stroke:none}
+.iso .m-lamp-pool{fill:#ffd98a;opacity:.16;stroke:none}
+html[data-theme="night"] .iso .m-velvet{--anatomy-paper:#3a4232;--anatomy-face:#3a4232;--anatomy-top:#454e3b;--anatomy-shade-0:#2b3125;--anatomy-shade-1:#30372a;--anatomy-shade-2:#353c2e;--anatomy-shade-3:#394131;--anatomy-lo:#5c6650}
+html[data-theme="night"] .iso .m-velvet-hi{--anatomy-paper:#414a38;--anatomy-face:#414a38;--anatomy-top:#4c5641;--anatomy-shade-0:#30372a;--anatomy-shade-1:#353d2e;--anatomy-shade-2:#3a4232;--anatomy-shade-3:#3f4736;--anatomy-lo:#626c55}
+html[data-theme="night"] .iso .m-rug{--anatomy-paper:#2f2a22;--anatomy-face:#2f2a22;--anatomy-top:#363026;--anatomy-shade-0:#25211b;--anatomy-shade-1:#28241d;--anatomy-shade-2:#2b2720;--anatomy-shade-3:#2e2922;--anatomy-faint:#4a4236}
+html[data-theme="night"] .iso .m-shade{--anatomy-paper:#3b362b;--anatomy-face:#3b362b;--anatomy-top:#463f32;--anatomy-shade-0:#2e2a22;--anatomy-shade-1:#322e25;--anatomy-shade-2:#363128;--anatomy-shade-3:#3a352b}
+html[data-theme="night"] .iso .m-mug{--anatomy-paper:#3c3b38;--anatomy-face:#3c3b38;--anatomy-top:#45443f;--anatomy-shade-0:#2e2d2a;--anatomy-shade-1:#33322f;--anatomy-shade-2:#383733;--anatomy-shade-3:#3c3b37}
+html[data-theme="night"] .iso .m-brass{--anatomy-paper:#6e5a33;--anatomy-face:#6e5a33;--anatomy-top:#86703f;--anatomy-shade-0:#54442a;--anatomy-shade-1:#5c4b2d;--anatomy-shade-2:#655230;--anatomy-shade-3:#6c5832}
+html[data-theme="night"] .iso .m-lamp-glow{opacity:1}
+html[data-theme="night"] .iso .m-lamp-pool{opacity:.3}

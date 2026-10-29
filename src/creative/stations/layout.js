@@ -57,6 +57,17 @@ export const LAYOUT = {
     // Behind the board, on white's side, facing the room.
     standAt: { x: 26, y: 57 },
   },
+  reading: {
+    id: "reading",
+    label: "Reading chair",
+    // Front left, beside the chess table: the chair's seat is where he sits.
+    pos: { x: 9, y: 43 },
+    // The chair's back, the side table and the lamp; the seat stays open so he can sit in it.
+    footprint: { x: 0, y: 30, w: 27, h: 9.4 },
+    link: "/shelf",
+    labelAt: { x: 2, y: 54, z: 0 },
+    standAt: { x: 9, y: 43 },
+  },
   corkboard: {
     id: "corkboard",
     label: "Corkboard",
