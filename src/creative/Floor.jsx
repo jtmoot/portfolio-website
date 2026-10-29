@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { STATIONS } from "./stations/index.js";
 import Walls from "./stations/Walls.jsx";
 import StationLabel from "./StationLabel.jsx";
 import StationCard from "./StationCard.jsx";
-import { floorToScreen } from "../lib/floorView.js";
+import { floorToScreen, screenToFloor } from "../lib/floorView.js";
 import { artPlacement } from "../lib/iso.js";
-import { depthKey } from "../lib/floor.js";
+import { depthKey, nearestStation, TILE } from "../lib/floor.js";
+import { standPoint, TILE_FADE_MS } from "../lib/figure.js";
+import { FIGURE_START } from "../lib/travelers.js";
+import { useFigure } from "./useFigure.js";
+import Figure from "./Figure.jsx";
+
+const FIGURE_CM = 180;
+const still = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** Stations with no margin traveler sketch themselves in a beat later. */
 const LATE = new Set(["desk", "plants", "kitchen"]);
@@ -21,15 +29,55 @@ const centre = (f) => ({ x: f.x + f.w / 2, y: f.y + f.h / 2 });
 /**
  * The flat overlay that holds the room drawings, positioned over the tipped paper by projecting
  * floor points through the same view as the poster's transform.
- * @param {{ view: object, flipped: boolean, activeId?: string | null, onNavigate: (href: string) => void, children?: import("react").ReactNode }} props
+ * @param {{ view: object, flipped: boolean, onNavigate: (href: string) => void, children?: import("react").ReactNode }} props
  */
-export default function Floor({ view, flipped, activeId = null, onNavigate, children }) {
+export default function Floor({ view, flipped, onNavigate, children }) {
   const [hoverId, setHoverId] = useState(null);
-  const active = activeId ?? hoverId;
+  const [nearId, setNearId] = useState(null);
+  const [tiles, setTiles] = useState([]);
+  const figureEl = useRef(null);
+  const layerEl = useRef(null);
+  const viewRef = useRef(view);
+  viewRef.current = view;
+  const lastTiles = useRef(0);
+  const active = hoverId ?? nearId;
+
+  const onFrame = useCallback((s) => {
+    const el = figureEl.current;
+    if (el) {
+      const v = viewRef.current;
+      const p = floorToScreen(s.pos, v);
+      const h = ((FIGURE_CM * 0.8165) / 5) * v.scale;
+      el.style.left = `${p.left}cqw`;
+      el.style.top = `${p.top}cqw`;
+      el.style.width = `${h * 0.4}cqw`;
+      el.style.zIndex = String(100 + Math.round((depthKey(s.pos) + 100) * 4) + 2);
+      el.dataset.facing = s.facing;
+      el.style.setProperty("--swing", String([0, 16, 4, -16, -4][s.frame] || 0));
+      el.classList.toggle("falling", s.falling);
+    }
+    const near = s.falling ? null : nearestStation(s.pos, STATIONS, 5)?.id ?? null;
+    setNearId((prev) => (prev === near ? prev : near));
+    if ((s.tiles.size > 0 || tiles.length > 0) && (s.now - lastTiles.current > 200 || s.tiles.size === 0)) {
+      lastTiles.current = s.now;
+      setTiles([...s.tiles].map(([key, seen]) => ({ key, age: s.now - seen })));
+    }
+  }, [tiles.length]);
+
+  const { tap, stateRef } = useFigure({ active: flipped, stations: STATIONS, start: FIGURE_START, onFrame, wander: !still() });
+  if (import.meta.env.DEV && typeof window !== "undefined") window.__figure = stateRef;
+
+  const onTap = (e) => {
+    const rect = layerEl.current.getBoundingClientRect();
+    const cqw = rect.width / 100;
+    tap(screenToFloor({ left: (e.clientX - rect.left) / cqw, top: (e.clientY - rect.top) / cqw }, view));
+  };
+  const poster = typeof document !== "undefined" ? document.querySelector(".poster") : null;
   const labelSize = `${1.45 * (view.scale / 0.62)}cqw`;
 
   return (
-    <div className="floor-layer" data-on={flipped || undefined} aria-hidden={!flipped}>
+    <div ref={layerEl} className="floor-layer" data-on={flipped || undefined} aria-hidden={!flipped}>
+      <div className="floor-hit" onPointerDown={onTap} />
       <div className="floor-item floor-walls" style={{ ...at({ x: 0, y: 0 }, view, Walls.meta), zIndex: 1, "--d": "0.5s" }}>
         <Walls />
       </div>
@@ -38,9 +86,14 @@ export default function Floor({ view, flipped, activeId = null, onNavigate, chil
         const delay = LATE.has(st.id) ? 1.05 + i * 0.08 : 0.85;
         const lp = floorToScreen(st.labelAt, view);
         const lift = (st.labelAt.z / 5) * 0.8165 * view.scale;
-        const top = floorToScreen(centre(st.footprint), view);
         return (
-          <div key={st.id} className="floor-station" onPointerEnter={() => setHoverId(st.id)} onPointerLeave={() => setHoverId(null)}>
+          <div
+            key={st.id}
+            className="floor-station"
+            onPointerEnter={() => setHoverId(st.id)}
+            onPointerLeave={() => setHoverId(null)}
+            onPointerDown={() => tap(standPoint(st))}
+          >
             <div className="floor-item" style={{ ...at(st.pos, view, st.Component.meta), zIndex: z, "--d": `${delay}s` }}>
               <st.Component active={active === st.id} />
             </div>
@@ -51,12 +104,35 @@ export default function Floor({ view, flipped, activeId = null, onNavigate, chil
               style={{ left: `${lp.left}cqw`, top: `${lp.top - lift}cqw`, fontSize: labelSize, zIndex: 900, "--d": `${delay + 0.3}s` }}
             />
             {flipped && active === st.id && (
-              <StationCard station={st} onNavigate={onNavigate} style={{ left: `${top.left}cqw`, top: `${top.top - 14 * view.scale}cqw`, zIndex: 1000 }} />
+              <StationCard station={st} onNavigate={onNavigate} style={{ left: `${lp.left}cqw`, top: `${lp.top - lift + 1.4}cqw`, zIndex: 1000 }} />
             )}
           </div>
         );
       })}
+      <Figure ref={figureEl} />
       {children}
+      {poster &&
+        createPortal(
+          tiles.map((t) => {
+            const [cx, cy] = t.key.split(",").map(Number);
+            const x = cx * TILE;
+            const y = cy * TILE;
+            const mod = (n) => ((n % 1.6) + 1.6) % 1.6;
+            return (
+              <div
+                key={t.key}
+                className="walk-tile"
+                style={{
+                  left: `${x}cqw`,
+                  top: `${y}cqw`,
+                  opacity: Math.max(0, Math.min(1, (TILE_FADE_MS - t.age) / 1500)),
+                  backgroundPosition: `${-mod(x)}cqw ${-mod(y)}cqw`,
+                }}
+              />
+            );
+          }),
+          poster,
+        )}
     </div>
   );
 }
