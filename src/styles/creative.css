@@ -359,3 +359,107 @@ html[data-theme="night"] .figure{--hair-0:#4a3d34;--hair-1:#54463c;--hair-2:#5e4
     transition: none;
   }
 }
+
+/* The speed wheel: a small drawn dial, bottom right, only in creative mode. */
+.speed-wheel {
+  position: fixed;
+  right: 24px;
+  bottom: 20px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  animation: card-in 0.4s ease 1.2s both;
+}
+
+.speed-knob {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  touch-action: none;
+  cursor: grab;
+}
+
+.speed-knob:active {
+  cursor: grabbing;
+}
+
+.speed-knob:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.speed-knob svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.sw-rim {
+  fill: var(--card);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+
+.sw-face {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 0.9;
+}
+
+.sw-knurl,
+.sw-tick {
+  stroke: var(--ink);
+  stroke-width: 0.8;
+  stroke-linecap: round;
+}
+
+.sw-tick.major {
+  stroke-width: 1.6;
+}
+
+.sw-needle {
+  stroke: var(--ink);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.sw-hub {
+  fill: var(--ink);
+}
+
+.sw-turn {
+  transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.speed-label {
+  font-family: var(--font-hand);
+  font-size: 15px;
+  line-height: 1.1;
+  display: flex;
+  flex-direction: column;
+}
+
+.speed-value {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+@media (max-width: 819px) {
+  .speed-wheel {
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speed-wheel {
+    animation: none;
+  }
+  .sw-turn {
+    transition: none;
+  }
+}

@@ -87,3 +87,38 @@ describe("useFigure keys", () => {
     expect(b).toEqual(a);
   });
 });
+
+describe("useFigure hold and speed", () => {
+  const runWith = async (opts, n = 60) => {
+    let cb = null;
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((fn) => {
+      cb = fn;
+      return 1;
+    });
+    vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
+    let ref;
+    function P() {
+      ref = useFigure({ active: true, stations: STATIONS, start: { x: 44, y: 40 }, onFrame: () => {}, ...opts }).stateRef;
+      return null;
+    }
+    const root = createRoot(document.createElement("div"));
+    await act(async () => root.render(<P />));
+    let t = 0;
+    for (let i = 0; i < n; i++) cb((t += 16));
+    const pos = { ...ref.current.pos };
+    await act(async () => root.unmount());
+    return pos;
+  };
+
+  it("passes hold through, so the idle tour waits", async () => {
+    expect(await runWith({ hold: true })).toEqual({ x: 44, y: 40 });
+    expect(await runWith({ hold: false })).not.toEqual({ x: 44, y: 40 });
+  });
+
+  it("passes speed through", async () => {
+    const slow = await runWith({ speed: 0.5 }, 30);
+    const fast = await runWith({ speed: 2 }, 30);
+    const d = (p) => Math.hypot(p.x - 44, p.y - 40);
+    expect(d(fast)).toBeCloseTo(d(slow) * 4, 0);
+  });
+});

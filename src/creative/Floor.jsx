@@ -11,6 +11,9 @@ import { standPoint, TILE_FADE_MS } from "../lib/figure.js";
 import { FIGURE_START } from "../lib/travelers.js";
 import { useFigure } from "./useFigure.js";
 import Figure, { FIGURE_META } from "./Figure.jsx";
+import SpeedWheel from "./SpeedWheel.jsx";
+import { useLinger } from "./useLinger.js";
+import { loadSpeed, saveSpeed } from "../lib/speed.js";
 
 const FRAME_NAMES = ["idle", "w1", "w2", "w3", "w4"];
 const still = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -32,7 +35,13 @@ const centre = (f) => ({ x: f.x + f.w / 2, y: f.y + f.h / 2 });
  * @param {{ view: object, flipped: boolean, onNavigate: (href: string) => void, children?: import("react").ReactNode, posterSelector?: string }} props
  */
 export default function Floor({ view, flipped, onNavigate, children, posterSelector = ".poster" }) {
-  const [hoverId, setHoverId] = useState(null);
+  const hover = useLinger();
+  const hoverId = hover.id;
+  const [speed, setSpeed] = useState(loadSpeed);
+  const changeSpeed = (v) => {
+    setSpeed(v);
+    saveSpeed(v);
+  };
   const [nearId, setNearId] = useState(null);
   const [tiles, setTiles] = useState([]);
   const figureEl = useRef(null);
@@ -64,7 +73,7 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
     }
   }, [tiles.length]);
 
-  const { tap, stateRef } = useFigure({ active: flipped, stations: STATIONS, start: FIGURE_START, onFrame, wander: !still() });
+  const { tap, stateRef } = useFigure({ active: flipped, stations: STATIONS, start: FIGURE_START, onFrame, wander: !still(), hold: hoverId !== null, speed });
   if (import.meta.env.DEV && typeof window !== "undefined") window.__figure = stateRef;
 
   const onTap = (e) => {
@@ -90,8 +99,8 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
           <div
             key={st.id}
             className="floor-station"
-            onPointerEnter={() => setHoverId(st.id)}
-            onPointerLeave={() => setHoverId(null)}
+            onPointerEnter={() => hover.enter(st.id)}
+            onPointerLeave={hover.leave}
             onPointerDown={() => tap(standPoint(st))}
           >
             <div className="floor-item" style={{ ...at(st.pos, view, st.Component.meta), zIndex: z, "--d": `${delay}s` }}>
@@ -100,7 +109,7 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
             <StationLabel
               text={st.label}
               active={active === st.id}
-              onEnter={() => setHoverId(st.id)}
+              onEnter={() => hover.enter(st.id)}
               style={{ left: `${lp.left}cqw`, top: `${lp.top - lift}cqw`, fontSize: labelSize, zIndex: 900, "--d": `${delay + 0.3}s` }}
             />
             {flipped && active === st.id && (
@@ -110,6 +119,7 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
         );
       })}
       <Figure ref={figureEl} />
+      {flipped && typeof document !== "undefined" && createPortal(<SpeedWheel value={speed} onChange={changeSpeed} />, document.body)}
       {children}
       {poster &&
         createPortal(

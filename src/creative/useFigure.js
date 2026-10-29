@@ -6,11 +6,14 @@ const typing = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$
 /**
  * Runs the figure while `active`: a requestAnimationFrame loop, arrow keys / WASD, and taps.
  * Everything it attaches is removed when `active` turns false or the component unmounts.
- * @param {{ active: boolean, stations: object[], start: { x: number, y: number }, onFrame: (state: object) => void, wander?: boolean }} opts
+ * @param {{ active: boolean, stations: object[], start: { x: number, y: number }, onFrame: (state: object) => void, wander?: boolean, hold?: boolean, speed?: number }} opts
+ *   hold: a station card is open, so the idle tour waits; speed: the speed wheel's multiplier
  * @returns {{ tap: (p: { x: number, y: number }) => void, stateRef: { current: object } }}
  */
-export function useFigure({ active, stations, start, onFrame, wander = true }) {
+export function useFigure({ active, stations, start, onFrame, wander = true, hold = false, speed = 1 }) {
   const stateRef = useRef(null);
+  const live = useRef({ hold, speed });
+  live.current = { hold, speed };
   const tapRef = useRef(null);
   const onFrameRef = useRef(onFrame);
   onFrameRef.current = onFrame;
@@ -58,7 +61,7 @@ export function useFigure({ active, stations, start, onFrame, wander = true }) {
         // Back from a hidden tab: age the world in one step without moving anyone.
         s = stepFigure(s, { dir: null, tapTarget: null }, { ...ctx, stations: [] }, Math.min(elapsed, 120));
       } else {
-        s = stepFigure(s, { dir: dir(), tapTarget: tapRef.current }, ctx, elapsed);
+        s = stepFigure(s, { dir: dir(), tapTarget: tapRef.current, hold: live.current.hold }, { ...ctx, speed: live.current.speed }, elapsed);
       }
       tapRef.current = null;
       stateRef.current = s;

@@ -3,7 +3,7 @@ import { onPad, tileKey, tilesAround, resolveCollision, FLOOR } from "./floor.js
 /** Floor units per second (spec 5.5: 9 cqw/s). */
 export const SPEED = 9;
 export const IDLE_RESUME_MS = 6000;
-export const PAUSE_MS = 1500;
+export const PAUSE_MS = 4000;
 export const TILE_FADE_MS = 4000;
 export const RESPAWN_MS = 1000;
 const FRAME_MS = 120;
@@ -68,14 +68,17 @@ const clampWalls = (p) => ({ x: Math.min(p.x, FLOOR.w), y: Math.max(p.y, 0) });
 /**
  * Advances the figure by dt seconds. Pure: returns a new state.
  * @param {ReturnType<typeof initialFigure>} state
- * @param {{ dir: { dx: number, dy: number } | null, tapTarget: { x: number, y: number } | null, dt?: number }} input
- * @param {{ stations: { id: string, footprint: object }[], footprints: object[], respawn?: { x: number, y: number } }} ctx
- *   stations: the idle tour (empty to stay put); respawn: where he reappears after a fall
+ * @param {{ dir: { dx: number, dy: number } | null, tapTarget: { x: number, y: number } | null, hold?: boolean, dt?: number }} input
+ *   hold: a station card is open, so the idle tour waits where it is (the keyboard still steers)
+ * @param {{ stations: { id: string, footprint: object }[], footprints: object[], respawn?: { x: number, y: number }, speed?: number }} ctx
+ *   stations: the idle tour (empty to stay put); respawn: where he reappears after a fall;
+ *   speed: walk-speed multiplier from the speed wheel (default 1)
  * @param {number} [dtArg] seconds
  */
 export function stepFigure(state, input, ctx, dtArg) {
   const dt = input.dt ?? dtArg ?? 1 / 60;
   const ms = dt * 1000;
+  const speed = SPEED * (ctx.speed ?? 1);
   const s = { ...state, pos: { ...state.pos }, route: [...(state.route || [])], tiles: new Map(state.tiles), now: state.now + ms };
 
   if (s.falling) {
@@ -112,7 +115,7 @@ export function stepFigure(state, input, ctx, dtArg) {
     s.target = null;
     s.route = [];
     const len = Math.hypot(input.dir.dx, input.dir.dy) || 1;
-    step = { dx: (input.dir.dx / len) * SPEED * dt, dy: (input.dir.dy / len) * SPEED * dt };
+    step = { dx: (input.dir.dx / len) * speed * dt, dy: (input.dir.dy / len) * speed * dt };
   } else {
     if (input.tapTarget) {
       s.control = "user";
@@ -127,8 +130,9 @@ export function stepFigure(state, input, ctx, dtArg) {
         s.route = [];
       }
     }
-    let goal = s.route[0] || s.target;
-    if (!goal && s.control === "idle" && ctx.stations.length) {
+    const holding = input.hold && s.control === "idle";
+    let goal = holding ? null : s.route[0] || s.target;
+    if (!goal && !holding && s.control === "idle" && ctx.stations.length) {
       if (s.pauseLeft > 0) {
         s.pauseLeft -= ms;
         if (s.pauseLeft <= 0) s.idleIndex = (s.idleIndex + 1) % ctx.stations.length;
@@ -145,7 +149,7 @@ export function stepFigure(state, input, ctx, dtArg) {
         else if (s.target) s.target = null;
         else s.pauseLeft = PAUSE_MS;
       } else {
-        const reach = Math.min(dist, SPEED * dt);
+        const reach = Math.min(dist, speed * dt);
         step = { dx: (dx / dist) * reach, dy: (dy / dist) * reach };
       }
     }
