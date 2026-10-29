@@ -56,6 +56,12 @@ export default station("plants", {
       const n = G.unit3(G.cross3(d, e));
       return { d, e, n };
     };
+    // Each leaf sways a degree or two about its own base (CSS: [data-sway] in iso.css), staggered.
+    const sway = (B) => {
+      const [ox, oy] = at(B);
+      const delay = ((Math.abs(ox * 7.3 + oy * 3.1) % 60) / 10).toFixed(2);
+      return `data-sway="" style="--ox:${ox.toFixed(1)}px;--oy:${oy.toFixed(1)}px;--sd:-${delay}s"`;
+    };
     const monsteraLeaf = (B, yaw, pitch, roll, Lm, Wm) => {
       const { d, e, n } = basis(yaw, pitch, roll);
       const P3 = (s, w) => G.add3(B, G.add3(G.mul3(d, s), G.mul3(e, w)));
@@ -79,7 +85,7 @@ export default station("plants", {
       let veins = k.pathOf([at(P3(0, 0)), at(P3(Lm * 0.97, 0))]);
       for (const cc of cuts) for (const sg of [1, -1]) veins += k.pathOf([at(P3(cc * Lm - 2, 0)), at(P3(cc * Lm + 2.5, sg * half(cc) * 0.3))]);
       const cls = leafTone(n);
-      return { mid: P3(Lm * 0.5, 0), svg: `<g class="${cls}"><path class="m-leaf-fill" d="${k.pathOf(outline.map(at), true)}"/>${L(veins, { tone: "lo" })}${L(k.pathOf(outline.map(at), true), { tone: "hi" })}</g>` };
+      return { mid: P3(Lm * 0.5, 0), svg: `<g class="${cls}" ${sway(B)}><path class="m-leaf-fill" d="${k.pathOf(outline.map(at), true)}"/>${L(veins, { tone: "lo" })}${L(k.pathOf(outline.map(at), true), { tone: "hi" })}</g>` };
     };
     const strapLeaf = (B, yaw, rise, Lm, Wm) => {
       // An arching ribbon: starts rising, bends over under its own weight.
@@ -100,7 +106,7 @@ export default station("plants", {
       const n = G.unit3(G.cross3(G.sub3(pts[segs >> 1], pts[0]), side));
       const cls = leafTone(n.map((x) => -x));
       const outline = [...a, ...b];
-      return { mid: pts[segs >> 1], svg: `<g class="${cls}"><path class="m-leaf-fill" d="${k.pathOf(outline.map(at), true)}"/>${L(k.pathOf(pts.map(at)), { tone: "faint" })}${L(k.pathOf(outline.map(at), true), { tone: "hi" })}</g>` };
+      return { mid: pts[segs >> 1], svg: `<g class="${cls}" ${sway(B)}><path class="m-leaf-fill" d="${k.pathOf(outline.map(at), true)}"/>${L(k.pathOf(pts.map(at)), { tone: "faint" })}${L(k.pathOf(outline.map(at), true), { tone: "hi" })}</g>` };
     };
     const hostaLeaf = (B, yaw, pitch, Lm, Wm) => {
       const { d, e, n } = basis(yaw, pitch, 0.15);
@@ -116,7 +122,7 @@ export default station("plants", {
         ribs += k.pathOf(r);
       }
       const cls = leafTone(n);
-      return { mid: P3(Lm * 0.5, 0), svg: `<g class="${cls}"><path class="m-leaf-fill" d="${k.pathOf(outline.map(at), true)}"/>${L(ribs, { tone: "lo" })}${L(k.pathOf(outline.map(at), true), { tone: "hi" })}</g>` };
+      return { mid: P3(Lm * 0.5, 0), svg: `<g class="${cls}" ${sway(B)}><path class="m-leaf-fill" d="${k.pathOf(outline.map(at), true)}"/>${L(ribs, { tone: "lo" })}${L(k.pathOf(outline.map(at), true), { tone: "hi" })}</g>` };
     };
 
     // --- Pots ---------------------------------------------------------------------------------------

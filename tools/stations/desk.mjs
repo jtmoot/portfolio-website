@@ -170,17 +170,29 @@ export default station("desk", {
       const P3 = (a, b) => at([X, u(a), v(b)]);
       const lens = [0.42, 0.6, 0.35, 0.7, 0.52, 0.28, 0.64, 0.46, 0.58, 0.31, 0.5, 0.66];
       const indents = [0, 0.04, 0.08, 0.08, 0.04, 0.08, 0.12, 0.12, 0.08, 0.04, 0, 0.04];
+      // The code scrolls: two copies of the 12 lines stacked, moved up one copy's height on a loop
+      // (CSS: data-part="code"), inside a clip of the glass so lines slide out of the top edge.
+      const PITCH = 0.075;
       let d = "";
-      lens.forEach((len, i) => {
-        const y = 0.08 + i * 0.075;
-        d += k.pathOf([P3(0.1 + indents[i], y), P3(0.1 + indents[i] + len * 0.75, y)]);
-      });
       let gutter = "";
-      lens.forEach((_, i) => {
-        const y = 0.08 + i * 0.075;
+      for (let i = 0; i < lens.length * 2 + 2; i++) {
+        const j = i % lens.length;
+        const y = 0.08 + i * PITCH;
+        d += k.pathOf([P3(0.1 + indents[j], y), P3(0.1 + indents[j] + lens[j] * 0.75, y)]);
         gutter += k.pathOf([P3(0.03, y), P3(0.06, y)]);
-      });
-      return L(d, { tone: "lit", free: true }) + L(gutter, { tone: "mid", free: true }) + L(k.pathOf([P3(0.08, 0), P3(0.08, 1)]), { tone: "mid" });
+      }
+      const span = lens.length * PITCH * (g.z1 - g.z0);
+      const [, y0] = at([X, 0, 0]);
+      const [, y1] = at([X, 0, span]);
+      const quad = k.pathOf([P3(0, 0), P3(1, 0), P3(1, 1), P3(0, 1)], true);
+      return (
+        `<clipPath id="desk-code-clip"><path d="${quad}"/></clipPath>` +
+        `<g clip-path="url(#desk-code-clip)"><g data-part="code" style="--scroll:${(y1 - y0).toFixed(2)}px">` +
+        L(d, { tone: "lit", free: true }) +
+        L(gutter, { tone: "mid", free: true }) +
+        `</g></g>` +
+        L(k.pathOf([P3(0.08, 0), P3(0.08, 1)]), { tone: "mid" })
+      );
     };
     put([16, 31.5, ON], monitor(31.5, forge));
     put([16, -31.5, ON], monitor(-31.5, code));

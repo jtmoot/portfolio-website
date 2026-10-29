@@ -83,7 +83,7 @@ export default station("chess", {
           s.push(L(G.circleOf(F2, 0, 0.8 * PS, P), { tone: "lo" }));
         }
       }
-      return { p: [x, y, BZ], svg: `<g class="${cls}">${s.join("")}</g>` };
+      return { p: [x, y, BZ], svg: `<g class="${cls}" data-sq="${r},${f}">${s.join("")}</g>` };
     };
     const position = [
       ["king", "w", 0, 6], ["rook", "w", 0, 5], ["queen", "w", 3, 3], ["knight", "w", 2, 5], ["bishop", "w", 3, 2],
@@ -111,7 +111,16 @@ export default station("chess", {
       const oy = -10 + dy - sq(0, 0)[1];
       captured.push({ p: [half + 6 + dx, -10 + dy, TZ], svg: pc.svg.replace(/^<g class="([^"]+)">/, `<g class="$1" transform="${k.translateAlong(P, [ox, oy, TZ - BZ])}">`) });
     }
+    // Captured pieces are scenery, not part of the replay.
+    for (const cp of captured) cp.svg = cp.svg.replace(/ data-sq="[^"]*"/, "");
     const onTable = [...pieces, ...captured, { p: [CX, CYc, TZ], svg: clock.join("") }];
+    // Screen offsets of one rank, one file and one centimetre up, for the replay in Chess.jsx.
+    const o = at([0, 0, BZ]);
+    const dr = at([SQ, 0, BZ]);
+    const df = at([0, SQ, BZ]);
+    const dz = at([0, 0, BZ + 1]);
+    const f2 = (n) => n.toFixed(3);
+    out.push(`<g data-chess-step="${[dr[0] - o[0], dr[1] - o[1], df[0] - o[0], df[1] - o[1], dz[1] - o[1]].map(f2).join(",")}"/>`);
     out.push(...c.byDepth(onTable, (i) => i.p).map((i) => i.svg));
 
     // --- Near stool (y > 0) -------------------------------------------------------------------------
