@@ -57,7 +57,7 @@ export const SHELF = [
       book("cant-hurt-me", "Can't Hurt Me", "David Goggins"),
       book("adam-smith", "How Adam Smith Can Change Your Life", "Russ Roberts"),
       book("chip-war", "Chip War", "Chris Miller"),
-      { ...book("ai-snake-oil", "AI Snake Oil", "Arvind Narayanan & Sayash Kapoor"), cover: null },
+      book("ai-snake-oil", "AI Snake Oil", "Arvind Narayanan & Sayash Kapoor"),
       book("thinking-fast-slow", "Thinking, Fast and Slow", "Daniel Kahneman", [], "partway"),
       book("outliers", "Outliers", "Malcolm Gladwell"),
       book("tipping-point", "The Tipping Point", "Malcolm Gladwell"),
@@ -68,12 +68,10 @@ export const SHELF = [
 /** A Goodreads search for the book: reliable without hand-copied ids. */
 export const goodreads = ({ title, author }) => `https://www.goodreads.com/search?q=${encodeURIComponent(`${title} ${author}`)}`;
 
-const spotify = (name) => `https://open.spotify.com/search/${encodeURIComponent(name)}/podcasts`;
-
 /** Pinned on the corkboard in creative mode. */
 export const PODCASTS = [
-  { id: "how-to-take-over-the-world", name: "How to Take Over the World", host: "Ben Wilson", art: "/podcasts/how-to-take-over-the-world.jpg", href: spotify("How to Take Over the World") },
-  { id: "founders", name: "Founders", host: "David Senra", art: "/podcasts/founders.jpg", href: spotify("Founders David Senra") },
-  { id: "maxinomics", name: "Maxinomics", host: "Phil Andrews", art: "/podcasts/maxinomics.jpg", href: spotify("Maxinomics") },
-  { id: "ai-daily-brief", name: "The AI Daily Brief", host: "Nathaniel Whittemore", art: "/podcasts/ai-daily-brief.jpg", href: spotify("The AI Daily Brief") },
+  { id: "how-to-take-over-the-world", name: "How to Take Over the World", host: "Ben Wilson", art: "/podcasts/how-to-take-over-the-world.jpg", href: "https://open.spotify.com/show/1gqvQ7h7BxNSVoQVTnwihr" },
+  { id: "founders", name: "Founders", host: "David Senra", art: "/podcasts/founders.jpg", href: "https://open.spotify.com/show/7txiovdzPARhjm18NwMUYj" },
+  { id: "maxinomics", name: "Maxinomics", host: "Phil Andrews", art: "/podcasts/maxinomics.jpg", href: "https://open.spotify.com/show/3DFQJnh5pZv0sa1yojzoM1" },
+  { id: "ai-daily-brief", name: "The AI Daily Brief", host: "Nathaniel Whittemore", art: "/podcasts/ai-daily-brief.jpg", href: "https://open.spotify.com/show/7gKwwMLFLc6RmjmRpbMtEO" },
 ];

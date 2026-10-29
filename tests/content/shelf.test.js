@@ -32,7 +32,7 @@ describe("shelf content", () => {
     expect(PODCASTS.map((p) => p.id)).toEqual(["how-to-take-over-the-world", "founders", "maxinomics", "ai-daily-brief"]);
     for (const p of PODCASTS) {
       expect(existsSync(pub(p.art)), p.art).toBe(true);
-      expect(p.href).toMatch(/^https:\/\//);
+      expect(p.href).toMatch(/^https:\/\/open\.spotify\.com\/show\/[A-Za-z0-9]{22}$/);
     }
   });
 });

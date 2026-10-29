@@ -11,6 +11,7 @@ import Cursor from "./pad/Cursor.jsx";
 import Stage from "./creative/Stage.jsx";
 import Shelf from "./pad/Shelf.jsx";
 import { pageOf } from "./lib/route.js";
+import { soundFor } from "./lib/clickSound.js";
 
 const Floor = lazy(() => import("./creative/Floor.jsx"));
 const StationHarness = lazy(() => import("./creative/StationHarness.jsx"));
@@ -55,6 +56,16 @@ export default function App() {
     };
   }, []);
 
+  // A soft click for every button, link and sticker; creative mode's toggle turns a page instead.
+  useEffect(() => {
+    const onClick = (e) => {
+      const name = soundFor(e.target);
+      if (name) play(name);
+    };
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, []);
+
   useEffect(() => {
     const first = () => unlock();
     window.addEventListener("pointerdown", first, { once: true });
@@ -74,7 +85,6 @@ export default function App() {
   }
 
   const onToggleTheme = () => {
-    play("click");
     setThemeState(toggleTheme());
   };
   if (PAGE === "shelf") {
@@ -95,7 +105,6 @@ export default function App() {
     setTimeout(() => document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" }), 1600);
   };
   const onToggleMode = () => {
-    play("flip");
     modeControl.toggle();
   };
 
