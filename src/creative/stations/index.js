@@ -9,3 +9,5 @@ import { station as anatomy } from "./Anatomy.jsx";
 
 /** Stations in idle-route order. */
 export const STATIONS = [desk, library, plants, kitchen, gym, chess, corkboard, anatomy];
+/** The stops on his idle tour, in order: every station but the ones marked tour: false. */
+export const TOUR = STATIONS.filter((s) => s.tour !== false);

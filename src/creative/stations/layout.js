@@ -68,7 +68,9 @@ export const LAYOUT = {
   },
   anatomy: {
     id: "anatomy",
-    label: "Anatomy chart",
+    // Just a picture on the wall: no label, and not a stop on his tour.
+    label: null,
+    tour: false,
     pos: { x: 12, y: 0 },
     footprint: { x: 8, y: 0, w: 8, h: 2 },
     link: null,

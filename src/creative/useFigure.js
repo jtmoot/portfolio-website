@@ -26,7 +26,7 @@ export function useFigure({ active, stations, start, onFrame, wander = true, hol
     const held = new Map();
     const desk = stations.find((s) => s.id === "desk") || stations[0];
     const ctx = {
-      stations: wander ? stations : [],
+      stations: wander ? stations.filter((s) => s.tour !== false) : [],
       footprints: bodyFootprints(stations),
       respawn: desk ? standPoint(desk) : start,
     };

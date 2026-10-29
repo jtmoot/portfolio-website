@@ -21,10 +21,10 @@ describe("STATIONS", () => {
     }
   });
 
-  it("every station has a label and a component", () => {
+  it("every station has a component, and every stop on the tour a label", () => {
     for (const s of STATIONS) {
-      expect(s.label.length).toBeGreaterThan(0);
       expect(typeof s.Component).toBe("function");
+      if (s.tour !== false) expect(s.label.length).toBeGreaterThan(0);
     }
   });
 
@@ -80,5 +80,15 @@ describe("room with his body", () => {
     for (const st of STATIONS) {
       for (const from of points) expect(findPath(from, standPoint(st), fps, FLOOR), `${st.id} from ${JSON.stringify(from)}`).not.toBeNull();
     }
+  });
+});
+
+describe("the anatomy chart", () => {
+  it("hangs on the wall without a label, and is not a stop on his tour", async () => {
+    const { STATIONS, TOUR } = await import("../../src/creative/stations/index.js");
+    const chart = STATIONS.find((s) => s.id === "anatomy");
+    expect(chart.label).toBeNull();
+    expect(TOUR.map((s) => s.id)).not.toContain("anatomy");
+    expect(TOUR.length).toBe(STATIONS.length - 1);
   });
 });

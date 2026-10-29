@@ -71,7 +71,7 @@ export default station("anatomy", {
       `<path class="m-brain" d="${cerebrum}"/>` + `<path class="m-brain-dark" d="${cerebellum}"/>` + `<path class="m-brain" d="${stem}"/>` + `<path class="m-brain-dark" d="${callosum}"/>` +
       g(gyri, "lo") + g(folia, "lo") + g(cerebrum, "hi") + g(cerebellum, "mid") + g(stem, "mid") + g(callosum, "mid") +
       g(lead, "lo") + g(rules, "lo", 'data-free="true"') + g(caption, "lo", 'data-free="true"') + g(title, "mid", 'data-free="true"') +
-      `<text class="m-plate-fig" x="${(-14).toFixed(2)}" y="${(-cz - 21.5 + 0).toFixed(2)}" font-size="2">Fig. 720</text>` +
+      
       `</g>`);
     return out.join("");
   },

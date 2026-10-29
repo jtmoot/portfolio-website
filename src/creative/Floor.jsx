@@ -32,6 +32,8 @@ const at = (p, view, meta) => {
 /** z-index for each id in a paint order (stations and "figure"), from back to front. */
 const zMap = (order) => new Map(order.map((id, i) => [id, 100 + i * 10]));
 const START_Z = zMap(paintOrder(STATIONS, FIGURE_START));
+/** Stations with a label and a card (the anatomy chart is just a picture on the wall). */
+const LABELLED = STATIONS.filter((s) => s.label);
 /** How far inside the screen edge an off-screen station's arrow sits, in cqw. */
 const EDGE = 1.2;
 
@@ -81,7 +83,7 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
 
   /** Shows an arrow at the screen edge for each station the camera has left off screen. */
   const placeArrows = (v, pan, seen) => {
-    for (const st of STATIONS) {
+    for (const st of LABELLED) {
       const el = arrows.current[st.id];
       if (!el) continue;
       const lp = floorToScreen(st.labelAt, v);
@@ -99,68 +101,80 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
     }
   };
 
-  const onFrame = useCallback((s) => {
-    const el = figureEl.current;
-    if (el) {
-      const v = viewRef.current;
-      const p = floorToScreen(s.pos, v);
-      el.style.left = `${p.left}cqw`;
-      el.style.top = `${p.top}cqw`;
-      el.style.width = `${(FIGURE_META.width / 5) * v.scale}cqw`;
-      // Re-sort him against every station each frame: one fixed z cannot be right beside all of them.
-      const ids = paintOrder(STATIONS, s.pos);
-      const key = ids.join();
-      if (key !== order.current) {
-        order.current = key;
-        zNow.current = zMap(ids);
-        for (const [id, z] of zNow.current) {
-          const target = id === "figure" ? el : items.current[id];
-          if (target) target.style.zIndex = String(z);
+  const onFrame = useCallback(
+    (s) => {
+      const el = figureEl.current;
+      if (el) {
+        const v = viewRef.current;
+        const p = floorToScreen(s.pos, v);
+        el.style.left = `${p.left}cqw`;
+        el.style.top = `${p.top}cqw`;
+        el.style.width = `${(FIGURE_META.width / 5) * v.scale}cqw`;
+        // Re-sort him against every station each frame: one fixed z cannot be right beside all of them.
+        const ids = paintOrder(STATIONS, s.pos);
+        const key = ids.join();
+        if (key !== order.current) {
+          order.current = key;
+          zNow.current = zMap(ids);
+          for (const [id, z] of zNow.current) {
+            const target = id === "figure" ? el : items.current[id];
+            if (target) target.style.zIndex = String(z);
+          }
         }
-      }
-      // His reaching arm, on its own layer just above the station he reaches across.
-      const over = overEl.current;
-      if (over) {
-        const reaching = Boolean(s.pose && OVER_POSES.has(s.pose));
-        over.hidden = !reaching;
-        if (reaching) {
-          const st = nearestStation(s.pos, STATIONS, 12);
-          over.style.left = el.style.left;
-          over.style.top = el.style.top;
-          over.style.width = el.style.width;
-          over.style.zIndex = String((zNow.current.get(st?.id) ?? 0) + 5);
-          const oh = `#f-${s.facing}-${s.pose}-over`;
-          const ou = over.querySelector("use");
-          if (ou && ou.getAttribute("href") !== oh) ou.setAttribute("href", oh);
+        // His reaching arm, on its own layer just above the station he reaches across.
+        const over = overEl.current;
+        if (over) {
+          const reaching = Boolean(s.pose && OVER_POSES.has(s.pose));
+          over.hidden = !reaching;
+          if (reaching) {
+            const st = nearestStation(s.pos, STATIONS, 12);
+            over.style.left = el.style.left;
+            over.style.top = el.style.top;
+            over.style.width = el.style.width;
+            over.style.zIndex = String((zNow.current.get(st?.id) ?? 0) + 5);
+            const oh = `#f-${s.facing}-${s.pose}-over`;
+            const ou = over.querySelector("use");
+            if (ou && ou.getAttribute("href") !== oh) ou.setAttribute("href", oh);
+          }
         }
-      }
-      const href = `#f-${s.facing}-${frameName(s)}`;
-      const say = bubbleEl.current;
-      if (say) {
-        say.hidden = !s.greeting;
-        if (s.greeting) {
-          say.style.left = `${p.left}cqw`;
-          say.style.top = `${p.top - (214 / 5) * 0.8165 * v.scale}cqw`;
+        const href = `#f-${s.facing}-${frameName(s)}`;
+        const say = bubbleEl.current;
+        if (say) {
+          say.hidden = !s.greeting;
+          if (s.greeting) {
+            say.style.left = `${p.left}cqw`;
+            say.style.top = `${p.top - (214 / 5) * 0.8165 * v.scale}cqw`;
+          }
         }
+        const use = el.querySelector(".figure-svg use");
+        if (use && use.getAttribute("href") !== href) use.setAttribute("href", href);
+        el.classList.toggle("falling", s.falling);
+        const dt = lastNow.current ? Math.min(0.1, (s.now - lastNow.current) / 1000) : 1 / 60;
+        lastNow.current = s.now;
+        camera.follow({ x: p.left, y: p.top }, dt);
+        const seen = camera.seen();
+        if (seen) placeArrows(v, camera.pan.current, seen);
       }
-      const use = el.querySelector(".figure-svg use");
-      if (use && use.getAttribute("href") !== href) use.setAttribute("href", href);
-      el.classList.toggle("falling", s.falling);
-      const dt = lastNow.current ? Math.min(0.1, (s.now - lastNow.current) / 1000) : 1 / 60;
-      lastNow.current = s.now;
-      camera.follow({ x: p.left, y: p.top }, dt);
-      const seen = camera.seen();
-      if (seen) placeArrows(v, camera.pan.current, seen);
-    }
-    const near = s.falling ? null : nearestStation(s.pos, STATIONS, 5)?.id ?? null;
-    setNearId((prev) => (prev === near ? prev : near));
-    if ((s.tiles.size > 0 || tiles.length > 0) && (s.now - lastTiles.current > 200 || s.tiles.size === 0)) {
-      lastTiles.current = s.now;
-      setTiles([...s.tiles].map(([key, seen]) => ({ key, age: s.now - seen })));
-    }
-  }, [tiles.length]);
+      const near = s.falling ? null : (nearestStation(s.pos, LABELLED, 5)?.id ?? null);
+      setNearId((prev) => (prev === near ? prev : near));
+      if ((s.tiles.size > 0 || tiles.length > 0) && (s.now - lastTiles.current > 200 || s.tiles.size === 0)) {
+        lastTiles.current = s.now;
+        setTiles([...s.tiles].map(([key, seen]) => ({ key, age: s.now - seen })));
+      }
+    },
+    [tiles.length],
+  );
 
-  const { tap, stateRef } = useFigure({ active: flipped, stations: STATIONS, start: FIGURE_START, onFrame, wander: !still(), hold: hoverId !== null, speed, greet: !still() });
+  const { tap, stateRef } = useFigure({
+    active: flipped,
+    stations: STATIONS,
+    start: FIGURE_START,
+    onFrame,
+    wander: !still(),
+    hold: hoverId !== null,
+    speed,
+    greet: !still(),
+  });
   if (import.meta.env.DEV && typeof window !== "undefined") window.__figure = stateRef;
 
   const onTap = (e) => {
@@ -186,9 +200,9 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
           <div
             key={st.id}
             className="floor-station"
-            onPointerEnter={() => hover.enter(st.id)}
-            onPointerLeave={hover.leave}
-            onPointerDown={() => tap(standPoint(st))}
+            onPointerEnter={st.label ? () => hover.enter(st.id) : undefined}
+            onPointerLeave={st.label ? hover.leave : undefined}
+            onPointerDown={st.label ? () => tap(standPoint(st)) : undefined}
           >
             <div
               ref={(node) => (items.current[st.id] = node)}
@@ -197,12 +211,14 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
             >
               <st.Component active={active === st.id} />
             </div>
-            <StationLabel
-              text={st.label}
-              active={active === st.id}
-              onEnter={() => hover.enter(st.id)}
-              style={{ left: `${lp.left}cqw`, top: `${lp.top - lift}cqw`, fontSize: labelSize, zIndex: 900, "--d": `${delay + 0.3}s` }}
-            />
+            {st.label && (
+              <StationLabel
+                text={st.label}
+                active={active === st.id}
+                onEnter={() => hover.enter(st.id)}
+                style={{ left: `${lp.left}cqw`, top: `${lp.top - lift}cqw`, fontSize: labelSize, zIndex: 900, "--d": `${delay + 0.3}s` }}
+              />
+            )}
             {flipped && active === st.id && (
               <StationCard station={st} onNavigate={onNavigate} style={{ left: `${lp.left}cqw`, top: `${lp.top - lift + 1.4}cqw`, zIndex: 1000 }} />
             )}
@@ -214,14 +230,8 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
       <p ref={bubbleEl} className="speech hand" style={{ fontSize: labelSize }} hidden>
         {hello}
       </p>
-      {STATIONS.map((st) => (
-        <StationArrow
-          key={st.id}
-          ref={(el) => (arrows.current[st.id] = el)}
-          label={st.label}
-          fontSize={labelSize}
-          onGo={() => tap(standPoint(st))}
-        />
+      {LABELLED.map((st) => (
+        <StationArrow key={st.id} ref={(el) => (arrows.current[st.id] = el)} label={st.label} fontSize={labelSize} onGo={() => tap(standPoint(st))} />
       ))}
       {flipped && typeof document !== "undefined" && createPortal(<SpeedWheel value={speed} onChange={changeSpeed} />, document.body)}
       {children}
