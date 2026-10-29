@@ -1,15 +1,9 @@
 import svg from "./art/desk.svg?raw";
 import { artComponent } from "./art.jsx";
+import { LAYOUT } from "./layout.js";
 
 const Desk = artComponent("desk", svg);
 
-export const station = {
-  id: "desk",
-  label: "desk",
-  pos: { x: 43, y: 0 },
-  footprint: { x: 27, y: 0, w: 32, h: 16 },
-  link: "#experience",
-  Component: Desk,
-};
+export const station = { ...LAYOUT.desk, Component: Desk };
 
 export default Desk;

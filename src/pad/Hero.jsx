@@ -2,13 +2,14 @@ import { useRef } from "react";
 import DotPortrait from "./DotPortrait.jsx";
 import TypedIntro from "./TypedIntro.jsx";
 import { INTRO, ROLE, SOCIALS } from "../content/data.js";
+import { FIGURE_START } from "../lib/travelers.js";
 
 /** The first screen's centre: the polaroid, the name, the typed intro and the ways to reach Joshua. */
 export default function Hero() {
   const replay = useRef(null);
   return (
     <>
-      <figure className="polaroid" data-traveler="polaroid">
+      <figure className="polaroid" data-traveler="polaroid" style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y }}>
         <span className="tape" aria-hidden="true" />
         <DotPortrait src="/headshot.jpg" alt="Joshua Moorehead, drawn in dots" />
         <figcaption className="hand">pittsburgh, 2026</figcaption>

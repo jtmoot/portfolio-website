@@ -1,0 +1,118 @@
+/* Creative mode: the poster (first screen) tips into an isometric floor in one 1.5 s motion. */
+.stage {
+  position: relative;
+}
+
+.stage::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--stage);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.9s ease;
+}
+
+.stage[data-mode="creative"]::after {
+  opacity: 1;
+}
+
+.poster {
+  z-index: 1;
+  transform-origin: 50% 39cqw;
+  transition: transform 1.5s cubic-bezier(0.6, 0, 0.25, 1);
+}
+
+.poster::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dots) 1px, transparent 1.2px);
+  background-size: 1.6cqw 1.6cqw;
+  box-shadow: 0 0 0 1px var(--rule), 0 2cqw 4cqw rgba(0, 0, 0, 0.18);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.stage[data-mode="creative"] .poster {
+  transform: var(--pad-transform);
+}
+
+.stage[data-mode="creative"] .poster::before {
+  opacity: 1;
+}
+
+.nav {
+  z-index: 5;
+}
+
+.body {
+  z-index: 1;
+  transition: opacity 0.4s ease, visibility 0.4s;
+}
+
+.stage[data-mode="creative"] .body {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* The writing stays faintly on the paper. */
+.hero {
+  transition: opacity 0.9s ease;
+}
+
+.stage[data-mode="creative"] .hero {
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+/* Travelers slide along the tipping paper to their station, then fade as the drawing rises. */
+.obj,
+.polaroid {
+  transition:
+    left 1.5s cubic-bezier(0.6, 0, 0.25, 1),
+    top 1.5s cubic-bezier(0.6, 0, 0.25, 1),
+    width 1.5s cubic-bezier(0.6, 0, 0.25, 1),
+    rotate 1.5s cubic-bezier(0.6, 0, 0.25, 1),
+    opacity 0.45s ease;
+}
+
+.obj .flat,
+.obj .obj-label {
+  transition: opacity 0.4s ease;
+}
+
+.stage[data-mode="creative"] .obj {
+  left: calc(var(--to-x) * 1cqw - 2cqw);
+  top: calc(var(--to-y) * 1cqw);
+  width: 4cqw;
+  rotate: 0deg;
+  animation: none;
+}
+
+.stage[data-mode="creative"] .obj .flat,
+.stage[data-mode="creative"] .obj .obj-label {
+  opacity: 0;
+  transition-delay: 0.5s;
+}
+
+.stage[data-mode="creative"] .polaroid {
+  left: calc(var(--to-x) * 1cqw - 2cqw);
+  top: calc(var(--to-y) * 1cqw - 2cqw);
+  width: 4cqw;
+  opacity: 0;
+  transition-delay: 0s, 0s, 0s, 0s, 0.6s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster,
+  .obj,
+  .polaroid,
+  .obj .flat,
+  .obj .obj-label {
+    transition: opacity 0.3s ease;
+  }
+}

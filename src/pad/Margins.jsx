@@ -1,6 +1,9 @@
 import Sticker from "./Sticker.jsx";
 import Library from "../creative/stations/Library.jsx";
-import { TRAVELERS } from "../lib/travelers.js";
+import { TRAVELERS, travelerTarget } from "../lib/travelers.js";
+import { LAYOUT } from "../creative/stations/layout.js";
+
+const SPOTS = Object.values(LAYOUT);
 
 const STICKERS = {
   brain: { src: "/stickers/brain.png", cell: 2.4, crop: [0.03, 0.1, 0.95, 0.8], alt: "a brain, from an old anatomy plate" },
@@ -18,6 +21,8 @@ const POSTERS = {
 };
 
 const style = (t) => ({
+  "--to-x": travelerTarget(t, SPOTS).x,
+  "--to-y": travelerTarget(t, SPOTS).y,
   "--from-left": t.from.left,
   "--from-top": t.from.top,
   "--from-width": t.from.width,
