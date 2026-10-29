@@ -37,7 +37,7 @@ for (let i = 0; i < pencil.length; i++) {
       env = Math.max(env, Math.sin(Math.PI * u) ** 0.6 * (0.75 + 0.25 * Math.sin(t * 2 * Math.PI * 23)));
     }
   }
-  pencil[i] = lp * env * 0.32;
+  pencil[i] = lp * env * 0.62;
 }
 
 // Tick: a decaying 1.8 kHz blip with a touch of noise.

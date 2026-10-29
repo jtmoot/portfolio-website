@@ -38,3 +38,32 @@ describe("audio", () => {
     expect(ctor).not.toHaveBeenCalled();
   });
 });
+
+describe("audio loop", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.unstubAllGlobals();
+  });
+
+  it("loops a clip until stopped", async () => {
+    const clip = { play: vi.fn(() => Promise.resolve()), pause: vi.fn(), currentTime: 0, loop: false };
+    vi.stubGlobal("Audio", vi.fn(function Fake() { return clip; }));
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const audio = await import("../../src/lib/audio.js");
+    audio.unlock();
+    const stop = audio.loop("pencil");
+    expect(clip.loop).toBe(true);
+    expect(clip.play).toHaveBeenCalled();
+    stop();
+    expect(clip.pause).toHaveBeenCalled();
+  });
+
+  it("returns a harmless stop before unlock", async () => {
+    const ctor = vi.fn();
+    vi.stubGlobal("Audio", ctor);
+    const audio = await import("../../src/lib/audio.js");
+    const stop = audio.loop("pencil");
+    expect(() => stop()).not.toThrow();
+    expect(ctor).not.toHaveBeenCalled();
+  });
+});

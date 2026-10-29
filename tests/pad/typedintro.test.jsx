@@ -18,3 +18,41 @@ describe("TypedIntro", () => {
     vi.unstubAllGlobals();
   });
 });
+
+describe("TypedIntro first gesture", () => {
+  it("retypes once, with the pencil sound, on the first click", async () => {
+    vi.resetModules();
+    vi.useFakeTimers();
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const stop = vi.fn();
+    const loop = vi.fn(() => stop);
+    const unlock = vi.fn();
+    vi.doMock("../../src/lib/audio.js", () => ({ play: vi.fn(), loop, unlock }));
+    const { default: Intro } = await import("../../src/pad/TypedIntro.jsx");
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<Intro tokens={[{ text: "hi." }]} startDelay={0} />));
+    await act(async () => vi.advanceTimersByTime(2000));
+    const typed = () => host.querySelector("[aria-hidden=true]").textContent;
+    expect(typed()).toBe("hi.");
+    loop.mockClear();
+
+    await act(async () => window.dispatchEvent(new Event("pointerdown")));
+    expect(unlock).toHaveBeenCalled();
+    expect(typed()).toBe("");
+    await act(async () => vi.advanceTimersByTime(2000));
+    expect(typed()).toBe("hi.");
+    expect(loop).toHaveBeenCalledWith("pencil");
+    expect(stop).toHaveBeenCalled();
+
+    loop.mockClear();
+    await act(async () => window.dispatchEvent(new Event("pointerdown")));
+    expect(typed()).toBe("hi.");
+    expect(loop).not.toHaveBeenCalled();
+
+    await act(async () => root.unmount());
+    vi.doUnmock("../../src/lib/audio.js");
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+});

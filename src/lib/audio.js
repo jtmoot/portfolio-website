@@ -30,3 +30,29 @@ export async function play(name) {
     // Missing file or autoplay refusal: sound is decoration, so stay silent.
   }
 }
+
+/**
+ * Loops a clip until the returned stop() is called. Before unlock, under reduced motion, or
+ * without Audio, nothing plays and stop() does nothing.
+ * @param {"pencil" | "tick"} name
+ * @returns {() => void} stop
+ */
+export function loop(name) {
+  if (!unlocked || quiet() || typeof Audio === "undefined" || !FILES[name]) return () => {};
+  let clip;
+  try {
+    clip = new Audio(FILES[name]);
+    clip.loop = true;
+    const started = clip.play();
+    if (started && typeof started.catch === "function") started.catch(() => {});
+  } catch {
+    return () => {};
+  }
+  return () => {
+    try {
+      clip.pause();
+    } catch {
+      // Already gone: nothing to stop.
+    }
+  };
+}
