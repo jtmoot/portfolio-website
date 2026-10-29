@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Nav from "./pad/Nav.jsx";
 import Hero from "./pad/Hero.jsx";
+import Margins from "./pad/Margins.jsx";
 import Experience from "./pad/Experience.jsx";
 import Work from "./pad/Work.jsx";
 import Interests from "./pad/Interests.jsx";
@@ -49,9 +50,8 @@ export default function App() {
           }}
         />
         <section className="poster">
-          <div className="margin margin-left" aria-hidden="true" />
+          <Margins />
           <Hero />
-          <div className="margin margin-right" aria-hidden="true" />
         </section>
         <div className="body">
           <Experience />

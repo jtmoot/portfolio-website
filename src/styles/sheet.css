@@ -795,3 +795,125 @@ html.has-cursor * {
   background: transparent;
   border: 1px solid var(--ink);
 }
+
+/* Margin objects (travelers) */
+.obj {
+  position: absolute;
+  left: calc(var(--from-left) * 1cqw);
+  top: calc(var(--from-top) * 1cqw);
+  width: calc(var(--from-width) * 1cqw);
+  margin: 0;
+  rotate: var(--rot);
+}
+
+.sticker {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0.4cqw 0.4cqw rgba(35, 35, 32, 0.25));
+}
+
+.sticker-source {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+  width: 600px;
+  visibility: hidden;
+}
+
+.obj-label {
+  font-size: 0.95cqw;
+  opacity: 0.7;
+  white-space: nowrap;
+  margin-top: 0.3cqw;
+  rotate: calc(var(--rot) * -1);
+}
+
+.obj-poster .flat {
+  position: relative;
+  background: #ecebe5;
+  box-shadow: 0 0.5cqw 1.2cqw rgba(35, 35, 32, 0.22);
+  padding: 0.4cqw;
+}
+
+.obj-poster .tape {
+  position: absolute;
+  left: 40%;
+  top: -0.6cqw;
+  width: 20%;
+  height: 0.9cqw;
+  background: rgba(42, 42, 40, 0.85);
+  border-radius: 2px;
+}
+
+.poster-in {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  aspect-ratio: 3 / 4;
+  padding: 0.5cqw;
+  font-size: 0.6cqw;
+  line-height: 1.35;
+  background: #1c1c1a;
+  color: #e4e2da;
+}
+
+.poster-in.light {
+  background: #e4e3dd;
+  color: #1c1c1a;
+  border: 1px solid rgba(35, 35, 32, 0.2);
+  font-family: var(--font-hand);
+  font-size: 0.85cqw;
+  line-height: 1.2;
+}
+
+.poster-in.ratio-43 {
+  aspect-ratio: 4 / 3;
+}
+
+.poster-in.tall {
+  aspect-ratio: 2 / 3;
+  justify-content: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15cqw;
+  line-height: 1.05;
+  font-weight: 700;
+  background: #e9e3d2;
+  color: #1c1c1a;
+}
+
+.drift {
+  animation: drift 7s ease-in-out infinite;
+}
+
+.drift.d1 {
+  animation-duration: 9s;
+  animation-delay: -3s;
+}
+
+.drift.d2 {
+  animation-duration: 8s;
+  animation-delay: -5s;
+}
+
+.drift.d3 {
+  animation-duration: 10s;
+  animation-delay: -7s;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 -0.4cqw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drift {
+    animation: none;
+  }
+}
