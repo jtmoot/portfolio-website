@@ -83,3 +83,17 @@ describe("TypedIntro sound controls", () => {
     await done();
   });
 });
+
+describe("TypedIntro layout", () => {
+  it("keeps the whole paragraph laid out while it types, so the links below never move under a click", async () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<TypedIntro tokens={[{ text: "i build " }, { text: "things", mark: true }, { text: "." }]} startDelay={10000} />));
+    const ghost = host.querySelector(".typed-ghost");
+    expect(ghost.textContent).toBe("i build things.");
+    expect(ghost.getAttribute("aria-hidden")).toBe("true");
+    await act(async () => root.unmount());
+    vi.unstubAllGlobals();
+  });
+});

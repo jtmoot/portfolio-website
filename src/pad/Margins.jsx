@@ -16,10 +16,10 @@ const STICKERS = {
 /** Stand-in posters until Joshua picks prints: one each for tech, philosophy, history, finance. */
 /** Each poster is taped twice, like Garvit's: where the two strips sit, and their colours. */
 const POSTERS = {
-  "poster-history": { tape: ["top", "br peach"], cls: "dark", body: ["those who cannot remember the past", "are condemned to repeat it.", "", "santayana"] },
-  "poster-tech": { tape: ["tl", "br peach"], cls: "light", body: ["make it work,", "make it right,", "make it fast."] },
-  "poster-philosophy": { tape: ["tl peach", "tr"], cls: "dark ratio-43", body: ["the unexamined life", "is not worth living.", "", "socrates"] },
-  "poster-finance": { tape: ["top peach", "bl"], cls: "tall", body: ["the big money is not in the buying and selling, but in the waiting."] },
+  "poster-history": { tape: ["top", "br peach"], cls: "dark", body: ["Those who cannot remember the past", "are condemned to repeat it.", "", "Santayana"] },
+  "poster-tech": { tape: ["tl", "br peach"], cls: "light", body: ["Make it work,", "make it right,", "make it fast."] },
+  "poster-philosophy": { tape: ["tl peach", "tr"], cls: "dark ratio-43", body: ["The unexamined life", "is not worth living.", "", "Socrates"] },
+  "poster-finance": { tape: ["top peach", "bl"], cls: "tall", body: ["The big money is not in the buying and selling, but in the waiting."] },
 };
 
 const style = (t) => ({

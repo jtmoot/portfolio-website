@@ -33,3 +33,31 @@ describe("Shelf page", () => {
     vi.unstubAllGlobals();
   });
 });
+
+describe("Shelf extras", () => {
+  const mount = async () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: true }));
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<Shelf />));
+    return { host, root };
+  };
+
+  it("ends with a Recommend a book link that emails Joshua with a subject filled in", async () => {
+    const { host, root } = await mount();
+    const a = host.querySelector(".recommend a");
+    expect(a.textContent).toContain("Recommend a book");
+    expect(a.getAttribute("href")).toBe("mailto:jtmoorehead1@gmail.com?subject=A%20book%20recommendation");
+    await act(async () => root.unmount());
+    vi.unstubAllGlobals();
+  });
+
+  it("puts a few desk objects in the margins, as decoration only", async () => {
+    const { host, root } = await mount();
+    const props = host.querySelectorAll(".shelf-margin .desk-prop");
+    expect(props.length).toBeGreaterThanOrEqual(4);
+    for (const p of props) expect(p.closest("[aria-hidden=true]")).not.toBeNull();
+    await act(async () => root.unmount());
+    vi.unstubAllGlobals();
+  });
+});

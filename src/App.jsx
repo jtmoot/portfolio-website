@@ -4,7 +4,6 @@ import Hero from "./pad/Hero.jsx";
 import Margins from "./pad/Margins.jsx";
 import Experience from "./pad/Experience.jsx";
 import Work from "./pad/Work.jsx";
-import Interests from "./pad/Interests.jsx";
 import Contact from "./pad/Contact.jsx";
 import HoverPreview from "./pad/HoverPreview.jsx";
 import Cursor from "./pad/Cursor.jsx";
@@ -136,7 +135,6 @@ export default function App() {
             <div className="body" inert={flipped || undefined}>
               <Experience />
               <Work />
-              <Interests />
               <Contact />
             </div>
           </main>

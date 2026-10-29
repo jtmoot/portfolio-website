@@ -96,7 +96,7 @@ export default function SpeedWheel({ value, onChange }) {
         </svg>
       </div>
       <span className="speed-label hand">
-        speed <span className="speed-value">{fmt(value)}</span>
+        Speed <span className="speed-value">{fmt(value)}</span>
       </span>
     </div>
   );

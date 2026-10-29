@@ -33,8 +33,8 @@ describe("STATIONS", () => {
     expect(links).toEqual({
       desk: "#experience",
       library: "/shelf",
-      gym: "#running",
-      kitchen: "#cooking",
+      gym: "https://www.strava.com/athletes/121070736",
+      kitchen: null,
       chess: "https://www.chess.com/member/breakfast_enjoyer",
       plants: null,
       corkboard: null,

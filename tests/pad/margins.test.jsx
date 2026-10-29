@@ -18,11 +18,11 @@ describe("Margins", () => {
     const shoe = host.querySelector('[data-traveler="novablast"] a');
     expect(shoe.getAttribute("href")).toBe("https://www.strava.com/athletes/121070736");
     expect(shoe.getAttribute("target")).toBe("_blank");
-    expect(shoe.textContent).toContain("my runs");
+    expect(shoe.textContent).toContain("My runs");
     const book = host.querySelector('[data-traveler="book"] a');
     expect(book.getAttribute("href")).toBe("/shelf");
     expect(book.hasAttribute("target")).toBe(false);
-    expect(host.querySelector('[data-traveler="king"] .obj-tag').textContent).toContain("my rating");
+    expect(host.querySelector('[data-traveler="king"] .obj-tag').textContent).toContain("My rating");
     await act(async () => root.unmount());
   });
 

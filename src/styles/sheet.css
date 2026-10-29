@@ -424,8 +424,23 @@ button[aria-pressed="true"] .toggle-pill::after {
 }
 
 .typed {
-  min-height: 6.6cqw;
+  display: grid;
   margin: 0 0 1.2cqw;
+}
+
+/* Live copy and finished ghost share one grid cell, so the paragraph is always its full height. */
+.typed-live,
+.typed-ghost {
+  grid-area: 1 / 1;
+}
+
+.typed-ghost {
+  visibility: hidden;
+}
+
+.typed-ghost-tools {
+  display: inline-block;
+  width: 3.8em;
 }
 
 .typed mark {
@@ -655,12 +670,8 @@ html[data-theme="night"] .logo {
 }
 
 img.logo {
-  filter: grayscale(1);
-  transition: filter 0.2s;
-}
-
-.xrow:hover img.logo {
-  filter: none;
+  padding: 0.15cqw;
+  box-sizing: border-box;
 }
 
 .xp-name {
@@ -1973,5 +1984,133 @@ html[data-theme="night"] .obj-tag {
   .tile-by,
   .shelf-grid .count {
     font-size: 10px;
+  }
+}
+
+/* Shelf margins: line drawings of desk objects, after garvitsingla.in/shelf. */
+.shelf-margin {
+  position: absolute;
+  top: 0;
+  width: 13cqw;
+  pointer-events: none;
+}
+
+.shelf-margin-left {
+  left: 5cqw;
+}
+
+.shelf-margin-right {
+  right: 5cqw;
+}
+
+.desk-prop {
+  position: absolute;
+  display: block;
+  height: auto;
+  overflow: visible;
+}
+
+.prop-pencil {
+  top: 12cqw;
+  left: 0;
+  width: 11cqw;
+}
+
+.prop-ruler {
+  top: 36cqw;
+  left: 1.5cqw;
+  width: 11.5cqw;
+}
+
+.prop-mug {
+  top: 15cqw;
+  right: 2cqw;
+  width: 6.4cqw;
+}
+
+.prop-glasses {
+  top: 40cqw;
+  right: 0;
+  width: 10cqw;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .prop-steam {
+    animation: prop-steam 3.6s ease-in-out infinite;
+  }
+}
+
+@keyframes prop-steam {
+  0%,
+  100% {
+    translate: 0 0;
+    opacity: 0.35;
+  }
+
+  50% {
+    translate: 0 -3px;
+    opacity: 0.7;
+  }
+}
+
+/* Recommend a book: a quiet card at the end of the lists. */
+.recommend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  margin: 1cqw 0 3cqw;
+  padding: 1.6cqw 2.2cqw;
+  border: 1px dashed var(--card-line);
+  border-radius: 1.2cqw;
+  background: var(--sheet-card);
+}
+
+.sheet .recommend h2 {
+  margin: 0;
+  font-size: 1.4cqw;
+}
+
+.recommend a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35cqw;
+  padding: 0.5cqw 1cqw;
+  border-radius: 0.4cqw;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.82cqw;
+  text-decoration: none;
+}
+
+.recommend svg {
+  width: 0.9em;
+  height: 0.9em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+@media (max-width: 819px) {
+  .shelf-margin {
+    display: none;
+  }
+
+  .recommend {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 28px;
+  }
+
+  .sheet .recommend h2 {
+    font-size: 20px;
+  }
+
+  .recommend a {
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 6px;
   }
 }

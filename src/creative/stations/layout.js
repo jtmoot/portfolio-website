@@ -7,7 +7,7 @@
 export const LAYOUT = {
   desk: {
     id: "desk",
-    label: "desk",
+    label: "Desk",
     pos: { x: 54, y: 0 },
     footprint: { x: 38, y: 0, w: 32, h: 16 },
     link: "#experience",
@@ -15,7 +15,7 @@ export const LAYOUT = {
   },
   library: {
     id: "library",
-    label: "library",
+    label: "Library",
     pos: { x: 17, y: 0 },
     footprint: { x: 8, y: 0, w: 18, h: 7 },
     link: "/shelf",
@@ -23,7 +23,7 @@ export const LAYOUT = {
   },
   plants: {
     id: "plants",
-    label: "plants",
+    label: "Plants",
     pos: { x: 89, y: 0 },
     footprint: { x: 78, y: 0, w: 22, h: 13 },
     link: null,
@@ -31,25 +31,25 @@ export const LAYOUT = {
   },
   kitchen: {
     id: "kitchen",
-    label: "kitchen",
+    label: "Kitchen",
     pos: { x: 130, y: 48 },
     footprint: { x: 117, y: 30, w: 13, h: 36 },
-    link: "#cooking",
+    link: null,
     labelAt: { x: 122, y: 69, z: 0 },
     standAt: { x: 113, y: 48 },
   },
   gym: {
     id: "gym",
-    label: "gym",
+    label: "Gym",
     pos: { x: 72, y: 69 },
     footprint: { x: 50, y: 58, w: 54, h: 25 },
-    link: "#running",
+    link: "https://www.strava.com/athletes/121070736",
     labelAt: { x: 84, y: 85, z: 0 },
     standAt: { x: 64, y: 86.2 },
   },
   chess: {
     id: "chess",
-    label: "chess",
+    label: "Chess",
     pos: { x: 22, y: 67 },
     footprint: { x: 9, y: 60, w: 27, h: 14 },
     link: "https://www.chess.com/member/breakfast_enjoyer",
@@ -59,7 +59,7 @@ export const LAYOUT = {
   },
   corkboard: {
     id: "corkboard",
-    label: "corkboard",
+    label: "Corkboard",
     pos: { x: 110, y: 0 },
     footprint: { x: 104, y: 0, w: 12, h: 2 },
     link: null,
@@ -68,7 +68,7 @@ export const LAYOUT = {
   },
   anatomy: {
     id: "anatomy",
-    label: "anatomy chart",
+    label: "Anatomy chart",
     pos: { x: 12, y: 0 },
     footprint: { x: 8, y: 0, w: 8, h: 2 },
     link: null,

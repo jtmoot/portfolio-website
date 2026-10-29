@@ -44,7 +44,7 @@ export default function Hero() {
         <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" />
       </figure>
       <div className="hero">
-        <HandName ref={name} text="hello, i'm joshua moorehead">
+        <HandName ref={name} text="Hello, I'm Joshua Moorehead">
           <svg className="scribble" viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true">
             <path d="M2 8 C 60 2, 140 12, 298 6 M20 13 C 100 9, 200 15, 280 11" />
           </svg>
@@ -52,7 +52,7 @@ export default function Hero() {
         <p className="role">{ROLE}</p>
         <TypedIntro ref={intro} tokens={INTRO} onReplay={replay} />
         <p className="socials">
-          <span className="hand">reach me</span>
+          <span className="hand">Reach me</span>
           {SOCIALS.map((s) => (
             <a
               key={s.label}

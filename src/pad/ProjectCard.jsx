@@ -117,7 +117,7 @@ export default function ProjectCard({ project, n = 1, wide = false, tape = 0 }) 
                 <circle cx="12" cy="12" r="9" />
                 <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
               </svg>
-              launch live{ARROW}
+              Launch live{ARROW}
             </a>
           )}
           {rest.map((l) => (
@@ -131,7 +131,7 @@ export default function ProjectCard({ project, n = 1, wide = false, tape = 0 }) 
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m16 18 6-6-6-6M8 6l-6 6 6 6" />
               </svg>
-              github
+              GitHub
             </a>
           )}
         </p>

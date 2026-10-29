@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 const LINKS = [
-  ["experience", "#experience"],
-  ["work", "#work"],
-  ["shelf", "/shelf"],
-  ["contact", "#contact"],
+  ["Experience", "#experience"],
+  ["Work", "#work"],
+  ["Shelf", "/shelf"],
+  ["Contact", "#contact"],
 ];
 
 /** Scroll distance (px) after which the nav shrinks into a floating pill, like garvitsingla.in. */
@@ -13,8 +13,7 @@ export const COMPACT_AT = 40;
 function pittsburghTime() {
   try {
     return new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })
-      .format(new Date())
-      .toLowerCase();
+      .format(new Date());
   } catch {
     return "";
   }
@@ -53,9 +52,9 @@ export default function Nav({ theme, onToggleTheme, mode = "pad", onToggleMode, 
           ))}
         </div>
         <div className="nav-right">
-          {clock && <span className="nav-clock">{clock} pittsburgh</span>}
+          {clock && <span className="nav-clock">{clock} Pittsburgh</span>}
           <button type="button" onClick={onToggleTheme} aria-pressed={theme === "night"} data-c="ring">
-            {theme === "night" ? "night" : "day"}
+            {theme === "night" ? "Night" : "Day"}
           </button>
           {onToggleMode && (
             <button
@@ -67,7 +66,7 @@ export default function Nav({ theme, onToggleTheme, mode = "pad", onToggleMode, 
               aria-pressed={mode === "creative"}
               data-c="ring"
             >
-              {mode === "creative" ? "back to the pad" : "creative mode"}
+              {mode === "creative" ? "Back to the pad" : "Creative mode"}
               <span className="toggle-pill" aria-hidden="true" />
             </button>
           )}

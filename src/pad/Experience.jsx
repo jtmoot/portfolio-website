@@ -9,13 +9,7 @@ export default function Experience() {
   const [open, setOpen] = useState(null);
   return (
     <section id="experience" aria-labelledby="experience-h">
-      <p className="eyebrow">places i&apos;ve grown · experience</p>
-      <div className="sec-head">
-        <h2 id="experience-h">the work so far</h2>
-        <span className="hand sec-hint" aria-hidden="true">
-          tap a line to unfold
-        </span>
-      </div>
+      <h2 id="experience-h">Experience</h2>
       <div className="xp-card">
         <span className="tape card-tape" aria-hidden="true" />
         <ol className="xp">

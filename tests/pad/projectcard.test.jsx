@@ -107,7 +107,7 @@ describe("ProjectCard, Garvit layout", () => {
   it("leads the footer with launch live and keeps github on the right", async () => {
     const el = await render(<ProjectCard project={FULL} n={1} />);
     const foot = el.querySelector(".card-foot");
-    expect(foot.querySelector(".go-live").textContent).toContain("launch live");
+    expect(foot.querySelector(".go-live").textContent).toContain("Launch live");
     expect(foot.querySelector(".go-code").getAttribute("href")).toBe("https://github.com/x/forge");
   });
 });

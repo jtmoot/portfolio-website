@@ -23,9 +23,9 @@ describe("TRAVELERS", () => {
   it("the book, king and shoe carry Garvit-style tags that link out; the brain has none", () => {
     const tag = (id) => TRAVELERS.find((t) => t.id === id).tag;
     expect(tag("brain")).toBeNull();
-    expect(tag("book")).toEqual({ text: "my shelf", href: "/shelf" });
-    expect(tag("king")).toEqual({ text: "my rating", href: "https://www.chess.com/member/breakfast_enjoyer" });
-    expect(tag("novablast")).toEqual({ text: "my runs", href: "https://www.strava.com/athletes/121070736" });
+    expect(tag("book")).toEqual({ text: "My shelf", href: "/shelf" });
+    expect(tag("king")).toEqual({ text: "My rating", href: "https://www.chess.com/member/breakfast_enjoyer" });
+    expect(tag("novablast")).toEqual({ text: "My runs", href: "https://www.strava.com/athletes/121070736" });
   });
 
   it("a traveler's target is its station's floor anchor", () => {

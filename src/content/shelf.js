@@ -8,25 +8,25 @@ const book = (id, title, author, topics = [], note = null) => ({ id, title, auth
 export const SHELF = [
   {
     id: "now",
-    title: "currently reading",
+    title: "Currently reading",
     books: [
-      book("same-as-ever", "Same as Ever", "Morgan Housel", ["psychology", "risk", "investing"]),
-      book("socrates-express", "The Socrates Express", "Eric Weiner", ["philosophy", "history of ideas"]),
-      book("how-not-to-be-wrong", "How Not to Be Wrong", "Jordan Ellenberg", ["mathematics", "statistics", "reasoning"]),
+      book("same-as-ever", "Same as Ever", "Morgan Housel", ["Psychology", "Risk", "Investing"]),
+      book("socrates-express", "The Socrates Express", "Eric Weiner", ["Philosophy", "History of ideas"]),
+      book("how-not-to-be-wrong", "How Not to Be Wrong: The Power of Mathematical Thinking", "Jordan Ellenberg", ["Mathematics", "Statistics", "Reasoning"]),
     ],
   },
   {
     id: "text",
-    title: "the textbooks",
+    title: "The textbooks",
     books: [
-      book("ddia", "Designing Data-Intensive Applications", "Martin Kleppmann", ["distributed systems", "databases", "data pipelines"]),
-      book("designing-ml-systems", "Designing Machine Learning Systems", "Chip Huyen", ["mlops", "data", "deployment"]),
-      book("ai-engineering", "AI Engineering", "Chip Huyen", ["llms", "evaluation", "foundation models"]),
+      book("ddia", "Designing Data-Intensive Applications", "Martin Kleppmann", ["Distributed systems", "Databases", "Data pipelines"]),
+      book("designing-ml-systems", "Designing Machine Learning Systems", "Chip Huyen", ["MLOps", "Data", "Deployment"]),
+      book("ai-engineering", "AI Engineering", "Chip Huyen", ["LLMs", "Evaluation", "Foundation models"]),
     ],
   },
   {
     id: "next",
-    title: "up next",
+    title: "Up next",
     books: [
       book("zen-flesh", "Zen Flesh, Zen Bones", "Paul Reps & Nyogen Senzaki"),
       book("how-the-world-works", "How the World Really Works", "Vaclav Smil"),
@@ -41,7 +41,7 @@ export const SHELF = [
   },
   {
     id: "read",
-    title: "already read",
+    title: "Already read",
     books: [
       book("meditations", "Meditations", "Marcus Aurelius"),
       book("changing-world-order", "Principles for Dealing with the Changing World Order", "Ray Dalio"),
@@ -58,7 +58,7 @@ export const SHELF = [
       book("adam-smith", "How Adam Smith Can Change Your Life", "Russ Roberts"),
       book("chip-war", "Chip War", "Chris Miller"),
       book("ai-snake-oil", "AI Snake Oil", "Arvind Narayanan & Sayash Kapoor"),
-      book("thinking-fast-slow", "Thinking, Fast and Slow", "Daniel Kahneman", [], "partway"),
+      book("thinking-fast-slow", "Thinking, Fast and Slow", "Daniel Kahneman", [], "Partway"),
       book("outliers", "Outliers", "Malcolm Gladwell"),
       book("tipping-point", "The Tipping Point", "Malcolm Gladwell"),
     ],

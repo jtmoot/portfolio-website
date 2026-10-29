@@ -3,14 +3,14 @@ import { PODCASTS } from "../content/shelf.js";
 
 /** One line and a link for each station, shown when the figure (or the pointer) is near it. */
 export const CARD_TEXT = {
-  desk: { line: "where the work happens.", cta: "see experience" },
-  library: { line: "the short library, mostly history.", cta: "see the reading list" },
-  plants: { line: "two monsteras, a corn plant and a hosta. all thriving.", cta: null },
-  kitchen: { line: "short ribs, low and slow.", cta: "see cooking" },
-  gym: { line: "barbell, kettlebells, sprints, a weighted vest.", cta: "see training" },
-  chess: { line: "rapid, as breakfast_enjoyer.", cta: "open chess.com" },
-  corkboard: { line: "pinned up: the podcasts on in the background.", cta: null },
-  anatomy: { line: "the brain, in sagittal section.", cta: null },
+  desk: { line: "Where the work happens.", cta: "See experience" },
+  library: { line: "The short library, mostly history.", cta: "See the reading list" },
+  plants: { line: "Two monsteras, a corn plant and a hosta. All thriving.", cta: null },
+  kitchen: { line: "Short ribs, low and slow.", cta: null },
+  gym: { line: "Barbell, kettlebells, sprints, a weighted vest.", cta: "See my runs" },
+  chess: { line: "Rapid, as breakfast_enjoyer.", cta: "Open chess.com" },
+  corkboard: { line: "Pinned up: the podcasts on in the background.", cta: null },
+  anatomy: { line: "The brain, in sagittal section.", cta: null },
 };
 
 /**
@@ -50,8 +50,8 @@ export default function StationCard({ station, style, onNavigate }) {
               <a href={p.href} target="_blank" rel="noreferrer" data-c="ring">
                 <img src={p.art} alt="" width="28" height="28" />
                 <span>
-                  {p.name.toLowerCase()}
-                  <i>{p.host.toLowerCase()}</i>
+                  {p.name}
+                  <i>{p.host}</i>
                 </span>
               </a>
             </li>

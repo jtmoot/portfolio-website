@@ -1,5 +1,6 @@
 import Nav from "./Nav.jsx";
 import Contact from "./Contact.jsx";
+import DeskProps from "./DeskProps.jsx";
 import { SHELF, goodreads } from "../content/shelf.js";
 
 const ARROW = (
@@ -39,7 +40,7 @@ function Row({ book }) {
         </ul>
         <p className="book-links">
           <a href={href} target="_blank" rel="noreferrer" data-c="ring">
-            goodreads{ARROW}
+            Goodreads{ARROW}
           </a>
         </p>
       </div>
@@ -72,15 +73,15 @@ export default function Shelf({ theme = "day", onToggleTheme = () => {} }) {
   return (
     <main className="sheet shelf-page">
       <Nav theme={theme} onToggleTheme={onToggleTheme} base="/" />
+      <DeskProps />
       <div className="shelf">
         <a className="back" href="/" data-c="ring">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          back to the pad
+          Back to the pad
         </a>
-        <p className="eyebrow">personal library · on my desk</p>
-        <h1 className="hand">the shelf</h1>
+        <h1 className="hand">The shelf</h1>
         {SHELF.map((s) =>
           s.books.some((b) => b.topics.length) ? (
             <section key={s.id} id={`shelf-${s.id}`} className="shelf-card" aria-labelledby={`shelf-${s.id}-h`}>
@@ -109,6 +110,14 @@ export default function Shelf({ theme = "day", onToggleTheme = () => {} }) {
             </section>
           ),
         )}
+        <section className="recommend" aria-labelledby="recommend-h">
+          <h2 id="recommend-h" className="hand">
+            Got one I should read?
+          </h2>
+          <a href="mailto:jtmoorehead1@gmail.com?subject=A%20book%20recommendation" data-c="ring">
+            Recommend a book{ARROW}
+          </a>
+        </section>
         <Contact />
       </div>
     </main>
