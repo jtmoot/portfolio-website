@@ -2057,7 +2057,7 @@ html[data-theme="night"] .obj-tag {
 .recommend {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 2cqw;
   margin: 1cqw 0 3cqw;
   padding: 1.6cqw 2.2cqw;
