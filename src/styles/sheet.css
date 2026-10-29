@@ -309,12 +309,12 @@ button[aria-pressed="true"] .toggle-pill::after {
 /* Hero */
 .polaroid {
   position: absolute;
-  left: 29.7cqw;
-  top: 13.6cqw;
-  width: 7.2cqw;
+  left: 28.2cqw;
+  top: 13.2cqw;
+  width: 8.5cqw;
   margin: 0;
   background: #f7f6f1;
-  padding: 0.4cqw 0.4cqw 1.3cqw;
+  padding: 0.45cqw 0.45cqw 1cqw;
   box-shadow: 0 0.5cqw 1.2cqw rgba(35, 35, 32, 0.22);
   transform: rotate(-3deg);
   --ink: #2a2a28;
@@ -335,17 +335,6 @@ button[aria-pressed="true"] .toggle-pill::after {
   aspect-ratio: 1;
   background: #ebeae4;
   object-fit: cover;
-}
-
-.polaroid figcaption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0.1cqw;
-  text-align: center;
-  font-size: 0.85cqw;
-  color: #2a2a28;
-  opacity: 0.65;
 }
 
 .hero h1 {
@@ -499,19 +488,14 @@ button[aria-pressed="true"] .toggle-pill::after {
     position: relative;
     left: auto;
     top: auto;
-    width: 120px;
-    padding: 6px 6px 22px;
+    width: 140px;
+    padding: 7px 7px 16px;
     margin: 16px 0 0 8px;
   }
 
   .polaroid .tape {
     top: -8px;
     height: 14px;
-  }
-
-  .polaroid figcaption {
-    font-size: 13px;
-    bottom: 2px;
   }
 
   .scribble {

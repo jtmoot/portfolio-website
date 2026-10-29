@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
-const N = 64; // dots per side
-const S = 320; // canvas resolution
-const REPEL = 54; // px of canvas space
+/** Dots per side: fine enough to read as a photo, coarse enough to stay a drawing. */
+export const DOTS = 96;
+const N = DOTS;
+const S = 480; // canvas resolution
+const REPEL = 80; // px of canvas space
+const MIN_R = 0.75; // smaller dots are dropped, so the paper-white background stays clean
 
 /**
  * Halftone headshot drawn as dots; the dots part around the cursor and spring back.
@@ -37,8 +40,8 @@ export default function DotPortrait({ src, alt }) {
         const dist = Math.hypot(dx, dy);
         if (dist < REPEL) {
           const f = (REPEL - dist) / REPEL;
-          p.x += (dx / (dist || 1)) * f * 6;
-          p.y += (dy / (dist || 1)) * f * 6;
+          p.x += (dx / (dist || 1)) * f * 9;
+          p.y += (dy / (dist || 1)) * f * 9;
         }
         p.x += (p.ox - p.x) * 0.08;
         p.y += (p.oy - p.y) * 0.08;
@@ -67,8 +70,8 @@ export default function DotPortrait({ src, alt }) {
         for (let x = 0; x < N; x++) {
           const k = (y * N + x) * 4;
           const lum = (0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]) / 255;
-          const r = (1 - lum) * cell * 0.62;
-          if (r > 0.35) dots.push({ ox: x * cell + cell / 2, oy: y * cell + cell / 2, x: x * cell + cell / 2, y: y * cell + cell / 2, r });
+          const r = (1 - lum) * cell * 0.66;
+          if (r > MIN_R) dots.push({ ox: x * cell + cell / 2, oy: y * cell + cell / 2, x: x * cell + cell / 2, y: y * cell + cell / 2, r });
         }
       }
       kick();

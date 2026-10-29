@@ -9,8 +9,7 @@ export default function Hero() {
     <>
       <figure className="polaroid" data-traveler="polaroid" style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y }}>
         <span className="tape" aria-hidden="true" />
-        <DotPortrait src="/headshot.jpg" alt="Joshua Moorehead, drawn in dots" />
-        <figcaption className="hand">pittsburgh, 2026</figcaption>
+        <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" />
       </figure>
       <div className="hero">
         <h1>
