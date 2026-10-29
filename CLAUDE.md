@@ -1,41 +1,35 @@
 # Portfolio Website — joshuamoorehead.dev
 
-> **Status: clean-slate rebuild.** The previous bento-grid site was archived to the
-> git tag `archive/bento-v1` and removed. This is a fresh, more ambitious build.
-> A new session should NOT go looking for the old contracts, components, or docs —
-> they are intentionally gone. Start from the design spec once it exists.
+> **Status: personal-pad rebuild.** The bento site is archived at tag `archive/bento-v1`;
+> the r3f studio direction (Sept 2026) is dead and archived in `docs/archive/`.
 
 ## The Vision
 
-An **immersive 3D / WebGL portfolio** in the spirit of Bruno Simon's award-winning
-site — the site itself is the experience, not a page of cards. Design direction and
-interactive concepts are being handed off from a separate planning session
-(Aura templates + interaction ideas). Do not lock in specifics until that handoff
-lands and a design spec is written.
+A personal notepad page modeled closely on garvitsingla.in: dotted pad paper, Geist Mono
+body, Gloria Hallelujah for the name and section titles, halftone stickers in the left
+margin, posters on the right, hover screenshot previews, moving project cards, Experience
+before Work. One signature moment, "creative mode": the pad falls flat into an isometric
+floor and the margin objects become detailed isometric SVG illustrations of Joshua's real
+rooms, with a walkable drawn figure. Never a three.js or game-engine look.
 
-## Tech Stack (baseline — revisit at design time)
+- Spec: `docs/superpowers/specs/2026-10-28-personal-pad-design.md`
+- Plan: `docs/superpowers/plans/2026-10-28-personal-pad.md`
+- Reference mockups: `docs/superpowers/reference/pad-mockups/`
+
+## Tech Stack
 
 - **Build:** Vite 6.x
-- **UI:** React 19.x (functional components + hooks only)
-- **Language:** JavaScript JSX (no TypeScript, no routing — single-page)
-- **3D:** Three.js via @react-three/fiber + @react-three/drei (to be installed for the rebuild)
+- **UI:** React 19.x (functional components + hooks only), JSX, no TypeScript, no routing
+- **Motion:** CSS transitions and transforms, `requestAnimationFrame`; no animation libraries
+- **Tests:** Vitest + jsdom (`tests/` mirrors `src/`)
 - **Deployment:** Vercel (auto-deploys from `main`)
-
-The old animation-library stack (GSAP, Lenis, Atropos, etc.) is still listed in
-`package.json` but unused — prune/replace based on what the new design actually needs.
 
 ## Current Working State
 
-- Branch `rebuild/immersive-3d` holds the build. `main` still points at the
-  last archived state (keeps Vercel production stable until cutover).
-- Studio scene chosen (Sept 2026); the diorama track was deleted. Spec in
-  `docs/design-spec.md`, plan in `plan.md`, Aura exports in `docs/reference/aura/`.
-- Layout: `src/lib/scroll.js` (beat timeline store) → `src/content/*` (DOM
-  sections, GSAP reveals, pinned projects) → `src/scenes/studio/*` (r3f scene
-  reading the store every frame). Camera keyframes are in `scroll.beat` units.
-- Palette is dusk indigo (`--navy: #151d3d`), lifted from the original deep
-  navy at Joshua's request.
-- Pending: resume-driven content refresh and a headshot in the hero cluster.
+- Branch `rebuild/personal-pad` holds the build. `main` still points at the archived
+  bento site (keeps Vercel production stable until cutover).
+- Project media (mp4, webm, poster jpg) lives in `public/media/`; featured order is in
+  `docs/project-rankings.md`.
 
 ## Workflow Rules (from global config — follow exactly)
 
@@ -48,6 +42,7 @@ The old animation-library stack (GSAP, Lenis, Atropos, etc.) is still listed in
 ## Commands
 
 ```bash
+npm test           # Vitest unit tests
 npm run dev        # Vite dev server at http://localhost:5173
 npm run build      # Production build to dist/
 npm run preview    # Preview production build locally
