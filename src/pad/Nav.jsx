@@ -43,7 +43,14 @@ export default function Nav({ theme, onToggleTheme, mode, onToggleMode }) {
         <button type="button" onClick={onToggleTheme} aria-pressed={theme === "night"} data-c="ring">
           {theme === "night" ? "night" : "day"}
         </button>
-        <button type="button" onClick={onToggleMode} aria-pressed={mode === "creative"} data-c="ring">
+        <button
+          type="button"
+          onClick={onToggleMode}
+          onPointerEnter={() => import("../creative/Floor.jsx")}
+          onFocus={() => import("../creative/Floor.jsx")}
+          aria-pressed={mode === "creative"}
+          data-c="ring"
+        >
           {mode === "creative" ? "back to the pad" : "creative mode"}
           <span className="toggle-pill" aria-hidden="true" />
         </button>

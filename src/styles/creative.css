@@ -116,3 +116,99 @@
     transition: opacity 0.3s ease;
   }
 }
+
+/* The room overlay: flat, over the tipped paper. */
+.floor-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100cqw;
+  height: 78cqw;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.floor-item {
+  position: absolute;
+  opacity: 0;
+  clip-path: inset(100% 0 0 0);
+  transition: opacity 0.25s ease, clip-path 0.35s ease;
+}
+
+.floor-layer[data-on] .floor-item {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transition: opacity 0.35s ease var(--d), clip-path 0.8s cubic-bezier(0.32, 0.72, 0, 1) var(--d);
+}
+
+.floor-item .station-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.floor-layer[data-on] .station-label,
+.floor-layer[data-on] .station-card {
+  pointer-events: auto;
+}
+
+/* Only the drawn shapes catch the pointer, not each drawing's empty bounding box. */
+.floor-layer[data-on] .floor-station .floor-item path {
+  pointer-events: visiblePainted;
+}
+
+.station-label {
+  position: absolute;
+  white-space: nowrap;
+  color: var(--ink);
+  line-height: 1;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+  text-decoration: underline transparent;
+  text-underline-offset: 0.25em;
+}
+
+.floor-layer[data-on] .station-label {
+  opacity: 0.85;
+  transition: opacity 0.4s ease var(--d), text-decoration-color 0.2s;
+}
+
+.station-label.active {
+  text-decoration-color: currentColor;
+}
+
+.station-card {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  width: max-content;
+  max-width: 18cqw;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  box-shadow: 0 0.6cqw 1.4cqw rgba(0, 0, 0, 0.18);
+  padding: 0.6cqw 0.8cqw;
+  font-size: 0.85cqw;
+  line-height: 1.3;
+  animation: card-in 0.25s ease;
+}
+
+.station-card p {
+  margin: 0 0 0.3cqw;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% + 0.4cqw));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floor-item,
+  .floor-layer[data-on] .floor-item {
+    clip-path: none;
+    transition: opacity 0.3s ease;
+  }
+}
