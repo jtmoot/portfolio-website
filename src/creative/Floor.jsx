@@ -7,7 +7,7 @@ import StationCard from "./StationCard.jsx";
 import { floorToScreen, screenToFloor } from "../lib/floorView.js";
 import { artPlacement } from "../lib/iso.js";
 import { nearestStation, paintOrder, TILE } from "../lib/floor.js";
-import { standPoint, TILE_FADE_MS } from "../lib/figure.js";
+import { frameName, standPoint, TILE_FADE_MS } from "../lib/figure.js";
 import { FIGURE_START } from "../lib/travelers.js";
 import { useFigure } from "./useFigure.js";
 import Figure, { FIGURE_META } from "./Figure.jsx";
@@ -18,7 +18,6 @@ import StationArrow from "./StationArrow.jsx";
 import { loadSpeed, saveSpeed } from "../lib/speed.js";
 import { greetingFor, loadGreeting } from "../lib/greeting.js";
 
-const FRAME_NAMES = ["idle", "w1", "w2", "w3", "w4"];
 const still = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** Stations with no margin traveler sketch themselves in a beat later. */
@@ -112,7 +111,7 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
           if (target) target.style.zIndex = String(z);
         }
       }
-      const href = s.pose ? `#f-${s.facing}-${s.pose}` : `#f-${s.facing}-${FRAME_NAMES[s.frame] || "idle"}`;
+      const href = `#f-${s.facing}-${frameName(s)}`;
       const say = bubbleEl.current;
       if (say) {
         say.hidden = !s.greeting;

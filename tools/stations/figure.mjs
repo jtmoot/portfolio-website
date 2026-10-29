@@ -1,6 +1,6 @@
 // Joshua as a walking figure, drawn with the kit in the room's projection and scale.
-// Output: one sprite sheet of 20 <symbol>s, f-{dl|dr|ul|ur}-{idle|w1|w2|w3|w4}, sharing one viewBox
-// whose anchor (meta) is the point between his feet.
+// Output: one sprite sheet of <symbol>s, f-{dl|dr|ul|ur}-{idle|w1..w6|j1..j6} plus the station
+// poses, sharing one viewBox whose anchor (meta) is the point between his feet.
 import { k, G, CAM, SCALE, context } from "./lib.mjs";
 import { ACTIONS } from "../../src/lib/figure.js";
 
@@ -11,7 +11,13 @@ const FACINGS = {
   ur: [0, -1],
   ul: [-1, 0],
 };
-const FRAMES = { idle: 0, w1: 1, w2: 0.35, w3: -1, w4: -0.35 };
+/** Six frames a cycle; the runtime advances them by distance walked (src/lib/figure.js). */
+const CYCLE = 6;
+/** Per gait: leg reach either side (cm), how high the swinging foot lifts, and the jog's bounce. */
+const GAITS = {
+  w: { amp: 22, lift: 7, bounce: 0 },
+  j: { amp: 30, lift: 18, bounce: 3.5 },
+};
 const R = 56; // reach: room for a kettlebell swung out in front
 const BOUNDS = [[-R, -R, 0], [R, -R, 0], [-R, R, 0], [R, R, 0], [-R, -R, H + 6], [R, -R, H + 6], [-R, R, H + 6], [R, R, H + 6]];
 const PAD = 2;
@@ -36,13 +42,27 @@ function walkArms(stride) {
   return { L: arm(1), R: arm(-1) };
 }
 
+/** Jogging arms: bent about 90 degrees, pumping against the legs, raised by the bounce. */
+function jogArms(stride, b) {
+  const arm = (side) => {
+    const reach = -side * stride * 0.55;
+    return { elbow: [reach * 0.5 - 4, side * 22, 121 + b], hand: [reach + 11, side * 15, 121 + b] };
+  };
+  return { L: arm(1), R: arm(-1) };
+}
+
+/** How far up the screen a rise of b cm draws, in sheet px (for the shared body's bounce). */
+const riseOf = (b, P) => k.iso([0, 0, b], P)[1] - k.iso([0, 0, 0], P)[1];
+
 /**
  * Joshua, from his photos: 183 cm, broad square shoulders on a lean frame, a heather quarter-zip,
  * tapered joggers, Novablasts, a watch on a brown strap on his left wrist, and wavy dirty-blonde
  * hair, long on top with a loose middle part and a few pieces falling forward.
  * @param {object} c drawing context
  * @param {"dr" | "dl" | "ur" | "ul"} facing
- * @param {{ swing?: number, arms?: { L?: object, R?: object }, extras?: (h: object) => { at: number[], svg: string }[] }} pose
+ * @param {{ swing?: number, gait?: "w" | "j", phase?: number, arms?: { L?: object, R?: object }, extras?: (h: object) => { at: number[], svg: string }[] }} pose
+ *   gait and phase: a walk or jog frame at this angle of the cycle (radians); swing: legs apart
+ *   without a gait (0 is standing);
  *   arms: elbow and hand points in (forward, his-left, z) cm, overriding the walk swing per arm;
  *   extras: props he holds or touches, drawn in depth order with him
  */
@@ -59,7 +79,11 @@ function person(c, facing, pose = {}) {
   const put = (centre, svg) => items.push({ d: G.dot3(centre, V), svg });
   // Parts that never change between frames of one facing: drawn once into a shared body symbol.
   const body = (centre, svg) => items.push({ d: G.dot3(centre, V), svg, body: true });
-  const stride = 20 * swing;
+  const gait = pose.gait ? GAITS[pose.gait] : null;
+  const th = pose.phase ?? 0;
+  const stride = gait ? gait.amp * Math.cos(th) : 20 * swing;
+  /** The jog's bounce: highest with the legs apart, lowest as they pass. */
+  const b = gait ? gait.bounce * Math.abs(Math.cos(th)) : 0;
   const front = facing === "dr" || facing === "dl";
 
   // Shadow.
@@ -68,13 +92,15 @@ function person(c, facing, pose = {}) {
   // --- Legs: tapered joggers with a cuff, Novablasts -----------------------------------------------
   for (const side of [1, -1]) {
     const reach = side * stride;
-    const hip = pt(0, side * 9, 94);
-    const knee = pt(reach * 0.55 + 1.5, side * 8.6, 50);
-    const ankle = pt(reach, side * 8.4, 11);
+    // The leg swinging forward lifts its foot and drives its knee; the planted one stays down.
+    const lift = gait ? gait.lift * Math.max(0, -side * Math.sin(th)) : 0;
+    const hip = pt(0, side * 9, 94 + b);
+    const knee = pt(reach * 0.55 + 1.5 + lift * 0.8, side * 8.6, 50 + lift * 0.85 + b * 0.5);
+    const ankle = pt(reach - lift * 0.3, side * 8.4, 11 + lift);
     put(G.lerp3(hip, knee, 0.5), `<g class="fm-jog">${c.tube([hip, knee], 7, { tone: "hi", spacing: 7 })}</g>`);
     put(G.lerp3(knee, ankle, 0.5), `<g class="fm-jog">${c.tube([knee, G.lerp3(knee, ankle, 0.85)], 5.6, { tone: "hi", spacing: 7 })}</g>`);
     put(G.lerp3(knee, ankle, 0.92), `<g class="fm-cuff">${c.tube([G.lerp3(knee, ankle, 0.85), ankle], 4.9, { tone: "hi", spacing: 7 })}</g>`);
-    const heel = pt(reach - 8.5, side * 8.4, 0);
+    const heel = pt(reach - lift * 0.3 - 8.5, side * 8.4, lift);
     const F = G.frameOf(heel, s, f, [0, 0, 1]);
     // Novablast: a deep, rockered foam stack under a knit upper.
     const sole = [[0, 0.6], [26, 0], [30, 1.8], [29.5, 4.4], [0, 5.8]];
@@ -114,7 +140,7 @@ function person(c, facing, pose = {}) {
   }
 
   // --- Arms: round shoulder caps, sleeves, hands; the watch on his left wrist ---------------------
-  const arms = walkArms(stride);
+  const arms = gait && pose.gait === "j" ? jogArms(stride, b) : walkArms(stride);
   for (const [key, side] of [["L", 1], ["R", -1]]) {
     const a = { ...arms[key], ...(pose.arms?.[key] || {}) };
     const shoulder = pt(0, side * 20, 141);
@@ -198,6 +224,7 @@ function person(c, facing, pose = {}) {
     body: join(items.filter((i) => i.body)),
     back: join(moving.filter((i) => i.d < key)),
     front: join(moving.filter((i) => i.d >= key)),
+    rise: b ? Math.round(riseOf(b, P) * 100) / 100 : 0,
   };
 }
 
@@ -253,11 +280,14 @@ export default {
     const { P, width, height } = projection();
     const symbols = [];
     for (const facing of Object.keys(FACINGS)) {
-      for (const [name, swing] of Object.entries(FRAMES)) {
+      const frames = [["idle", {}]];
+      for (const g of Object.keys(GAITS)) for (let i = 0; i < CYCLE; i++) frames.push([`${g}${i + 1}`, { gait: g, phase: (2 * Math.PI * i) / CYCLE }]);
+      for (const [name, pose] of frames) {
         const c = context(P, `fig-${facing}-${name}`);
-        const fig = person(c, facing, { swing });
+        const fig = person(c, facing, pose);
         if (name === "idle") symbols.push(`<symbol id="f-${facing}-body" viewBox="0 0 ${width} ${height}">${fig.body}</symbol>`);
-        symbols.push(`<symbol id="f-${facing}-${name}" viewBox="0 0 ${width} ${height}">${fig.back}<use href="#f-${facing}-body" width="${width}" height="${height}"/>${fig.front}</symbol>`);
+        const y = fig.rise ? ` y="${fig.rise}"` : "";
+        symbols.push(`<symbol id="f-${facing}-${name}" viewBox="0 0 ${width} ${height}">${fig.back}<use href="#f-${facing}-body"${y} width="${width}" height="${height}"/>${fig.front}</symbol>`);
       }
       // Action poses, only in the facing each one is used in.
       for (const [name, pose] of Object.entries(POSES)) {

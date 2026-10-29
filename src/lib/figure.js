@@ -1,13 +1,25 @@
 import { onPad, tileKey, tilesAround, resolveCollision, FLOOR } from "./floor.js";
 import { findPath } from "./path.js";
 
-/** Floor units per second (spec 5.5: 9 cqw/s). */
-export const SPEED = 9;
+/** Floor units per second at 1x on the speed wheel: round 1's 2x (0.9 m/s, a brisk walk). */
+export const SPEED = 18;
 export const IDLE_RESUME_MS = 6000;
 export const PAUSE_MS = 4000;
 export const TILE_FADE_MS = 4000;
 export const RESPAWN_MS = 1000;
-const FRAME_MS = 120;
+/** Frames in each gait cycle (w1..w6 walking, j1..j6 jogging). */
+export const GAIT_FRAMES = 6;
+/** Floor units walked per frame: the frames advance with distance, so the feet keep pace with the ground. */
+export const WALK_STEP = 2.4;
+export const JOG_STEP = 3.6;
+/** Speed-wheel multiplier from which he jogs instead of walking. */
+export const JOG_AT = 1.4;
+
+/**
+ * The sprite frame to show: an action pose, a walk or jog frame, or idle.
+ * @param {{ pose?: string | null, frame: number, gait?: "w" | "j" }} s
+ */
+export const frameName = (s) => s.pose || (s.frame ? `${s.gait || "w"}${s.frame}` : "idle");
 /** How long he waves at the screen when the room opens. */
 export const GREET_MS = 3800;
 const WAVE_MS = 320;
@@ -78,7 +90,8 @@ export function initialFigure(start, { greet = true } = {}) {
     pos: { ...start },
     facing: "dr",
     frame: 0,
-    frameClock: 0,
+    gait: "w",
+    stepDist: 0,
     control: "idle",
     idleIndex: 0,
     pauseLeft: 0,
@@ -246,14 +259,20 @@ export function stepFigure(state, input, ctx, dtArg) {
       }
     }
     const didMove = moved !== s.pos;
+    const walked = Math.hypot(moved.x - s.pos.x, moved.y - s.pos.y);
     s.pos = { x: moved.x, y: moved.y };
     if (didMove) {
       s.pose = null;
       s.facing = facingOf(step);
-      s.frameClock += ms;
-      if (s.frameClock >= FRAME_MS) {
-        s.frameClock = 0;
-        s.frame = (s.frame % 4) + 1;
+      const gait = (ctx.speed ?? 1) >= JOG_AT ? "j" : "w";
+      if (gait !== s.gait) s.stepDist = 0;
+      s.gait = gait;
+      if (!s.frame) s.frame = 1;
+      s.stepDist += walked;
+      const per = gait === "j" ? JOG_STEP : WALK_STEP;
+      while (s.stepDist >= per) {
+        s.stepDist -= per;
+        s.frame = (s.frame % GAIT_FRAMES) + 1;
       }
       if (!onPad(s.pos)) for (const key of tilesAround(s.pos)) s.tiles.set(key, s.now);
     } else {
@@ -261,7 +280,7 @@ export function stepFigure(state, input, ctx, dtArg) {
     }
   } else {
     s.frame = 0;
-    s.frameClock = 0;
+    s.stepDist = 0;
   }
   return s;
 }

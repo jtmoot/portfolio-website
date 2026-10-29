@@ -9,10 +9,16 @@ const sheet = readFileSync(resolve(ART, "figure.svg"), "utf8");
 const meta = JSON.parse(readFileSync(resolve(ART, "meta.json"), "utf8"));
 
 describe("figure sprite sheet", () => {
-  it("has all 20 symbols: four facings by idle plus four walk frames", () => {
+  it("has, for every facing, idle plus a six-frame walk and a six-frame jog", () => {
     for (const f of ["dl", "dr", "ul", "ur"]) {
-      for (const fr of ["idle", "w1", "w2", "w3", "w4"]) expect(sheet).toContain(`id="f-${f}-${fr}"`);
+      for (const fr of ["idle", "w1", "w2", "w3", "w4", "w5", "w6", "j1", "j2", "j3", "j4", "j5", "j6"]) expect(sheet).toContain(`id="f-${f}-${fr}"`);
     }
+  });
+
+  it("bounces the body in the jog frames, and not in the walk", () => {
+    const use = (id) => sheet.match(new RegExp(`<symbol id="${id}"[\\s\\S]*?<use ([^>]*)/>`))[1];
+    expect(use("f-dr-j1")).toMatch(/y="-\d/);
+    expect(use("f-dr-w1")).not.toMatch(/y="/);
   });
 
   it("every symbol shares one viewBox, so the feet stay put between frames", () => {
