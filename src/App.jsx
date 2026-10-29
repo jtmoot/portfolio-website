@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Nav from "./pad/Nav.jsx";
+import Hero from "./pad/Hero.jsx";
+import { play, unlock } from "./lib/audio.js";
 import StationHarness from "./creative/StationHarness.jsx";
 import { getTheme, toggleTheme } from "./lib/theme.js";
 
@@ -11,6 +13,16 @@ export default function App() {
   });
   const [mode, setMode] = useState("pad");
 
+  useEffect(() => {
+    const first = () => unlock();
+    window.addEventListener("pointerdown", first, { once: true });
+    window.addEventListener("keydown", first, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", first);
+      window.removeEventListener("keydown", first);
+    };
+  }, []);
+
   if (new URLSearchParams(window.location.search).get("dev") === "stations") {
     return <StationHarness />;
   }
@@ -20,15 +32,19 @@ export default function App() {
       <main className="sheet">
         <Nav
           theme={theme}
-          onToggleTheme={() => setThemeState(toggleTheme())}
+          onToggleTheme={() => {
+            play("tick");
+            setThemeState(toggleTheme());
+          }}
           mode={mode}
-          onToggleMode={() => setMode((m) => (m === "pad" ? "creative" : "pad"))}
+          onToggleMode={() => {
+            play("tick");
+            setMode((m) => (m === "pad" ? "creative" : "pad"));
+          }}
         />
         <section className="poster">
           <div className="margin margin-left" aria-hidden="true" />
-          <div className="hero">
-            <h1>hello, i&apos;m joshua moorehead</h1>
-          </div>
+          <Hero />
           <div className="margin margin-right" aria-hidden="true" />
         </section>
         <div className="body" />

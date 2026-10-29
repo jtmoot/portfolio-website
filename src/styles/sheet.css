@@ -241,3 +241,218 @@ button[aria-pressed="true"] .toggle-pill::after {
     margin-bottom: 40px;
   }
 }
+
+/* Hero */
+.polaroid {
+  position: absolute;
+  left: 29.7cqw;
+  top: 13.6cqw;
+  width: 7.2cqw;
+  margin: 0;
+  background: #f7f6f1;
+  padding: 0.4cqw 0.4cqw 1.3cqw;
+  box-shadow: 0 0.5cqw 1.2cqw rgba(35, 35, 32, 0.22);
+  transform: rotate(-3deg);
+  --ink: #2a2a28;
+}
+
+.polaroid .tape {
+  position: absolute;
+  left: 36%;
+  top: -0.5cqw;
+  width: 28%;
+  height: 0.85cqw;
+  background: rgba(42, 42, 40, 0.85);
+  border-radius: 2px;
+}
+
+.portrait-dots,
+.portrait-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  background: #ebeae4;
+  object-fit: cover;
+}
+
+.polaroid figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.1cqw;
+  text-align: center;
+  font-size: 0.85cqw;
+  color: #2a2a28;
+  opacity: 0.65;
+}
+
+.hero h1 {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.scribble {
+  position: absolute;
+  left: 4.2em;
+  bottom: -0.6cqw;
+  width: 60%;
+  height: 1cqw;
+  overflow: visible;
+}
+
+.scribble path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: draw-on 1.1s ease-out 0.5s forwards;
+}
+
+@keyframes draw-on {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.role {
+  font-size: 0.85cqw;
+  opacity: 0.6;
+  margin: 0.9cqw 0 1cqw;
+}
+
+.replay {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-bottom: 1px dotted currentColor;
+  padding: 0;
+  margin-left: 0.9em;
+  cursor: pointer;
+}
+
+.typed {
+  min-height: 6.6cqw;
+  margin: 0 0 1.2cqw;
+}
+
+.typed mark {
+  background: none;
+  color: inherit;
+  padding: 0 2px;
+  box-shadow: inset 0 -0.18em #8a4a2a;
+}
+
+.caret {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  vertical-align: -0.15em;
+  background: currentColor;
+  margin-left: 1px;
+  animation: blink 1s steps(1) infinite;
+}
+
+.caret.idle {
+  opacity: 0.6;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.socials {
+  display: flex;
+  gap: 0.5cqw;
+  align-items: center;
+  font-size: 0.85cqw;
+  margin: 0;
+}
+
+.socials .hand {
+  font-size: 1.1cqw;
+  opacity: 0.7;
+  margin-right: 0.3cqw;
+}
+
+.pill {
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  padding: 0.15em 0.9em;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pill:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scribble path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .caret {
+    animation: none;
+  }
+}
+
+@media (max-width: 819px) {
+  .polaroid {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 120px;
+    padding: 6px 6px 22px;
+    margin: 16px 0 0 8px;
+  }
+
+  .polaroid .tape {
+    top: -8px;
+    height: 14px;
+  }
+
+  .polaroid figcaption {
+    font-size: 13px;
+    bottom: 2px;
+  }
+
+  .scribble {
+    bottom: -8px;
+    height: 14px;
+  }
+
+  .role,
+  .socials {
+    font-size: 13px;
+  }
+
+  .role {
+    margin: 12px 0;
+  }
+
+  .typed {
+    min-height: 120px;
+    margin-bottom: 16px;
+  }
+
+  .socials {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .socials .hand {
+    font-size: 16px;
+  }
+
+  .hero h1 {
+    white-space: normal;
+  }
+}

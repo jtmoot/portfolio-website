@@ -1,3 +1,24 @@
+/** The typed intro. Placeholder copy until Joshua writes his own; marked tokens get the highlighter. */
+export const INTRO = [
+  { text: "i build " },
+  { text: "ml systems", mark: true },
+  { text: " and the data plumbing under them. right now that means an ms in ece at " },
+  { text: "carnegie mellon", mark: true },
+  { text: ", an experiment tracker called " },
+  { text: "forge", mark: true },
+  { text: ", and too many games on " },
+  { text: "chess.com", mark: true },
+  { text: ". off the keyboard: barbells, sprints, short ribs, and history books." },
+];
+
+export const ROLE = "ml systems engineer";
+
+export const SOCIALS = [
+  { label: "github", href: "https://github.com/jtmoot", prev: "/previews/github.jpg", cap: "github, jtmoot" },
+  { label: "linkedin", href: "https://www.linkedin.com/in/joshuamoorehead", ph: "linkedin screenshot goes here", cap: "linkedin" },
+  { label: "email", href: "mailto:jtmoorehead1@gmail.com", ph: "jtmoorehead1@gmail.com", cap: "email" },
+];
+
 export const PROJECTS = [
   {
     id: "forge",
