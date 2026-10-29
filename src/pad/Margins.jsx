@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Sticker from "./Sticker.jsx";
 import OpenBook from "./OpenBook.jsx";
 import { TRAVELERS, travelerTarget } from "../lib/travelers.js";
@@ -42,15 +43,35 @@ function Tag({ text }) {
   );
 }
 
-/** The left-margin stickers and right-margin posters; each is a traveler in creative mode. */
+/** Length of the tap wobble (matches sticker-wobble in sheet.css). */
+export const WOBBLE_MS = 600;
+
+/**
+ * The left-margin stickers and right-margin posters; each is a traveler in creative mode. Stickers
+ * float on their own loops, grow on hover and wobble when tapped, like garvitsingla.in's doodles.
+ */
 export default function Margins() {
+  const [tapped, setTapped] = useState(null);
+  useEffect(() => {
+    if (!tapped) return undefined;
+    const t = setTimeout(() => setTapped(null), WOBBLE_MS);
+    return () => clearTimeout(t);
+  }, [tapped]);
   const stickers = TRAVELERS.filter((t) => t.kind === "sticker");
   const posters = TRAVELERS.filter((t) => t.kind === "poster");
   return (
     <>
       <div className="margin margin-left">
         {stickers.map((t, i) => (
-          <figure key={t.id} className={`obj obj-sticker drift d${i}`} data-traveler={t.id} data-kind="sticker" style={style(t)} data-c="ring">
+          <figure
+            key={t.id}
+            className={`obj obj-sticker${tapped === t.id ? " tapped" : ""}`}
+            data-traveler={t.id}
+            data-kind="sticker"
+            style={style(t)}
+            data-c="ring"
+            onPointerDown={() => setTapped(t.id)}
+          >
             {t.tag ? (
               <a
                 className="obj-link"
@@ -58,13 +79,13 @@ export default function Margins() {
                 target={t.tag.href.startsWith("http") ? "_blank" : undefined}
                 rel={t.tag.href.startsWith("http") ? "noreferrer" : undefined}
               >
-                <div className="flat">
+                <div className={`flat float f${i}`}>
                   <Sticker {...STICKERS[t.id]} />
                 </div>
                 <Tag text={t.tag.text} />
               </a>
             ) : (
-              <div className="flat">
+              <div className={`flat float f${i}`}>
                 <Sticker {...STICKERS[t.id]} />
               </div>
             )}

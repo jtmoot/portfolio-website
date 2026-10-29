@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
-import Margins from "../../src/pad/Margins.jsx";
+import Margins, { WOBBLE_MS } from "../../src/pad/Margins.jsx";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -39,5 +39,27 @@ describe("Margins", () => {
     expect(posters).toHaveLength(4);
     for (const p of posters) expect(p.querySelectorAll(".tape")).toHaveLength(2);
     await act(async () => root.unmount());
+  });
+});
+
+describe("Margins stickers come alive", () => {
+  it("floats each sticker on its own loop, but not the posters' sticker class", async () => {
+    const { host, root } = await mount();
+    const floats = [...host.querySelectorAll(".obj-sticker .flat")].map((el) => el.className);
+    expect(floats.every((c) => /\bfloat f[0-3]\b/.test(c))).toBe(true);
+    expect(new Set(floats).size).toBe(floats.length);
+    await act(async () => root.unmount());
+  });
+
+  it("wobbles a sticker when tapped, then clears it for the next tap", async () => {
+    vi.useFakeTimers();
+    const { host, root } = await mount();
+    const fig = host.querySelector('[data-traveler="brain"]');
+    await act(async () => fig.dispatchEvent(new Event("pointerdown", { bubbles: true })));
+    expect(fig.classList.contains("tapped")).toBe(true);
+    await act(async () => vi.advanceTimersByTime(WOBBLE_MS));
+    expect(fig.classList.contains("tapped")).toBe(false);
+    await act(async () => root.unmount());
+    vi.useRealTimers();
   });
 });
