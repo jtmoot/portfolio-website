@@ -16,7 +16,7 @@ import { soundFor } from "./lib/clickSound.js";
 const Floor = lazy(() => import("./creative/Floor.jsx"));
 const StationHarness = lazy(() => import("./creative/StationHarness.jsx"));
 const PhoneStage = lazy(() => import("./creative/PhoneStage.jsx"));
-import { play, unlock } from "./lib/audio.js";
+import { play, stopAll, unlock } from "./lib/audio.js";
 import { getTheme, toggleTheme } from "./lib/theme.js";
 import { createModeController, createModeStore } from "./lib/mode.js";
 
@@ -63,7 +63,15 @@ export default function App() {
       if (name) play(name);
     };
     document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
+    // Leaving the page (another tab, back, a link) silences the pencil too.
+    const away = () => stopAll();
+    window.addEventListener("pagehide", away);
+    document.addEventListener("visibilitychange", away);
+    return () => {
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("pagehide", away);
+      document.removeEventListener("visibilitychange", away);
+    };
   }, []);
 
   useEffect(() => {
@@ -105,6 +113,7 @@ export default function App() {
     setTimeout(() => document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" }), 1600);
   };
   const onToggleMode = () => {
+    stopAll();
     modeControl.toggle();
   };
 

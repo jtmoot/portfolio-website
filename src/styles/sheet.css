@@ -343,6 +343,16 @@ button[aria-pressed="true"] .toggle-pill::after {
   white-space: nowrap;
 }
 
+/* The unwritten rest of the name holds its place, so the line never reflows as it writes. */
+.name-ghost {
+  visibility: hidden;
+}
+
+/* The scribble waits for the name, then draws (dropping `none` restarts its animation). */
+.hand-name[data-writing] .scribble path {
+  animation: none;
+}
+
 .scribble {
   position: absolute;
   left: 4.2em;

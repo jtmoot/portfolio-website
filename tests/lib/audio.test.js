@@ -46,7 +46,8 @@ describe("audio loop", () => {
   });
 
   it("loops a clip until stopped", async () => {
-    const clip = { play: vi.fn(() => Promise.resolve()), pause: vi.fn(), currentTime: 0, loop: false };
+    vi.useFakeTimers();
+    const clip = { play: vi.fn(() => Promise.resolve()), pause: vi.fn(), currentTime: 0, loop: false, volume: 1 };
     vi.stubGlobal("Audio", vi.fn(function Fake() { return clip; }));
     vi.stubGlobal("matchMedia", () => ({ matches: false }));
     const audio = await import("../../src/lib/audio.js");
@@ -55,7 +56,9 @@ describe("audio loop", () => {
     expect(clip.loop).toBe(true);
     expect(clip.play).toHaveBeenCalled();
     stop();
+    vi.advanceTimersByTime(400);
     expect(clip.pause).toHaveBeenCalled();
+    vi.useRealTimers();
   });
 
   it("returns a harmless stop before unlock", async () => {
@@ -128,5 +131,48 @@ describe("audio files and mute", () => {
     expect(audio.isMuted()).toBe(false);
     expect(() => audio.setMuted(true)).not.toThrow();
     expect(audio.isMuted()).toBe(true);
+  });
+});
+
+describe("audio, Garvit's pencil", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.unstubAllGlobals();
+    localStorage.clear();
+    vi.useFakeTimers();
+  });
+
+  const live = async () => {
+    const clips = [];
+    vi.stubGlobal("Audio", vi.fn(function Fake(src) {
+      const clip = { src, play: vi.fn(() => Promise.resolve()), pause: vi.fn(), currentTime: 0, loop: false, volume: 1 };
+      clips.push(clip);
+      return clip;
+    }));
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const audio = await import("../../src/lib/audio.js");
+    audio.unlock();
+    return { audio, clips };
+  };
+
+  it("plays the pencil quietly, at 0.4, and fades it out when stopped", async () => {
+    const { audio, clips } = await live();
+    const stop = audio.loop("pencil");
+    expect(clips[0].volume).toBeCloseTo(0.4, 5);
+    stop();
+    expect(clips[0].pause).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(400);
+    expect(clips[0].volume).toBeLessThan(0.05);
+    expect(clips[0].pause).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it("stopAll silences every loop (leaving the pad for creative mode)", async () => {
+    const { audio, clips } = await live();
+    audio.loop("pencil");
+    audio.stopAll();
+    vi.advanceTimersByTime(400);
+    expect(clips[0].pause).toHaveBeenCalled();
+    vi.useRealTimers();
   });
 });

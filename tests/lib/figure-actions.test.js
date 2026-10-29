@@ -114,3 +114,43 @@ describe("holding at a station", () => {
     expect(s.idleIndex).not.toBe(0);
   });
 });
+
+describe("after the hello", () => {
+  it("sets off within half a second of waving, toward a station away from the desk he starts at", () => {
+    const stations = [
+      { id: "desk", footprint: { x: 38, y: 0, w: 32, h: 16 } },
+      { id: "library", footprint: { x: 8, y: 0, w: 18, h: 7 } },
+    ];
+    const ctx = { stations, footprints: stations.map((s) => s.footprint) };
+    let s = initialFigure({ x: 54, y: 26 });
+    for (let t = 0; t < GREET_MS / 1000 + 0.5; t += 1 / 60) s = stepFigure(s, { dir: null, tapTarget: null }, ctx, 1 / 60);
+    expect(s.greeting).toBe(false);
+    expect(s.idleIndex).toBe(1);
+    expect(s.pos.x).toBeLessThan(53);
+  });
+
+  it("waves for about three seconds", () => {
+    expect(GREET_MS).toBeLessThanOrEqual(3000);
+  });
+});
+
+describe("walking the real room", () => {
+  it("goes from the library to the plants without touching the desk", async () => {
+    const { LAYOUT } = await import("../../src/creative/stations/layout.js");
+    const { bodyFootprints } = await import("../../src/lib/figure.js");
+    const order = ["desk", "library", "plants"];
+    const stations = order.map((id) => LAYOUT[id]);
+    const ctx = { stations, footprints: bodyFootprints(Object.values(LAYOUT)) };
+    let s = { ...initialFigure(standPoint(LAYOUT.library), { greet: false }), idleIndex: 2 };
+    const desk = LAYOUT.desk.footprint;
+    let closest = Infinity;
+    for (let t = 0; t < 12; t += 1 / 60) {
+      s = stepFigure(s, { dir: null, tapTarget: null }, ctx, 1 / 60);
+      const gap = Math.max(desk.x - s.pos.x, s.pos.x - (desk.x + desk.w), s.pos.y - (desk.y + desk.h));
+      closest = Math.min(closest, gap);
+      if (s.pauseLeft > 0 && s.idleIndex === 2) break;
+    }
+    expect(s.idleIndex === 2 && s.pauseLeft > 0, "reached the plants").toBe(true);
+    expect(closest).toBeGreaterThanOrEqual(5);
+  });
+});

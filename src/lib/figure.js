@@ -30,7 +30,7 @@ export const JOG_AT = 1.4;
  */
 export const frameName = (s) => s.pose || (s.frame ? `${s.gait || "w"}${s.frame}` : "idle");
 /** How long he waves at the screen when the room opens. */
-export const GREET_MS = 3800;
+export const GREET_MS = 3000;
 const WAVE_MS = 320;
 
 /**
@@ -109,7 +109,8 @@ export function initialFigure(start, { greet = true } = {}) {
     gait: "w",
     stepDist: 0,
     control: "idle",
-    idleIndex: 0,
+    // He waves from beside the desk, so the tour opens with the next station: he sets off at once.
+    idleIndex: greet ? 1 : 0,
     pauseLeft: 0,
     sinceInput: IDLE_RESUME_MS,
     target: null,
@@ -157,6 +158,7 @@ export function stepFigure(state, input, ctx, dtArg) {
       s.pos = ctx.respawn ? { ...ctx.respawn } : desk ? standPoint(desk) : { ...RESPAWN_FALLBACK };
       s.falling = false;
       s.fallLeft = 0;
+      s.planned = null;
       s.control = "idle";
       s.idleIndex = 0;
       s.pauseLeft = 0;
@@ -209,13 +211,15 @@ export function stepFigure(state, input, ctx, dtArg) {
       s.control = "user";
       s.sinceInput = 0;
       s.target = { ...input.tapTarget };
-      s.route = [];
+      const route = findPath(s.pos, s.target, ctx.footprints, FLOOR);
+      s.route = route && route.length > 1 ? route.slice(0, -1) : [];
     } else {
       s.sinceInput += ms;
       if (s.control === "user" && !s.target && s.sinceInput >= IDLE_RESUME_MS) {
         s.control = "idle";
         s.pauseLeft = 0;
         s.route = [];
+        s.planned = null;
       }
     }
     const holding = input.hold && s.control === "idle";
@@ -235,6 +239,16 @@ export function stepFigure(state, input, ctx, dtArg) {
       }
     } else if (!goal && !holding && s.control === "idle" && ctx.stations.length && !s.route.length) {
       goal = standPoint(ctx.stations[s.idleIndex]);
+      // Plan each leg before setting off, so he walks the clear lane round the furniture instead
+      // of heading straight at the station and only routing once he bumps into something.
+      if (s.planned !== s.idleIndex) {
+        s.planned = s.idleIndex;
+        const route = findPath(s.pos, goal, ctx.footprints, FLOOR);
+        if (route && route.length > 1) {
+          s.route = route.slice(0, -1);
+          goal = s.route[0];
+        }
+      }
     }
     if (goal) {
       const dx = goal.x - s.pos.x;

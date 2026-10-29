@@ -64,6 +64,10 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
       live = false;
     };
   }, [flipped]);
+  // Back on the pad the frame loop stops, so nothing else would clear the hello bubble.
+  useEffect(() => {
+    if (!flipped && bubbleEl.current) bubbleEl.current.hidden = true;
+  }, [flipped]);
   const layerEl = useRef(null);
   const viewRef = useRef(view);
   viewRef.current = view;

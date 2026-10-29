@@ -9,19 +9,13 @@ export function cleanCity(raw) {
   return s;
 }
 
-/** The city in an IANA time zone name ("America/New_York" is New York); null for UTC and offsets. */
-export function cityFromTimeZone(tz) {
-  if (typeof tz !== "string" || !tz.includes("/") || tz.startsWith("Etc/")) return null;
-  return cleanCity(tz.split("/").at(-1).replace(/_/g, " "));
-}
-
 /**
- * The greeting, from the site's /api/hello (the city Vercel sees), else the browser's time zone.
- * @param {{ fetch?: typeof fetch, timeZone?: string, timeoutMs?: number }} [o]
+ * The greeting, from the site's /api/hello (the city Vercel sees), else "Hello there!". There is
+ * no time-zone guess: a zone names its region's biggest city (Pittsburgh is America/New_York).
+ * @param {{ fetch?: typeof fetch, timeoutMs?: number }} [o]
  * @returns {Promise<string>}
  */
-export async function loadGreeting({ fetch: get = globalThis.fetch, timeZone, timeoutMs = 1500 } = {}) {
-  const tz = timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+export async function loadGreeting({ fetch: get = globalThis.fetch, timeoutMs = 1500 } = {}) {
   let city = null;
   if (typeof get === "function") {
     const ctl = typeof AbortController === "function" ? new AbortController() : null;
@@ -30,10 +24,10 @@ export async function loadGreeting({ fetch: get = globalThis.fetch, timeZone, ti
       const res = await get("/api/hello", { signal: ctl?.signal, headers: { accept: "application/json" } });
       if (res.ok) city = cleanCity((await res.json())?.city);
     } catch {
-      // Offline, blocked, timed out, or no endpoint (local dev): use the time zone instead.
+      // Offline, blocked, timed out, or no endpoint (local dev): a plain hello.
     } finally {
       clearTimeout(timer);
     }
   }
-  return greetingFor(city ?? cityFromTimeZone(tz));
+  return greetingFor(city);
 }
