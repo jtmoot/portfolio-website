@@ -14,11 +14,10 @@ export async function startPlayback(video) {
   }
 }
 
-const finePointer = () => typeof matchMedia === "function" && matchMedia("(pointer: fine)").matches;
 const still = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /**
- * A project in a window frame. The clip plays on hover with a mouse, or when half in view on touch.
+ * A project in a window frame. The clip plays while at least half of it is in view.
  * @param {{ project: { id: string, title: string, tagline: string, tag: string, video: string | null, poster: string, links: { label: string, href: string }[] } }} props
  */
 export default function ProjectCard({ project }) {
@@ -27,19 +26,7 @@ export default function ProjectCard({ project }) {
 
   useEffect(() => {
     const v = ref.current;
-    if (!v || still()) return undefined;
-    if (finePointer()) {
-      const on = () => startPlayback(v);
-      const off = () => v.pause();
-      const card = v.closest(".card");
-      card.addEventListener("mouseenter", on);
-      card.addEventListener("mouseleave", off);
-      return () => {
-        card.removeEventListener("mouseenter", on);
-        card.removeEventListener("mouseleave", off);
-      };
-    }
-    if (typeof IntersectionObserver === "undefined") return undefined;
+    if (!v || still() || typeof IntersectionObserver === "undefined") return undefined;
     const io = new IntersectionObserver(
       ([e]) => (e.isIntersecting ? startPlayback(v) : v.pause()),
       { threshold: 0.5 },

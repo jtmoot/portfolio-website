@@ -36,6 +36,39 @@ describe("ProjectCard", () => {
     expect([...v.querySelectorAll("source")].map((s) => s.getAttribute("src"))).toEqual(["/media/x.webm", "/media/x.mp4"]);
   });
 
+  it("plays when scrolled into view and pauses when it leaves, without hovering", async () => {
+    globalThis.matchMedia = (q) => ({ matches: q === "(pointer: fine)" });
+    let fire;
+    globalThis.IntersectionObserver = class {
+      constructor(cb) {
+        fire = cb;
+      }
+      observe() {}
+      disconnect() {}
+    };
+    const calls = [];
+    const proto = HTMLMediaElement.prototype;
+    const { play, pause } = proto;
+    proto.play = function () {
+      calls.push("play");
+      return Promise.resolve();
+    };
+    proto.pause = function () {
+      calls.push("pause");
+    };
+    try {
+      await render(<ProjectCard project={{ ...BASE, video: "/media/x" }} />);
+      await act(async () => fire([{ isIntersecting: true }]));
+      await act(async () => fire([{ isIntersecting: false }]));
+      expect(calls).toEqual(["play", "pause"]);
+    } finally {
+      proto.play = play;
+      proto.pause = pause;
+      delete globalThis.IntersectionObserver;
+      delete globalThis.matchMedia;
+    }
+  });
+
   it("startPlayback swallows a blocked play()", async () => {
     const fake = { play: () => Promise.reject(new Error("NotAllowedError")) };
     await expect(startPlayback(fake)).resolves.toBeUndefined();
