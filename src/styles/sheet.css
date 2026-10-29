@@ -260,12 +260,10 @@ button[aria-pressed="true"] .toggle-pill::after {
 
 .polaroid .tape {
   position: absolute;
-  left: 36%;
-  top: -0.5cqw;
-  width: 28%;
-  height: 0.85cqw;
-  background: rgba(42, 42, 40, 0.85);
-  border-radius: 2px;
+  left: 34%;
+  top: -0.55cqw;
+  width: 32%;
+  height: 0.95cqw;
 }
 
 .portrait-dots,
@@ -838,14 +836,111 @@ html.has-cursor * {
   padding: 0.4cqw;
 }
 
+/* Washi tape, like Garvit's: translucent paper strips with torn ends. */
+.tape {
+  z-index: 2;
+  background: rgba(240, 214, 140, 0.62);
+  box-shadow: 0 0.05cqw 0.15cqw rgba(35, 35, 32, 0.12);
+  clip-path: polygon(0 8%, 4% 0, 8% 10%, 12% 0, 88% 0, 92% 12%, 96% 0, 100% 10%, 100% 90%, 96% 100%, 92% 88%, 88% 100%, 12% 100%, 8% 90%, 4% 100%, 0 92%);
+  pointer-events: none;
+}
+
+.tape.peach {
+  background: rgba(232, 180, 140, 0.6);
+}
+
+html[data-theme="night"] .tape {
+  background: rgba(214, 190, 120, 0.42);
+}
+
+html[data-theme="night"] .tape.peach {
+  background: rgba(214, 160, 122, 0.4);
+}
+
 .obj-poster .tape {
   position: absolute;
-  left: 40%;
-  top: -0.6cqw;
-  width: 20%;
-  height: 0.9cqw;
-  background: rgba(42, 42, 40, 0.85);
-  border-radius: 2px;
+  width: 30%;
+  height: 0.95cqw;
+}
+
+.obj-poster .tape.top {
+  left: 35%;
+  top: -0.55cqw;
+  rotate: -2deg;
+}
+
+.obj-poster .tape.tl {
+  left: -0.9cqw;
+  top: -0.1cqw;
+  rotate: -38deg;
+}
+
+.obj-poster .tape.tr {
+  right: -0.9cqw;
+  top: -0.1cqw;
+  rotate: 38deg;
+}
+
+.obj-poster .tape.br {
+  right: -0.9cqw;
+  bottom: -0.1cqw;
+  rotate: -36deg;
+}
+
+.obj-poster .tape.bl {
+  left: -0.9cqw;
+  bottom: -0.1cqw;
+  rotate: 40deg;
+}
+
+/* A tagged sticker is one link: the sticker and its little dotted label. */
+.obj-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.obj-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25cqw;
+  margin-top: 0.2cqw;
+  padding: 0.12cqw 0.5cqw 0.18cqw 0.35cqw;
+  font-size: 0.85cqw;
+  line-height: 1.2;
+  opacity: 1;
+  color: var(--ink);
+  background-color: #f1efe6;
+  background-image: radial-gradient(rgba(42, 42, 40, 0.28) 0.06cqw, transparent 0.08cqw);
+  background-size: 0.36cqw 0.36cqw;
+  border: 1px solid rgba(42, 42, 40, 0.14);
+  box-shadow: 0 0.15cqw 0.35cqw rgba(35, 35, 32, 0.16);
+  rotate: calc(var(--rot) * -1 - 2deg);
+  transition: translate 0.2s ease, box-shadow 0.2s ease;
+}
+
+.obj-tag svg {
+  width: 0.75cqw;
+  height: 0.75cqw;
+  flex: none;
+  color: #d9622b;
+}
+
+html[data-theme="night"] .obj-tag {
+  background-color: #2a2b2e;
+  background-image: radial-gradient(rgba(217, 215, 207, 0.22) 0.06cqw, transparent 0.08cqw);
+  border-color: rgba(217, 215, 207, 0.14);
+}
+
+.obj-link:hover .obj-tag,
+.obj-link:focus-visible .obj-tag {
+  translate: 0 -0.15cqw;
+  box-shadow: 0 0.35cqw 0.6cqw rgba(35, 35, 32, 0.2);
+}
+
+.obj-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 0.4cqw;
 }
 
 .poster-in {
