@@ -213,16 +213,15 @@
   }
 }
 
-/* The figure */
+/* The figure (sprite sheet built by tools/stations/figure.mjs) */
 .figure {
   position: absolute;
   left: 0;
   top: 0;
-  transform: translate(-50%, -97%);
+  transform: translate(var(--ax), var(--ay));
   opacity: 0;
   transition: opacity 0.4s ease;
   pointer-events: none;
-  --swing: 0;
 }
 
 .floor-layer[data-on] .figure {
@@ -237,65 +236,32 @@
   overflow: visible;
 }
 
-.figure[data-facing$="l"] .fig-body {
-  transform: scaleX(-1);
-  transform-origin: 30px 0;
+.figure-sheet-host {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 
-.figure[data-facing^="u"] .fig-front-only {
-  display: none;
-}
-
-.figure:not([data-facing^="u"]) .fig-back-only {
-  display: none;
-}
-
-.fig-leg,
-.fig-arm {
-  transform-box: view-box;
-}
-
-.fig-leg-front {
-  transform-origin: 32px 94px;
-  transform: rotate(calc(var(--swing) * 1deg));
-}
-
-.fig-leg-back {
-  transform-origin: 29px 94px;
-  transform: rotate(calc(var(--swing) * -1deg));
-}
-
-.fig-arm-front {
-  transform-origin: 43px 58px;
-  transform: rotate(calc(var(--swing) * -0.8deg));
-}
-
-.fig-arm-back {
-  transform-origin: 17px 58px;
-  transform: rotate(calc(var(--swing) * 0.8deg));
-}
-
-.fig-shadow { fill: #000; opacity: 0.16; }
-.fig-skin { fill: #e8c4a6; stroke: #2a2a28; stroke-width: 0.8; }
-.fig-hair { fill: #2b221c; stroke: #1b1612; stroke-width: 0.8; }
-.fig-hoodie { fill: #3b3f44; stroke: #1f2124; stroke-width: 0.8; }
-.fig-hoodie-dark { fill: #2c2f33; stroke: #1f2124; stroke-width: 0.8; }
-.fig-pocket { fill: #34383d; stroke: #1f2124; stroke-width: 0.6; }
-.fig-pants { fill: #6c6f73; stroke: #2a2a28; stroke-width: 0.8; }
-.fig-pants-dark { fill: #575a5e; stroke: #2a2a28; stroke-width: 0.8; }
-.fig-shoe { fill: #f4f4f1; stroke: #2a2a28; stroke-width: 0.8; }
-.fig-sole { stroke: #9aa0a6; stroke-width: 1; fill: none; }
-.fig-line { stroke: #2a2a28; stroke-width: 0.8; fill: none; stroke-linecap: round; }
-.fig-eye { fill: #2a2a28; }
+/* Figure materials are unprefixed: the sprite frames render inside <use> shadow trees, where
+   ancestor selectors such as ".iso .x" cannot match, but custom properties still inherit. */
+.fm-skin{--anatomy-paper:#e9c9ad;--anatomy-face:#e9c9ad;--anatomy-top:#f3d9c2;--anatomy-shade-0:#c99d7e;--anatomy-shade-1:#d4ab8d;--anatomy-shade-2:#dfb99b;--anatomy-shade-3:#e7c4a7}
+.fm-hair{--anatomy-paper:#2e2520;--anatomy-face:#2e2520;--anatomy-top:#3f332c;--anatomy-shade-0:#1f1915;--anatomy-shade-1:#251e1a;--anatomy-shade-2:#2a221d;--anatomy-shade-3:#302722}
+.fm-hoodie{--anatomy-paper:#3b3f44;--anatomy-face:#3b3f44;--anatomy-top:#4d5258;--anatomy-shade-0:#2a2d31;--anatomy-shade-1:#303337;--anatomy-shade-2:#363a3e;--anatomy-shade-3:#3c4045;--anatomy-lo:#6c737a;--anatomy-faint:#565c62}
+.fm-hoodie .tb-body{fill:#3b3f44}.fm-hoodie .tb-shine{fill:#4d5258}.fm-hoodie .tb-shade{fill:#2a2d31}
+.fm-pants .tb-body{fill:#6c6f73}.fm-pants .tb-shine{fill:#7d8084}.fm-pants .tb-shade{fill:#55585c}
+.fm-dark{--anatomy-paper:#2c2c2b;--anatomy-face:#2c2c2b;--anatomy-top:#3a3a39;--anatomy-shade-0:#1e1e1d;--anatomy-shade-1:#232322;--anatomy-shade-2:#282827;--anatomy-shade-3:#2d2d2c}
+.fm-foam{--anatomy-paper:#fafaf7;--anatomy-top:#ffffff;--anatomy-shade-0:#e3e3df;--anatomy-shade-1:#e9e9e5;--anatomy-shade-2:#efefeb;--anatomy-shade-3:#f5f5f1}
+.fm-knit{--anatomy-paper:#8d9196;--anatomy-face:#8d9196;--anatomy-top:#a3a7ac;--anatomy-shade-0:#6f7378;--anatomy-shade-1:#777b80;--anatomy-shade-2:#7f8388;--anatomy-shade-3:#878b90;--anatomy-lo:#5d6166}
 
 .figure.falling {
   animation: fig-fall 1s ease-in forwards;
 }
 
 @keyframes fig-fall {
-  0% { transform: translate(-50%, -97%) rotate(0); opacity: 1; }
-  60% { transform: translate(-50%, -60%) rotate(70deg); opacity: 0.7; }
-  100% { transform: translate(-50%, 20%) rotate(110deg); opacity: 0; filter: blur(1px); }
+  0% { transform: translate(var(--ax), var(--ay)) rotate(0); opacity: 1; }
+  60% { transform: translate(var(--ax), calc(var(--ay) + 30%)) rotate(70deg); opacity: 0.7; }
+  100% { transform: translate(var(--ax), calc(var(--ay) + 90%)) rotate(110deg); opacity: 0; filter: blur(1px); }
 }
 
 /* Walk-off tiles: squares of paper sketched in under the figure, inside the tipped poster. */

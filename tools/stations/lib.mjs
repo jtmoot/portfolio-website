@@ -36,7 +36,7 @@ function render(id, { label, bounds, pad = 6, draw }) {
 
 const round = (n) => Math.round(n * 100) / 100;
 
-function context(P, id) {
+export function context(P, id) {
   let clipCount = 0;
   const at = (p) => k.iso(p, P);
   const S = (paths, style) => k.solidSvg(paths, style);
@@ -71,8 +71,8 @@ function context(P, id) {
     `<path class="${cls}" d="${path3(points, true)}"/>` + (line ? L(path3(points, true), { tone: line }) : "");
 
   /** A tube along 3D points, as one piece list drawn in route order. */
-  const tube = (points, radius, { tone = "mid", maxLength = 400, caps = true, rings } = {}) =>
-    tubePieces(points, radius, P, { maxLength, caps, rings }).map((piece) => tubeSvg(piece, { tone })).join("");
+  const tube = (points, radius, { tone = "mid", maxLength = 400, caps = true, rings, spacing = 2.2 } = {}) =>
+    tubePieces(points, radius, P, { maxLength, caps, rings, spacing }).map((piece) => tubeSvg(piece, { tone })).join("");
 
   const clipId = () => `${id}-c${clipCount++}`;
 

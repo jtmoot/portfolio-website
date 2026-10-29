@@ -10,9 +10,9 @@ import { depthKey, nearestStation, TILE } from "../lib/floor.js";
 import { standPoint, TILE_FADE_MS } from "../lib/figure.js";
 import { FIGURE_START } from "../lib/travelers.js";
 import { useFigure } from "./useFigure.js";
-import Figure from "./Figure.jsx";
+import Figure, { FIGURE_META } from "./Figure.jsx";
 
-const FIGURE_CM = 180;
+const FRAME_NAMES = ["idle", "w1", "w2", "w3", "w4"];
 const still = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** Stations with no margin traveler sketch themselves in a beat later. */
@@ -47,13 +47,13 @@ export default function Floor({ view, flipped, onNavigate, children }) {
     if (el) {
       const v = viewRef.current;
       const p = floorToScreen(s.pos, v);
-      const h = ((FIGURE_CM * 0.8165) / 5) * v.scale;
       el.style.left = `${p.left}cqw`;
       el.style.top = `${p.top}cqw`;
-      el.style.width = `${h * 0.4}cqw`;
+      el.style.width = `${(FIGURE_META.width / 5) * v.scale}cqw`;
       el.style.zIndex = String(100 + Math.round((depthKey(s.pos) + 100) * 4) + 2);
-      el.dataset.facing = s.facing;
-      el.style.setProperty("--swing", String([0, 16, 4, -16, -4][s.frame] || 0));
+      const href = `#f-${s.facing}-${FRAME_NAMES[s.frame] || "idle"}`;
+      const use = el.querySelector(".figure-svg use");
+      if (use && use.getAttribute("href") !== href) use.setAttribute("href", href);
       el.classList.toggle("falling", s.falling);
     }
     const near = s.falling ? null : nearestStation(s.pos, STATIONS, 5)?.id ?? null;
