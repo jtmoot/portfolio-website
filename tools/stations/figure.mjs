@@ -258,6 +258,34 @@ const bell = (centre) => (h) => {
   const handle = [h.ptv([centre[0], centre[1] + 4.5, centre[2] + 4]), h.ptv([centre[0], centre[1] + 3.6, centre[2] + 9.5]), h.ptv([centre[0], centre[1], centre[2] + 11]), h.ptv([centre[0], centre[1] - 3.6, centre[2] + 9.5]), h.ptv([centre[0], centre[1] - 4.5, centre[2] + 4])];
   return [{ at: q, svg: `<g class="fm-iron">${h.c.tube(handle, 1.3, { tone: "hi", spacing: 3 })}${h.S(G.sphereOf(q, 7.5, h.P, { steps: 16 }), { tone: "hi", crease: "lo" })}</g>` }];
 };
+/**
+ * A galvanized watering can held by its top handle at `hand`, tipped forward by `tilt` degrees;
+ * `pour` (0, 1 or 2) draws falling drops under the rose at one of two offsets, so alternating
+ * frames read as a stream.
+ */
+const can = (hand, tilt, pour = 0) => (h) => {
+  const a = (tilt * Math.PI) / 180;
+  const at3 = (v) => h.ptv(v);
+  const add = (p, q, k = 1) => [p[0] + q[0] * k, p[1] + q[1] * k, p[2] + q[2] * k];
+  const up = [Math.sin(a), 0, Math.cos(a)]; // the can's axis, in (forward, side, z)
+  const ahead = [Math.cos(a), 0, -Math.sin(a)]; // across it, toward the spout
+  const base = add(hand, up, -22);
+  const top = add(base, up, 18);
+  const spout0 = add(add(base, up, 4), ahead, 7.5);
+  const dir = [ahead[0] * 0.72 + up[0] * 0.7, 0, ahead[2] * 0.72 + up[2] * 0.7];
+  const tip = add(spout0, dir, 20);
+  const items = [
+    { at: at3(add(base, up, 9)), svg: `<g class="fm-can">${h.c.tube([at3(base), at3(top)], 8, { tone: "hi", spacing: 4 })}</g>` },
+    { at: at3(add(top, ahead, -1)), svg: `<g class="fm-can">${h.c.tube([at3(add(top, ahead, -7)), at3(add(hand, up, 2)), at3(add(top, ahead, 4))], 1, { tone: "hi", spacing: 3 })}</g>` },
+    { at: at3(add(spout0, dir, 8)), svg: `<g class="fm-can">${h.c.tube([at3(spout0), at3(tip)], 1.1, { tone: "hi", spacing: 3 })}${h.S(G.sphereOf(at3(tip), 1.8, h.P, { steps: 8 }), { tone: "hi", crease: "lo" })}</g>` },
+  ];
+  if (pour) {
+    const offs = pour === 1 ? [5, 13, 21, 29] : [9, 17, 25, 33];
+    const drops = offs.map((k, i) => h.S(G.sphereOf(at3(add(tip, [0.8 * (i % 2 ? 1 : -1), 0, -k])), 1.4, h.P, { steps: 6 }), { tone: "hi", crease: "lo" })).join("");
+    items.push({ at: at3(add(tip, [0, 0, -14])), svg: `<g class="fm-drop">${drops}</g>` });
+  }
+  return items;
+};
 const POSES = {
   type1: { arms: { L: { elbow: [8, 18, 117], hand: [27, 9, 105] }, R: { elbow: [8, -18, 117], hand: [27, -10, 103.5] } } },
   type2: { arms: { L: { elbow: [8, 18, 117], hand: [27, 9.5, 103.4] }, R: { elbow: [8, -18, 117], hand: [27.5, -9.5, 105.5] } } },
@@ -274,6 +302,9 @@ const POSES = {
   kb1: { sink: 12, arms: { L: { elbow: [8, 11, 104], hand: [12, 3.5, 66] }, R: { elbow: [8, -11, 104], hand: [12, -3.5, 66] } }, extras: bell([14, 0, 53]) },
   kb2: { sink: 4, arms: { L: { elbow: [13, 10, 116], hand: [25, 3.5, 98] }, R: { elbow: [13, -10, 116], hand: [25, -3.5, 98] } }, extras: bell([28, 0, 86]) },
   kb3: { arms: { L: { elbow: [24, 9, 141], hand: [44, 3.5, 148] }, R: { elbow: [24, -9, 141], hand: [44, -3.5, 148] } }, extras: bell([47, 0, 136]) },
+  water1: { arms: { L: hang(1), R: { elbow: [8, -21, 116], hand: [19, -17, 106] } }, extras: can([19, -18, 108], 0) },
+  water2: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 1) },
+  water3: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 2) },
   wave1: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [8, -24, 178] } } },
   wave2: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [9, -33, 175] } } },
 };

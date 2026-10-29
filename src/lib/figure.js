@@ -33,6 +33,7 @@ export const ACTIONS = {
   desk: { facing: "ul", loop: true, frames: [["type1", 260], ["type2", 260]] },
   library: { facing: "ul", frames: [["book1", 700], ["book2", 1300], ["book3", 450], ["book2", 900], ["book1", 550]] },
   kitchen: { facing: "ur", frames: [["cook1", 700], ["cook2", 260], ["cook3", 260], ["cook2", 260], ["cook3", 260], ["cook2", 260], ["cook1", 900]] },
+  plants: { facing: "ul", frames: [["water1", 600], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water1", 600]] },
   chess: { facing: "ul", frames: [["chess1", 800], ["chess2", 1000], ["chess1", 700]] },
   gym: { facing: "dr", loop: true, frames: [["kb1", 380], ["kb2", 160], ["kb3", 420], ["kb2", 160]] },
 };

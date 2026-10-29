@@ -20,7 +20,7 @@ describe("poseAt", () => {
     const desk = ACTIONS.desk;
     const cycle = desk.frames.reduce((a, [, ms]) => a + ms, 0);
     expect(poseAt("desk", cycle + 1)).toBe(desk.frames[0][0]);
-    expect(poseAt("plants", 500)).toBeNull();
+    expect(poseAt("corkboard", 500)).toBeNull();
   });
 
   it("every action fits inside the station stop", () => {
@@ -28,6 +28,16 @@ describe("poseAt", () => {
       if (a.loop) continue;
       expect(a.frames.reduce((s, [, ms]) => s + ms, 0), id).toBeLessThanOrEqual(PAUSE_MS);
     }
+  });
+});
+
+describe("plants", () => {
+  it("waters the plants: lifts the can, tips it, and pours", () => {
+    const names = ACTIONS.plants.frames.map(([n]) => n);
+    expect(names[0]).toBe("water1");
+    expect(names).toContain("water2");
+    expect(names).toContain("water3");
+    expect(ACTIONS.plants.facing).toBe("ul");
   });
 });
 

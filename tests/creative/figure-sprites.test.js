@@ -15,6 +15,13 @@ describe("figure sprite sheet", () => {
     }
   });
 
+  it("draws the watering can, and water only while it pours", () => {
+    const sym = (id) => sheet.match(new RegExp(`<symbol id="${id}"[\\s\\S]*?</symbol>`))[0];
+    expect(sym("f-ul-water1")).toContain("fm-can");
+    expect(sym("f-ul-water1")).not.toContain("fm-drop");
+    expect(sym("f-ul-water2")).toContain("fm-drop");
+  });
+
   it("bounces the body in the jog frames, and not in the walk", () => {
     const use = (id) => sheet.match(new RegExp(`<symbol id="${id}"[\\s\\S]*?<use ([^>]*)/>`))[1];
     expect(use("f-dr-j1")).toMatch(/y="-\d/);
