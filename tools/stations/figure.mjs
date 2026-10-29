@@ -270,9 +270,18 @@ const shaker = (hand, tilt = 0, pour = 0) => (h) => {
     { at: v(add(hand, [0, -3, 0])), svg: `<g class="fm-silver">${h.c.tube([v(add(hand, up, -3)), v(add(hand, up, 13))], 3.8, { tone: "hi", spacing: 3 })}</g><g class="fm-dark">${h.c.tube([v(add(hand, up, 13)), v(cap)], 3.9, { tone: "hi", spacing: 3 })}</g>` },
   ];
   if (pour) {
-    const offs = pour === 1 ? [3, 8, 13, 18] : [5.5, 10.5, 15.5, 20.5];
-    const flakes = offs.map((k, i) => h.S(G.sphereOf(v(add(cap, [(i % 2 ? 1.2 : -1.2), (i % 3) - 1, -k])), 1.05, h.P, { steps: 6 }), { tone: "hi", crease: "lo" })).join("");
-    items.push({ at: v(add(cap, [0, 0, -10])), svg: `<g class="fm-flake">${flakes}</g>` });
+    // A fine fall of seasoning: small dark pepper specks and a few pale salt ones, no outlines,
+    // ending at the braise. Alternate frames offset the specks so they read as falling.
+    const sk = G.scaleOf(h.P);
+    const specks = [];
+    for (let i = 0; i < 9; i++) {
+      const k = 2 + ((i * 2.1 + (pour === 1 ? 0 : 1.05)) % 18);
+      const jitter = [Math.sin(i * 2.3) * 1.1, Math.cos(i * 1.7) * 1.1, -k];
+      const [x, y] = h.at(v(add(cap, jitter)));
+      const salt = i % 4 === 3;
+      specks.push(`<circle class="${salt ? "fm-salt" : "fm-pepper"}" cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${((salt ? 0.42 : 0.36) * sk).toFixed(2)}"/>`);
+    }
+    items.push({ at: v(add(cap, [0, 0, -10])), svg: `<g class="fm-seasoning">${specks.join("")}</g>` });
   }
   return items;
 };
@@ -317,9 +326,9 @@ const POSES = {
   book3: { arms: { L: { elbow: [10, 18, 122], hand: [22, 12, 132] }, R: { elbow: [12, -16, 126], hand: [21, 1, 140] } }, extras: book([24, 4, 128], 1) },
   // Seasoning, facing the stove with the left hand (the one on the room side): lift the shaker,
   // tip it over the Dutch oven and shake it in short arcs, flakes falling into the pot.
-  cook1: { arms: { L: { elbow: [14, 22, 120], hand: [30, 18, 128] }, R: { elbow: [12, -19, 112], hand: [26, -14, 102] } }, extras: shaker([30, 18, 128]) },
-  cook2: { arms: { L: { elbow: [20, 22, 128], hand: [37, 20, 137] }, R: { elbow: [12, -19, 112], hand: [26, -14, 102] } }, extras: shaker([37, 20, 137], 150, 1) },
-  cook3: { arms: { L: { elbow: [20, 22, 124], hand: [37, 20, 129] }, R: { elbow: [12, -19, 112], hand: [26, -14, 102] } }, extras: shaker([37, 20, 129], 168, 2) },
+  cook1: { arms: { L: { elbow: [14, 22, 124], hand: [30, 18, 136] }, R: { elbow: [12, -19, 112], hand: [26, -14, 102] } }, extras: shaker([30, 18, 136]) },
+  cook2: { arms: { L: { elbow: [20, 22, 134], hand: [37, 20, 148] }, R: { elbow: [12, -19, 112], hand: [26, -14, 102] } }, extras: shaker([37, 20, 148], 150, 1) },
+  cook3: { arms: { L: { elbow: [20, 22, 131], hand: [37, 20, 141] }, R: { elbow: [12, -19, 112], hand: [26, -14, 102] } }, extras: shaker([37, 20, 141], 168, 2) },
   // Chess, from behind the board facing the room: reach for the queen on d4, carry it across to
   // g7 with the left hand (the one on the room side), the right on the table edge, then stand
   // back as the king falls.
