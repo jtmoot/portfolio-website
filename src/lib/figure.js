@@ -34,9 +34,15 @@ export const ACTIONS = {
   library: { facing: "ul", frames: [["book1", 700], ["book2", 1300], ["book3", 450], ["book2", 900], ["book1", 550]] },
   kitchen: { facing: "ur", frames: [["cook1", 700], ["cook2", 260], ["cook3", 260], ["cook2", 260], ["cook3", 260], ["cook2", 260], ["cook1", 900]] },
   plants: { facing: "ul", frames: [["water1", 600], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water1", 600]] },
-  chess: { facing: "ul", frames: [["chess1", 800], ["chess2", 1000], ["chess1", 700]] },
+  chess: { facing: "dr", over: true, frames: [["chess1", 900], ["chess2", 1500], ["chess3", 1100]] },
   gym: { facing: "dr", loop: true, frames: [["kb1", 380], ["kb2", 160], ["kb3", 420], ["kb2", 160]] },
 };
+
+/**
+ * Poses whose reaching arm is drawn on its own layer (f-{facing}-{pose}-over) above the station:
+ * at the chess table he stands behind it, so the table hides his legs but not his arm on the board.
+ */
+export const OVER_POSES = new Set(Object.values(ACTIONS).flatMap((a) => (a.over ? a.frames.map(([n]) => n) : [])));
 
 /**
  * The pose for a station's action, t ms into the stop; null for stations with no action.
@@ -205,20 +211,21 @@ export function stepFigure(state, input, ctx, dtArg) {
     }
     const holding = input.hold && s.control === "idle";
     let goal = holding ? null : s.route[0] || s.target;
-    if (!goal && !holding && s.control === "idle" && ctx.stations.length) {
-      if (s.pauseLeft > 0) {
-        // At a station: face it and do its little action.
-        const st = ctx.stations[s.idleIndex];
-        s.facing = ACTIONS[st.id]?.facing ?? facingToward(s.pos, st.footprint);
-        s.pose = poseAt(st.id, PAUSE_MS - s.pauseLeft);
-        s.pauseLeft -= ms;
-        if (s.pauseLeft <= 0) {
-          s.idleIndex = (s.idleIndex + 1) % ctx.stations.length;
-          s.pose = null;
-        }
-      } else if (!s.route.length) {
-        goal = standPoint(ctx.stations[s.idleIndex]);
+    if (!goal && s.control === "idle" && ctx.stations.length && s.pauseLeft > 0) {
+      // At a station: face it and do its little action. An open card (hold) keeps him there,
+      // still at it; he moves on once the stop is over and nothing holds him.
+      const st = ctx.stations[s.idleIndex];
+      s.facing = ACTIONS[st.id]?.facing ?? facingToward(s.pos, st.footprint);
+      s.actT = (s.actT || 0) + ms;
+      s.pose = poseAt(st.id, s.actT);
+      s.pauseLeft = Math.max(holding ? 1 : 0, s.pauseLeft - ms);
+      if (s.pauseLeft <= 0) {
+        s.idleIndex = (s.idleIndex + 1) % ctx.stations.length;
+        s.pose = null;
+        s.actT = 0;
       }
+    } else if (!goal && !holding && s.control === "idle" && ctx.stations.length && !s.route.length) {
+      goal = standPoint(ctx.stations[s.idleIndex]);
     }
     if (goal) {
       const dx = goal.x - s.pos.x;
@@ -226,8 +233,20 @@ export function stepFigure(state, input, ctx, dtArg) {
       const dist = Math.hypot(dx, dy);
       if (dist <= ARRIVE) {
         if (s.route.length) s.route.shift();
-        else if (s.target) s.target = null;
-        else s.pauseLeft = PAUSE_MS;
+        else if (s.target) {
+          // A tap on a station: once there, do its action, then pick the tour up from it.
+          const at = ctx.stations.findIndex((st) => Math.hypot(standPoint(st).x - s.target.x, standPoint(st).y - s.target.y) < 0.5);
+          s.target = null;
+          if (at >= 0) {
+            s.control = "idle";
+            s.idleIndex = at;
+            s.pauseLeft = PAUSE_MS;
+            s.actT = 0;
+          }
+        } else {
+          s.pauseLeft = PAUSE_MS;
+          s.actT = 0;
+        }
       } else {
         const reach = Math.min(dist, speed * dt);
         step = { dx: (dx / dist) * reach, dy: (dy / dist) * reach };

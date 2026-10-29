@@ -54,7 +54,8 @@ export const LAYOUT = {
     footprint: { x: 9, y: 60, w: 27, h: 14 },
     link: "https://www.chess.com/member/breakfast_enjoyer",
     labelAt: { x: 34, y: 79, z: 0 },
-    standAt: { x: 24, y: 78 },
+    // Behind the board, on white's side, facing the room.
+    standAt: { x: 26, y: 58.6 },
   },
   corkboard: {
     id: "corkboard",

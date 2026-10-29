@@ -7,7 +7,7 @@ import StationCard from "./StationCard.jsx";
 import { floorToScreen, screenToFloor } from "../lib/floorView.js";
 import { artPlacement } from "../lib/iso.js";
 import { nearestStation, paintOrder, TILE } from "../lib/floor.js";
-import { frameName, standPoint, TILE_FADE_MS } from "../lib/figure.js";
+import { frameName, OVER_POSES, standPoint, TILE_FADE_MS } from "../lib/figure.js";
 import { FIGURE_START } from "../lib/travelers.js";
 import { useFigure } from "./useFigure.js";
 import Figure, { FIGURE_META } from "./Figure.jsx";
@@ -51,6 +51,8 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
   const [nearId, setNearId] = useState(null);
   const [tiles, setTiles] = useState([]);
   const figureEl = useRef(null);
+  const overEl = useRef(null);
+  const zNow = useRef(START_Z);
   const bubbleEl = useRef(null);
   const [hello, setHello] = useState(() => greetingFor(null));
   // "Hello, Pittsburgh!": the city from the site's /api/hello, else the time zone.
@@ -106,9 +108,26 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
       const key = ids.join();
       if (key !== order.current) {
         order.current = key;
-        for (const [id, z] of zMap(ids)) {
+        zNow.current = zMap(ids);
+        for (const [id, z] of zNow.current) {
           const target = id === "figure" ? el : items.current[id];
           if (target) target.style.zIndex = String(z);
+        }
+      }
+      // His reaching arm, on its own layer just above the station he reaches across.
+      const over = overEl.current;
+      if (over) {
+        const reaching = Boolean(s.pose && OVER_POSES.has(s.pose));
+        over.hidden = !reaching;
+        if (reaching) {
+          const st = nearestStation(s.pos, STATIONS, 12);
+          over.style.left = el.style.left;
+          over.style.top = el.style.top;
+          over.style.width = el.style.width;
+          over.style.zIndex = String((zNow.current.get(st?.id) ?? 0) + 5);
+          const oh = `#f-${s.facing}-${s.pose}-over`;
+          const ou = over.querySelector("use");
+          if (ou && ou.getAttribute("href") !== oh) ou.setAttribute("href", oh);
         }
       }
       const href = `#f-${s.facing}-${frameName(s)}`;
@@ -187,6 +206,7 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
         );
       })}
       <Figure ref={figureEl} />
+      <Figure ref={overEl} over />
       <p ref={bubbleEl} className="speech hand" style={{ fontSize: labelSize }} hidden>
         {hello}
       </p>

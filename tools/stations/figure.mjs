@@ -64,6 +64,7 @@ const riseOf = (b, P) => k.iso([0, 0, b], P)[1] - k.iso([0, 0, 0], P)[1];
  *   gait and phase: a walk or jog frame at this angle of the cycle (radians); swing: legs apart
  *   without a gait (0 is standing);
  *   arms: elbow and hand points in (forward, his-left, z) cm, overriding the walk swing per arm;
+ *   reach: "L" or "R", an arm drawn on its own layer (returned as `over`) to sit above the station;
  *   extras: props he holds or touches, drawn in depth order with him
  */
 function person(c, facing, pose = {}) {
@@ -143,7 +144,9 @@ function person(c, facing, pose = {}) {
 
   // --- Arms: round shoulder caps, sleeves, hands; the watch on his left wrist ---------------------
   const arms = gait && pose.gait === "j" ? jogArms(stride, b) : walkArms(stride);
+  const limbPut = put;
   for (const [key, side] of [["L", 1], ["R", -1]]) {
+    const put = pose.reach === key ? (centre, svg) => items.push({ d: G.dot3(centre, V), svg, over: true }) : limbPut;
     const a = { ...arms[key], ...(pose.arms?.[key] || {}) };
     const shoulder = pt(0, side * 20, 141);
     const elbow = ptv(a.elbow);
@@ -221,9 +224,10 @@ function person(c, facing, pose = {}) {
   // The shared body sits in the paint order at the torso's depth: limbs behind it go first.
   const key = G.dot3([0, 0, 120], V);
   const join = (list) => list.map((i) => i.svg).join("");
-  const moving = items.filter((i) => !i.body);
+  const moving = items.filter((i) => !i.body && !i.over);
   return {
     body: join(items.filter((i) => i.body)),
+    over: join(items.filter((i) => i.over)),
     back: join(moving.filter((i) => i.d < key)),
     front: join(moving.filter((i) => i.d >= key)),
     rise: b ? Math.round(riseOf(b, P) * 100) / 100 : 0,
@@ -248,10 +252,6 @@ const book = (centre, lift = 0) => (h) => {
 const shaker = (hand) => (h) => {
   const q = h.ptv(hand);
   return [{ at: G.add3(q, [0, 0, 6]), svg: `<g class="fm-silver">${h.c.cyl(q[0], q[1], 2.1, q[2] + 2, q[2] + 9, { steps: 14, tone: "hi", crease: "lo" })}</g><g class="fm-dark">${h.c.cyl(q[0], q[1], 2.2, q[2] + 9, q[2] + 10.4, { steps: 14, tone: "hi", crease: "lo" })}</g>` }];
-};
-const pawn = (hand) => (h) => {
-  const q = G.add3(h.ptv(hand), [0, 0, -3]);
-  return [{ at: q, svg: `<g class="fm-dark">${h.S(G.sphereOf(q, 1.7, h.P, { steps: 8 }), { tone: "hi", crease: "lo" })}</g>` }];
 };
 const bell = (centre) => (h) => {
   const q = h.ptv(centre);
@@ -295,8 +295,12 @@ const POSES = {
   cook1: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [12, -18, 126], hand: [26, -8, 130] } }, extras: shaker([26, -8, 130]) },
   cook2: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [16, -16, 124], hand: [34, -3, 123] } }, extras: shaker([34, -3, 123]) },
   cook3: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [16, -16, 121], hand: [34, -3, 118] } }, extras: shaker([34, -3, 118]) },
-  chess1: { arms: { L: hang(1), R: { elbow: [12, -18, 112], hand: [28, -9, 94] } }, extras: pawn([28, -9, 94]) },
-  chess2: { arms: { L: hang(1), R: { elbow: [14, -16, 106], hand: [34, -5, 86] } }, extras: pawn([34, -5, 86]) },
+  // Chess, from behind the board facing the room: reach for the queen on d4, carry it across to
+  // g7 with the left hand (the one on the room side), the right on the table edge, then stand
+  // back as the king falls.
+  chess1: { reach: "L", sink: 8, arms: { L: { elbow: [20, 20, 116], hand: [38, 18, 88] }, R: hang(-1) } },
+  chess2: { reach: "L", sink: 10, arms: { L: { elbow: [28, 25, 114], hand: [52, 31, 90] }, R: { elbow: [6, -19, 104], hand: [11, -14, 79] } } },
+  chess3: { reach: "L", arms: { L: { elbow: [6, 21, 116], hand: [14, 16, 100] }, R: hang(-1) } },
   // Kettlebell swing: hike the bell back between the legs in a hinge, drive the hips through,
   // float it to chest height on straight arms.
   kb1: { sink: 12, arms: { L: { elbow: [8, 11, 104], hand: [12, 3.5, 66] }, R: { elbow: [8, -11, 104], hand: [12, -3.5, 66] } }, extras: bell([14, 0, 53]) },
@@ -330,7 +334,9 @@ export default {
         if (POSE_FACING[name] !== facing) continue;
         const c = context(P, `fig-${facing}-${name}`);
         const fig = person(c, facing, pose);
-        symbols.push(`<symbol id="f-${facing}-${name}" viewBox="0 0 ${width} ${height}">${fig.back}<use href="#f-${facing}-body" width="${width}" height="${height}"/>${fig.front}</symbol>`);
+        const y = fig.rise ? ` y="${fig.rise}"` : "";
+        symbols.push(`<symbol id="f-${facing}-${name}" viewBox="0 0 ${width} ${height}">${fig.back}<use href="#f-${facing}-body"${y} width="${width}" height="${height}"/>${fig.front}</symbol>`);
+        if (fig.over) symbols.push(`<symbol id="f-${facing}-${name}-over" viewBox="0 0 ${width} ${height}">${fig.over}</symbol>`);
       }
     }
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" class="figure-sheet" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">${symbols.join("")}</svg>`;

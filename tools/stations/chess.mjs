@@ -86,7 +86,7 @@ export default station("chess", {
       return { p: [x, y, BZ], svg: `<g class="${cls}" data-sq="${r},${f}">${s.join("")}</g>` };
     };
     const position = [
-      ["king", "w", 0, 6], ["rook", "w", 0, 5], ["queen", "w", 3, 3], ["knight", "w", 2, 5], ["bishop", "w", 3, 2],
+      ["king", "w", 0, 6], ["rook", "w", 0, 5], ["queen", "w", 3, 3], ["knight", "w", 2, 5], ["bishop", "w", 5, 7],
       ["pawn", "w", 1, 0], ["pawn", "w", 1, 1], ["pawn", "w", 1, 5], ["pawn", "w", 1, 6], ["pawn", "w", 1, 7], ["pawn", "w", 3, 4],
       ["king", "b", 7, 6], ["rook", "b", 7, 2], ["queen", "b", 6, 3], ["knight", "b", 5, 2], ["bishop", "b", 6, 6],
       ["pawn", "b", 6, 0], ["pawn", "b", 6, 1], ["pawn", "b", 6, 5], ["pawn", "b", 6, 7], ["pawn", "b", 4, 3], ["rook", "b", 7, 7],

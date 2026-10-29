@@ -87,3 +87,4 @@ describe("paintOrder", () => {
     expect(paintOrder(boxes, { x: 24, y: 80 }).at(-1)).toBe("figure");
   });
 });
+

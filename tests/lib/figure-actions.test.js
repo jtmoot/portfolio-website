@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ACTIONS, GREET_MS, PAUSE_MS, initialFigure, keyToDir, poseAt, standPoint, stepFigure } from "../../src/lib/figure.js";
+import { ACTIONS, OVER_POSES, GREET_MS, PAUSE_MS, initialFigure, keyToDir, poseAt, standPoint, stepFigure } from "../../src/lib/figure.js";
 
 const STATIONS = [
   { id: "desk", footprint: { x: 38, y: 0, w: 32, h: 16 } },
@@ -28,6 +28,14 @@ describe("poseAt", () => {
       if (a.loop) continue;
       expect(a.frames.reduce((s, [, ms]) => s + ms, 0), id).toBeLessThanOrEqual(PAUSE_MS);
     }
+  });
+});
+
+describe("reaching over", () => {
+  it("marks the chess poses as reaching over the table", () => {
+    expect(OVER_POSES.has("chess1")).toBe(true);
+    expect(OVER_POSES.has("chess2")).toBe(true);
+    expect(OVER_POSES.has("type1")).toBe(false);
   });
 });
 
@@ -77,5 +85,32 @@ describe("greeting", () => {
 
   it("can be switched off (reduced motion)", () => {
     expect(initialFigure({ x: 54, y: 26 }, { greet: false }).greeting).toBe(false);
+  });
+});
+
+describe("tapping a station", () => {
+  it("walks him there and plays its action, then carries on the tour", () => {
+    const start = initialFigure({ x: 80, y: 40 }, { greet: false });
+    const kitchen = STATIONS[1];
+    let s = stepFigure(start, { dir: null, tapTarget: standPoint(kitchen) }, CTX, 1 / 60);
+    s = run(s, {}, 5);
+    expect(s.pose && ACTIONS.kitchen.frames.map(([n]) => n).includes(s.pose)).toBe(true);
+    expect(s.facing).toBe(ACTIONS.kitchen.facing);
+    s = run(s, {}, PAUSE_MS / 1000 + 0.2);
+    expect(s.control).toBe("idle");
+  });
+});
+
+describe("holding at a station", () => {
+  it("keeps playing the action while a card is open, and only leaves once it closes", () => {
+    const at = initialFigure(standPoint(STATIONS[0]), { greet: false });
+    let s = run(at, {}, 0.2);
+    s = run(s, { hold: true }, 0.2);
+    expect(ACTIONS.desk.frames.map(([n]) => n)).toContain(s.pose);
+    s = run(s, { hold: true }, PAUSE_MS / 1000 + 2);
+    expect(ACTIONS.desk.frames.map(([n]) => n)).toContain(s.pose);
+    expect(Math.hypot(s.pos.x - standPoint(STATIONS[0]).x, s.pos.y - standPoint(STATIONS[0]).y)).toBeLessThan(0.5);
+    s = run(s, {}, PAUSE_MS / 1000 + 1);
+    expect(s.idleIndex).not.toBe(0);
   });
 });

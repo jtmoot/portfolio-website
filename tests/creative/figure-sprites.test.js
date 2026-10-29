@@ -22,6 +22,14 @@ describe("figure sprite sheet", () => {
     expect(sym("f-ul-water2")).toContain("fm-drop");
   });
 
+  it("gives the chess reach its own arm layer, to draw over the table he stands behind", () => {
+    const over = sheet.match(/<symbol id="f-dr-chess2-over"[\s\S]*?<\/symbol>/)[0];
+    expect(over).toContain("fm-zip");
+    expect(over).toContain("fm-skin");
+    expect(over).not.toContain("fm-jog");
+    expect(over).not.toContain("<use");
+  });
+
   it("bounces the body in the jog frames, and not in the walk", () => {
     const use = (id) => sheet.match(new RegExp(`<symbol id="${id}"[\\s\\S]*?<use ([^>]*)/>`))[1];
     expect(use("f-dr-j1")).toMatch(/y="-\d/);
