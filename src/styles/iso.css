@@ -1,0 +1,114 @@
+/* Anatomy kit drawing styles (MIT, tools/iso-kit/LICENSE), re-pointed at the pad's paper and ink.
+   Light is the default theme; night uses the kit's dark tokens. */
+.iso{
+  --anatomy-page:#f2f2ef;--anatomy-card:#f7f6f1;--anatomy-text:#57575a;--anatomy-strong:#18181a;--anatomy-muted:#8c8c90;
+  --anatomy-paper:#f7f6f1;--anatomy-face:#ffffff;--anatomy-top:#ffffff;
+  --anatomy-shade-0:#dcdcd9;--anatomy-shade-1:#e5e5e2;--anatomy-shade-2:#ededea;--anatomy-shade-3:#f4f4f1;
+  --anatomy-lit-top:#ffffff;--anatomy-lit-shade:#eeeeeb;
+  --anatomy-hi:#26262a;--anatomy-mid:#8a8a8f;--anatomy-lo:#b4b4b8;--anatomy-faint:#d4d4d6;--anatomy-lit:#000000;
+  --anatomy-halo:#8a8a80;--anatomy-halo-opacity:.32;--anatomy-dot:#3a3a3e;
+  --anatomy-red:#e5484d;--anatomy-green:#30a46c;--anatomy-blue:#3e63dd;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff,0 0 0 1px #0000000f,0 1px 1px -.5px #0000000a,0 3px 3px -1.5px #0000000a,0 6px 6px -3px #0000000a,0 12px 12px -6px #0000000a;
+}
+html[data-theme="night"] .iso{
+  --anatomy-page:#0b0b0b;--anatomy-card:#131313;--anatomy-text:#a3a3a3;--anatomy-strong:#e6e6e6;--anatomy-muted:#6e6e6e;
+  --anatomy-paper:#131313;--anatomy-face:#1b1b1b;--anatomy-top:#1c1c1c;
+  --anatomy-shade-0:#0f0f0f;--anatomy-shade-1:#121212;--anatomy-shade-2:#151515;--anatomy-shade-3:#181818;
+  --anatomy-lit-top:#262626;--anatomy-lit-shade:#1d1d1d;
+  --anatomy-hi:#d4d4d4;--anatomy-mid:#6a6a6a;--anatomy-lo:#3e3e3e;--anatomy-faint:#2a2a2a;--anatomy-lit:#ffffff;
+  --anatomy-halo:#050505;--anatomy-halo-opacity:.9;--anatomy-dot:#e6e6e6;
+  --anatomy-red:#ff6b6b;--anatomy-green:#6be0a0;--anatomy-blue:#6b9bff;
+  --anatomy-weight:.6px;--anatomy-ease:cubic-bezier(.32,.72,0,1);
+  --anatomy-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --anatomy-lift:inset 0 1px 0 0 #ffffff0a,inset 0 0 0 1px #ffffff06,0 0 0 1px #00000026,0 1px 1px -.5px #00000014,0 3px 3px -1.5px #00000014,0 6px 6px -3px #00000014,0 12px 12px -6px #00000014;
+}
+.iso-svg{display:block;width:100%;height:auto;overflow:visible}
+.iso-svg path,.iso-svg circle{vector-effect:non-scaling-stroke}
+.iso-fill{fill:var(--anatomy-paper);stroke:none}
+.iso-solid[data-lit]>.iso-fill{fill:var(--anatomy-face)}
+.iso-shade,.iso-top{stroke:none}
+.iso-shade[data-shade="0"]{fill:var(--anatomy-shade-0)}
+.iso-shade[data-shade="1"]{fill:var(--anatomy-shade-1)}
+.iso-shade[data-shade="2"]{fill:var(--anatomy-shade-2)}
+.iso-shade[data-shade="3"]{fill:var(--anatomy-shade-3)}
+.iso-top{fill:var(--anatomy-top)}
+.iso-solid[data-lit]>.iso-top{fill:var(--anatomy-lit-top)}
+.iso-solid[data-lit]>.iso-shade{fill:var(--anatomy-lit-shade)}
+.iso-solid[data-seamless]>.iso-shade,.iso-solid[data-seamless]>.iso-top{stroke-width:.4;stroke-linejoin:round}
+.iso-solid[data-seamless]>.iso-shade[data-shade="0"]{stroke:var(--anatomy-shade-0)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="1"]{stroke:var(--anatomy-shade-1)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="2"]{stroke:var(--anatomy-shade-2)}
+.iso-solid[data-seamless]>.iso-shade[data-shade="3"]{stroke:var(--anatomy-shade-3)}
+.iso-solid[data-seamless]>.iso-top{stroke:var(--anatomy-top)}
+.iso-solid[data-seamless][data-lit]>.iso-top{stroke:var(--anatomy-lit-top)}
+.iso-solid[data-seamless][data-lit]>.iso-shade{stroke:var(--anatomy-lit-shade)}
+.iso-solid[data-lit]>.iso-edge{stroke:var(--anatomy-lit)}
+.iso-halo{fill:var(--anatomy-halo);stroke:none;filter:blur(9px);opacity:var(--anatomy-halo-opacity);transform:translateY(3px)}
+.iso-line{fill:none;stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight);stroke-linecap:round;stroke-linejoin:round}
+.iso-line[data-tone="hi"]{stroke:var(--anatomy-hi)}
+.iso-line[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.iso-line[data-tone="lo"]{stroke:var(--anatomy-lo)}
+.iso-line[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.iso-line[data-tone="lit"]{stroke:var(--anatomy-lit)}
+.iso-line[data-tone="red"]{stroke:var(--anatomy-red)}
+.iso-line[data-tone="green"]{stroke:var(--anatomy-green)}
+.iso-line[data-tone="blue"]{stroke:var(--anatomy-blue)}
+.iso-line[data-dotted]{stroke-dasharray:.01 3.5;stroke-width:1}
+.iso-line[data-dashed]{stroke-dasharray:3 3}
+.iso-line[data-flow]{stroke-dasharray:2 6}
+.iso-wire-end{fill:var(--anatomy-paper);stroke:var(--anatomy-lo);stroke-width:var(--anatomy-weight)}
+.iso-wire[data-tone="hi"] .iso-wire-end{stroke:var(--anatomy-hi)}
+.iso-wire[data-tone="mid"] .iso-wire-end{stroke:var(--anatomy-mid)}
+.iso-wire[data-tone="faint"] .iso-wire-end{stroke:var(--anatomy-faint)}
+.iso-wire[data-tone="lit"] .iso-wire-end{stroke:var(--anatomy-lit)}
+.iso-dots circle{fill:var(--anatomy-dot);stroke:none;opacity:.32}
+.iso-dots[data-tone="hi"] circle{opacity:.85}
+.iso-dots[data-tone="mid"] circle{opacity:.45}
+.iso-dots[data-tone="lo"] circle{opacity:.22}
+.iso-dots[data-tone="faint"] circle{opacity:.12}
+.iso-face-text{fill:var(--anatomy-mid);font-family:var(--anatomy-mono);letter-spacing:.04em}
+.iso-face-text[data-tone="hi"]{fill:var(--anatomy-hi)}
+.iso-face-text[data-tone="lo"]{fill:var(--anatomy-lo)}
+.iso-face-text[data-tone="faint"]{fill:var(--anatomy-faint)}
+.tb-body{fill:var(--anatomy-shade-2);stroke:none}
+.tb-shine{fill:var(--anatomy-top);stroke:none}
+.tb-shade{fill:var(--anatomy-shade-0);stroke:none}
+.tb-ring{fill:none;stroke:var(--anatomy-lo);stroke-width:.45;stroke-linecap:butt;stroke-linejoin:round}
+.tb-ring[data-tone="mid"]{stroke:var(--anatomy-mid)}
+.tb-ring[data-tone="faint"]{stroke:var(--anatomy-faint)}
+.tb-ring[data-tone="hi"]{stroke:var(--anatomy-hi)}
+@keyframes iso-flow{to{stroke-dashoffset:-32}}
+@keyframes iso-pulse{0%,100%{opacity:.18}12%{opacity:1}40%{opacity:.18}}
+.iso-line[data-flow]{animation:iso-flow 1600ms linear infinite}
+.iso-dots circle[data-pulse]{animation:iso-pulse 1600ms steps(1,end) infinite;animation-delay:var(--pulse-at,0ms)}
+@media (prefers-reduced-motion:reduce){.iso-line[data-flow],.iso-dots circle[data-pulse]{animation:none}}
+
+/* Materials: groups that redefine the fill tokens so a part reads as black plastic, glass or aluminium. */
+.iso .m-dark{--anatomy-paper:#3a3a38;--anatomy-face:#3a3a38;--anatomy-top:#4b4b48;--anatomy-shade-0:#262624;--anatomy-shade-1:#2d2d2b;--anatomy-shade-2:#333331;--anatomy-shade-3:#393936;--anatomy-faint:#55554f;--anatomy-lo:#6a6a64;--anatomy-mid:#8a8a84}
+html[data-theme="night"] .iso .m-dark{--anatomy-paper:#0c0c0c;--anatomy-face:#0c0c0c;--anatomy-top:#151515;--anatomy-shade-0:#080808;--anatomy-shade-1:#0a0a0a;--anatomy-shade-2:#0d0d0d;--anatomy-shade-3:#101010;--anatomy-faint:#1e1e1e;--anatomy-lo:#2c2c2c;--anatomy-mid:#4a4a4a}
+.iso .m-alu{--anatomy-top:#fbfbf9;--anatomy-shade-0:#c9c9c6;--anatomy-shade-1:#d4d4d1;--anatomy-shade-2:#dededb;--anatomy-shade-3:#e8e8e5}
+.iso .m-panel-face{fill:#2f2f2d;stroke:none}
+html[data-theme="night"] .iso .m-panel-face{fill:#090909}
+.iso .m-glass{fill:#2b2d30;stroke:none}
+html[data-theme="night"] .iso .m-glass{fill:#0a0b0c}
+.iso .m-glass ~ .iso-line[data-tone="lit"],.iso .iso-line[data-tone="lit"]{stroke:#e9ece8}
+.iso .m-keys{fill:#fbfbf9;stroke:none}
+html[data-theme="night"] .iso .m-keys{fill:#1c1c1c}
+.iso .m-screen-line{stroke-width:.9px}
+.iso .m-felt{--anatomy-top:#cfcdc6;--anatomy-paper:#cfcdc6;--anatomy-shade-0:#b9b7b0;--anatomy-shade-1:#bfbdb6;--anatomy-shade-2:#c5c3bc;--anatomy-shade-3:#cbc9c2}
+html[data-theme="night"] .iso .m-felt{--anatomy-top:#262626;--anatomy-paper:#262626;--anatomy-shade-0:#1a1a1a;--anatomy-shade-1:#1d1d1d;--anatomy-shade-2:#202020;--anatomy-shade-3:#232323}
+.iso .m-coffee{fill:#4a3a2e;stroke:none}
+.iso .m-rubber{--anatomy-paper:#5a5a57;--anatomy-top:#626260;--anatomy-shade-0:#474745;--anatomy-shade-1:#4c4c4a;--anatomy-shade-2:#51514f;--anatomy-shade-3:#565654;--anatomy-faint:#7a7a76;--anatomy-lo:#7f7f7a;--anatomy-dot:#a8a8a2}
+html[data-theme="night"] .iso .m-rubber{--anatomy-paper:#1a1a1a;--anatomy-top:#1f1f1f;--anatomy-shade-0:#121212;--anatomy-shade-1:#141414;--anatomy-shade-2:#171717;--anatomy-shade-3:#191919}
+.iso .m-strap{--anatomy-top:#e9e8e3;--anatomy-shade-0:#c7c6c0;--anatomy-shade-1:#cfcec8;--anatomy-shade-2:#d7d6d0;--anatomy-shade-3:#dfded8}
+.iso .m-steel{--anatomy-top:#f2f2f0;--anatomy-shade-0:#a9aaab;--anatomy-shade-1:#babbbc;--anatomy-shade-2:#cbcccd;--anatomy-shade-3:#dcdddd}
+.iso .m-steel-dark{--anatomy-paper:#484846;--anatomy-face:#484846;--anatomy-top:#5c5c59;--anatomy-shade-0:#2f2f2e;--anatomy-shade-1:#363635;--anatomy-shade-2:#3e3e3c;--anatomy-shade-3:#454543;--anatomy-faint:#6a6a65;--anatomy-lo:#7a7a74}
+html[data-theme="night"] .iso .m-steel-dark{--anatomy-paper:#101010;--anatomy-face:#101010;--anatomy-top:#1a1a1a;--anatomy-shade-0:#0a0a0a;--anatomy-shade-1:#0c0c0c;--anatomy-shade-2:#0e0e0e;--anatomy-shade-3:#121212}
+.iso .m-uhmw{--anatomy-top:#f6f6f2;--anatomy-shade-0:#dcdcd6;--anatomy-shade-1:#e2e2dc;--anatomy-shade-2:#e8e8e2;--anatomy-shade-3:#eeeee8}
+.iso .m-hole{fill:#1e1e1d;stroke:none}
+html[data-theme="night"] .iso .m-hole{fill:#000}
+.iso .m-wood{--anatomy-paper:#e3d3b8;--anatomy-face:#e3d3b8;--anatomy-top:#eddfc6;--anatomy-shade-0:#c8b391;--anatomy-shade-1:#d1bd9c;--anatomy-shade-2:#d9c7a7;--anatomy-shade-3:#e0cfb1;--anatomy-faint:#bea986;--anatomy-lo:#a8916b}
+html[data-theme="night"] .iso .m-wood{--anatomy-paper:#2a241b;--anatomy-face:#2a241b;--anatomy-top:#332b20;--anatomy-shade-0:#1d1912;--anatomy-shade-1:#211c15;--anatomy-shade-2:#252017;--anatomy-shade-3:#29231a;--anatomy-faint:#3f3627;--anatomy-lo:#54483a}
+.iso .m-patch{fill:#6b6b67;stroke:none}
+.iso .m-knit{--anatomy-paper:#8d9196;--anatomy-face:#8d9196;--anatomy-top:#a3a7ac;--anatomy-shade-0:#6f7378;--anatomy-shade-1:#777b80;--anatomy-shade-2:#7f8388;--anatomy-shade-3:#878b90;--anatomy-lo:#5d6166;--anatomy-hi:#2a2a28}
+.iso .m-foam{--anatomy-top:#ffffff;--anatomy-shade-0:#e3e3df;--anatomy-shade-1:#e9e9e5;--anatomy-shade-2:#efefeb;--anatomy-shade-3:#f5f5f1}
