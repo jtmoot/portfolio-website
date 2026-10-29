@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { initialFigure, keyToDir, standPoint, stepFigure } from "../lib/figure.js";
+import { bodyFootprints, initialFigure, keyToDir, standPoint, stepFigure } from "../lib/figure.js";
 
 const typing = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
 
@@ -27,7 +27,7 @@ export function useFigure({ active, stations, start, onFrame, wander = true, hol
     const desk = stations.find((s) => s.id === "desk") || stations[0];
     const ctx = {
       stations: wander ? stations : [],
-      footprints: stations.map((s) => s.footprint),
+      footprints: bodyFootprints(stations),
       respawn: desk ? standPoint(desk) : start,
     };
     let frame = 0;

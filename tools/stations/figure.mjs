@@ -65,6 +65,7 @@ const riseOf = (b, P) => k.iso([0, 0, b], P)[1] - k.iso([0, 0, 0], P)[1];
  *   without a gait (0 is standing);
  *   arms: elbow and hand points in (forward, his-left, z) cm, overriding the walk swing per arm;
  *   reach: "L" or "R", an arm drawn on its own layer (returned as `over`) to sit above the station;
+ *   front: both arms are in front of his body (a kettlebell between the legs), so draw them after it;
  *   extras: props he holds or touches, drawn in depth order with him
  */
 function person(c, facing, pose = {}) {
@@ -146,7 +147,12 @@ function person(c, facing, pose = {}) {
   const arms = gait && pose.gait === "j" ? jogArms(stride, b) : walkArms(stride);
   const limbPut = put;
   for (const [key, side] of [["L", 1], ["R", -1]]) {
-    const put = pose.reach === key ? (centre, svg) => items.push({ d: G.dot3(centre, V), svg, over: true }) : limbPut;
+    const put =
+      pose.reach === key
+        ? (centre, svg) => items.push({ d: G.dot3(centre, V), svg, over: true })
+        : pose.front
+          ? (centre, svg) => items.push({ d: 1e6 + G.dot3(centre, V), svg })
+          : limbPut;
     const a = { ...arms[key], ...(pose.arms?.[key] || {}) };
     const shoulder = pt(0, side * 20, 141);
     const elbow = ptv(a.elbow);
@@ -258,12 +264,13 @@ const shaker = (hand, tilt = 0, pour = 0) => (h) => {
   const up = [Math.sin(a), 0, Math.cos(a)];
   const add = (p, q, k = 1) => [p[0] + q[0] * k, p[1] + q[1] * k, p[2] + q[2] * k];
   const v = (q) => h.ptv(q);
-  const cap = add(hand, up, 9.5);
+  // Gripped near its base, so most of the jar shows above his fingers.
+  const cap = add(hand, up, 16);
   const items = [
-    { at: v(add(hand, [0, 2, 0])), svg: `<g class="fm-silver">${h.c.tube([v(add(hand, up, -7)), v(add(hand, up, 7.5))], 3.2, { tone: "hi", spacing: 3 })}</g><g class="fm-dark">${h.c.tube([v(add(hand, up, 7.5)), v(cap)], 3.3, { tone: "hi", spacing: 3 })}</g>` },
+    { at: v(add(hand, [0, -3, 0])), svg: `<g class="fm-silver">${h.c.tube([v(add(hand, up, -3)), v(add(hand, up, 13))], 3.8, { tone: "hi", spacing: 3 })}</g><g class="fm-dark">${h.c.tube([v(add(hand, up, 13)), v(cap)], 3.9, { tone: "hi", spacing: 3 })}</g>` },
   ];
   if (pour) {
-    const offs = pour === 1 ? [3, 9, 15, 21, 27] : [6, 12, 18, 24, 30];
+    const offs = pour === 1 ? [3, 8, 13, 18] : [5.5, 10.5, 15.5, 20.5];
     const flakes = offs.map((k, i) => h.S(G.sphereOf(v(add(cap, [(i % 2 ? 1.2 : -1.2), (i % 3) - 1, -k])), 1.05, h.P, { steps: 6 }), { tone: "hi", crease: "lo" })).join("");
     items.push({ at: v(add(cap, [0, 0, -10])), svg: `<g class="fm-flake">${flakes}</g>` });
   }
@@ -316,14 +323,14 @@ const POSES = {
   // Chess, from behind the board facing the room: reach for the queen on d4, carry it across to
   // g7 with the left hand (the one on the room side), the right on the table edge, then stand
   // back as the king falls.
-  chess1: { reach: "L", sink: 8, arms: { L: { elbow: [20, 20, 116], hand: [38, 18, 88] }, R: hang(-1) } },
-  chess2: { reach: "L", sink: 10, arms: { L: { elbow: [28, 25, 114], hand: [52, 31, 90] }, R: { elbow: [6, -19, 104], hand: [11, -14, 79] } } },
+  chess1: { reach: "L", sink: 8, arms: { L: { elbow: [26, 20, 116], hand: [46, 18, 88] }, R: hang(-1) } },
+  chess2: { reach: "L", sink: 10, arms: { L: { elbow: [34, 25, 114], hand: [60, 31, 90] }, R: { elbow: [13, -19, 104], hand: [19, -14, 79] } } },
   chess3: { reach: "L", arms: { L: { elbow: [6, 21, 116], hand: [14, 16, 100] }, R: hang(-1) } },
   // Kettlebell swing: hike the bell back between the legs in a hinge, drive the hips through,
   // float it to chest height on straight arms.
-  kb1: { sink: 12, arms: { L: { elbow: [8, 11, 104], hand: [12, 3.5, 66] }, R: { elbow: [8, -11, 104], hand: [12, -3.5, 66] } }, extras: bell([14, 0, 53]) },
-  kb2: { sink: 4, arms: { L: { elbow: [13, 10, 116], hand: [25, 3.5, 98] }, R: { elbow: [13, -10, 116], hand: [25, -3.5, 98] } }, extras: bell([28, 0, 86]) },
-  kb3: { arms: { L: { elbow: [24, 9, 141], hand: [44, 3.5, 148] }, R: { elbow: [24, -9, 141], hand: [44, -3.5, 148] } }, extras: bell([47, 0, 136]) },
+  kb1: { sink: 12, front: true, arms: { L: { elbow: [16, 13, 108], hand: [18, 4, 70] }, R: { elbow: [16, -13, 108], hand: [18, -4, 70] } }, extras: bell([20, 0, 57]) },
+  kb2: { sink: 4, front: true, arms: { L: { elbow: [18, 12, 118], hand: [29, 4, 98] }, R: { elbow: [18, -12, 118], hand: [29, -4, 98] } }, extras: bell([32, 0, 86]) },
+  kb3: { front: true, arms: { L: { elbow: [24, 9, 141], hand: [44, 3.5, 148] }, R: { elbow: [24, -9, 141], hand: [44, -3.5, 148] } }, extras: bell([47, 0, 136]) },
   water1: { arms: { L: hang(1), R: { elbow: [8, -21, 116], hand: [19, -17, 106] } }, extras: can([19, -18, 108], 0) },
   water2: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 1) },
   water3: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 2) },

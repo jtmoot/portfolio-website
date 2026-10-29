@@ -67,3 +67,18 @@ describe("the room layout", () => {
     expect([...seen].sort()).toEqual(STATIONS.map((s) => s.id).sort());
   });
 });
+
+describe("room with his body", () => {
+  it("can reach every station's stand point, from the start and from each other, with his body's width", async () => {
+    const { STATIONS } = await import("../../src/creative/stations/index.js");
+    const { bodyFootprints, standPoint } = await import("../../src/lib/figure.js");
+    const { findPath } = await import("../../src/lib/path.js");
+    const { FLOOR } = await import("../../src/lib/floor.js");
+    const { FIGURE_START } = await import("../../src/lib/travelers.js");
+    const fps = bodyFootprints(STATIONS);
+    const points = [FIGURE_START, ...STATIONS.map(standPoint)];
+    for (const st of STATIONS) {
+      for (const from of points) expect(findPath(from, standPoint(st), fps, FLOOR), `${st.id} from ${JSON.stringify(from)}`).not.toBeNull();
+    }
+  });
+});

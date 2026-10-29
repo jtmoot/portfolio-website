@@ -17,8 +17,8 @@ const walk = (speed, seconds) => {
 const changes = (names) => names.filter((n, i) => i > 0 && n !== names[i - 1]).length;
 
 describe("gait", () => {
-  it("defaults to round 1's 2x speed", () => {
-    expect(SPEED).toBe(18);
+  it("defaults to round 1's 1.5x speed", () => {
+    expect(SPEED).toBe(13.5);
   });
 
   it("walks at the default speed and jogs from JOG_AT up", () => {

@@ -65,7 +65,8 @@ describe("stepFigure", () => {
     expect(back.falling).toBe(false);
     expect(back.control).toBe("idle");
     expect(back.tiles.size).toBe(0);
-    expect(back.pos).toEqual({ x: 43, y: 18 });
+    expect(back.pos.x).toBe(43);
+    expect(back.pos.y).toBeCloseTo(19.2, 6);
   });
 
   it("walks to a tapped point and stops there", () => {

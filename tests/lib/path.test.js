@@ -38,3 +38,16 @@ describe("findPath", () => {
     expect(findPath({ x: 10, y: 20 }, { x: 20, y: 65 }, BOXES, ROOM)).toBeNull();
   });
 });
+
+describe("findPath clearance", () => {
+  it("walks a lane clear of furniture instead of hugging its edge", async () => {
+    const { LAYOUT } = await import("../../src/creative/stations/layout.js");
+    const { bodyFootprints, standPoint } = await import("../../src/lib/figure.js");
+    const { FLOOR } = await import("../../src/lib/floor.js");
+    const fps = bodyFootprints(Object.values(LAYOUT));
+    const route = findPath(standPoint(LAYOUT.library), standPoint(LAYOUT.plants), fps, FLOOR);
+    const desk = LAYOUT.desk.footprint;
+    const gap = (p) => Math.max(desk.x - p.x, p.x - (desk.x + desk.w), p.y - (desk.y + desk.h), 0);
+    for (const p of route.slice(0, -1)) expect(gap(p), JSON.stringify(p)).toBeGreaterThanOrEqual(5.5);
+  });
+});

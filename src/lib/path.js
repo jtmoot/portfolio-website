@@ -2,6 +2,8 @@ import { collides } from "./floor.js";
 
 const CELL = 2;
 const MARGIN = 1.2;
+/** How far off furniture he prefers to walk: cells inside this lane cost more, so routes keep clear. */
+const LANE = 4;
 
 const grow = (f, m) => ({ x: f.x - m, y: f.y - m, w: f.w + 2 * m, h: f.h + 2 * m });
 
@@ -17,7 +19,8 @@ function lineClear(a, b, boxes) {
 
 /**
  * A walking route from `from` to `to` that goes round furniture: waypoints, ending at `to`.
- * A* over a 2-unit grid of the room, then straightened so he walks in long lines, not stairs.
+ * A* over a 2-unit grid of the room, preferring cells a lane's width off the furniture, then
+ * straightened (keeping that lane where it can) so he walks in long lines, not stairs or along edges.
  * @param {{ x: number, y: number }} from
  * @param {{ x: number, y: number }} to
  * @param {{ x: number, y: number, w: number, h: number }[]} footprints
@@ -30,6 +33,8 @@ export function findPath(from, to, footprints, room) {
   if (lineClear(from, to, footprints)) return [{ ...to }];
 
   const hard = footprints.map((f) => grow(f, MARGIN));
+  const lane = footprints.map((f) => grow(f, MARGIN + LANE));
+  const near = footprints.map((f) => grow(f, MARGIN + LANE / 2));
   const cols = Math.ceil(room.w / CELL) + 1;
   const rows = Math.ceil(room.h / CELL) + 1;
   const centre = (i, j) => ({ x: Math.min(room.w, i * CELL), y: Math.min(room.h, j * CELL) });
@@ -68,7 +73,9 @@ export function findPath(from, to, footprints, room) {
         const k = key(i, j);
         if (done.has(k) || !free(i, j)) continue;
         if (di && dj && (!free(cur.i + di, cur.j) || !free(cur.i, cur.j + dj))) continue; // no corner cutting
-        const cost = cur.g + (di && dj ? Math.SQRT2 : 1);
+        const c = centre(i, j);
+        const crowd = near.some((f) => collides(c, f)) ? 1.6 : lane.some((f) => collides(c, f)) ? 0.6 : 0;
+        const cost = cur.g + (di && dj ? Math.SQRT2 : 1) + crowd;
         const prev = open.get(k);
         if (!prev || cost < prev.g) open.set(k, { i, j, g: cost, f: cost + h(i, j), parent: cur });
       }
@@ -84,7 +91,7 @@ export function findPath(from, to, footprints, room) {
   let i = 0;
   while (i < cells.length) {
     let j = cells.length - 1;
-    while (j > i && !lineClear(at, cells[j], soft)) j--;
+    while (j > i && !lineClear(at, cells[j], j === cells.length - 1 ? soft : lane.map((f, n) => (collides(at, f) || collides(cells[j], f) ? soft[n] : f)))) j--;
     route.push(cells[j]);
     at = cells[j];
     i = j + 1;

@@ -1,9 +1,18 @@
 import { onPad, tileKey, tilesAround, resolveCollision, FLOOR } from "./floor.js";
 import { findPath } from "./path.js";
 
-/** Floor units per second at 1x on the speed wheel: round 1's 2x (0.9 m/s, a brisk walk). */
-export const SPEED = 18;
+/** Floor units per second at 1x on the speed wheel: round 1's 1.5x (0.68 m/s, an easy walk). */
+export const SPEED = 13.5;
 export const IDLE_RESUME_MS = 6000;
+/** Half his footprint in floor units (12 cm): furniture is kept this far from the point between his feet. */
+export const BODY = 2.4;
+
+/**
+ * Station footprints grown by his body, so his shoes stop at desk legs and pots instead of on them.
+ * @param {{ footprint: { x: number, y: number, w: number, h: number } }[]} stations
+ */
+export const bodyFootprints = (stations) =>
+  stations.map(({ footprint: f }) => ({ x: f.x - BODY, y: f.y - BODY, w: f.w + 2 * BODY, h: f.h + 2 * BODY }));
 export const PAUSE_MS = 4000;
 export const TILE_FADE_MS = 4000;
 export const RESPAWN_MS = 1000;
@@ -119,7 +128,7 @@ const facingToward = (p, f) => facingOf({ dx: f.x + f.w / 2 - p.x, dy: f.y + f.h
 export function standPoint(station) {
   if (station.standAt) return { ...station.standAt };
   const f = station.footprint;
-  return { x: f.x + f.w / 2, y: Math.min(FLOOR.h - 1, f.y + f.h + 2) };
+  return { x: f.x + f.w / 2, y: Math.min(FLOOR.h - 1, f.y + f.h + BODY + 0.8) };
 }
 
 /** Back walls block: no walking past y = 0 or x = FLOOR.w. The open front edges do not. */

@@ -45,7 +45,7 @@ export const LAYOUT = {
     footprint: { x: 50, y: 58, w: 54, h: 25 },
     link: "#running",
     labelAt: { x: 84, y: 85, z: 0 },
-    standAt: { x: 64, y: 85 },
+    standAt: { x: 64, y: 86.2 },
   },
   chess: {
     id: "chess",
@@ -55,7 +55,7 @@ export const LAYOUT = {
     link: "https://www.chess.com/member/breakfast_enjoyer",
     labelAt: { x: 34, y: 79, z: 0 },
     // Behind the board, on white's side, facing the room.
-    standAt: { x: 26, y: 58.6 },
+    standAt: { x: 26, y: 57 },
   },
   corkboard: {
     id: "corkboard",
