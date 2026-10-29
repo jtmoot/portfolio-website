@@ -78,3 +78,36 @@ describe("ProjectCard", () => {
     await expect(startPlayback(null)).resolves.toBeUndefined();
   });
 });
+
+describe("ProjectCard, Garvit layout", () => {
+  const FULL = {
+    ...BASE,
+    video: null,
+    kind: "mlops · experiment tracking",
+    badge: "live product",
+    url: "forge.example.com",
+    body: "a longer write-up",
+    stack: ["python", "fastapi"],
+    links: [
+      { label: "live", href: "https://forge.example.com" },
+      { label: "github", href: "https://github.com/x/forge" },
+    ],
+  };
+
+  it("shows the url bar, number line, badge, write-up and chips", async () => {
+    const el = await render(<ProjectCard project={FULL} n={3} />);
+    expect(el.querySelector(".win-title").textContent).toBe("forge.example.com");
+    expect(el.querySelector(".card-meta").textContent).toContain("№ 003");
+    expect(el.querySelector(".card-meta").textContent).toContain("mlops · experiment tracking");
+    expect(el.querySelector(".badge").textContent).toBe("[live product]");
+    expect(el.querySelector(".card-text").textContent).toBe("a longer write-up");
+    expect([...el.querySelectorAll(".chip")].map((c) => c.textContent)).toEqual(["python", "fastapi"]);
+  });
+
+  it("leads the footer with launch live and keeps github on the right", async () => {
+    const el = await render(<ProjectCard project={FULL} n={1} />);
+    const foot = el.querySelector(".card-foot");
+    expect(foot.querySelector(".go-live").textContent).toContain("launch live");
+    expect(foot.querySelector(".go-code").getAttribute("href")).toBe("https://github.com/x/forge");
+  });
+});
