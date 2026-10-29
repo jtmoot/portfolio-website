@@ -39,3 +39,51 @@ describe("useFigure", () => {
     await act(async () => root.unmount());
   });
 });
+
+describe("useFigure keys", () => {
+  const drive = async (events) => {
+    let cb = null;
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((fn) => {
+      cb = fn;
+      return 1;
+    });
+    vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
+    let ref;
+    function Probe2() {
+      ref = useFigure({ active: true, stations: STATIONS, start: { x: 44, y: 40 }, onFrame: () => {} }).stateRef;
+      return null;
+    }
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<Probe2 />));
+    let t = 0;
+    const frames = (n) => {
+      for (let i = 0; i < n; i++) cb((t += 16));
+    };
+    frames(1);
+    events(frames);
+    const a = { ...ref.current.pos };
+    frames(30);
+    const b = { ...ref.current.pos };
+    await act(async () => root.unmount());
+    return { a, b };
+  };
+
+  it("releases a key even when Shift changes what keyup reports", async () => {
+    const { a, b } = await drive((frames) => {
+      window.dispatchEvent(new KeyboardEvent("keydown", { key: "w", code: "KeyW" }));
+      frames(10);
+      window.dispatchEvent(new KeyboardEvent("keyup", { key: "W", code: "KeyW" }));
+    });
+    expect(b).toEqual(a);
+  });
+
+  it("drops held keys when the window loses focus", async () => {
+    const { a, b } = await drive((frames) => {
+      window.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", code: "ArrowLeft" }));
+      frames(10);
+      window.dispatchEvent(new Event("blur"));
+    });
+    expect(b).toEqual(a);
+  });
+});

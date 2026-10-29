@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createModeStore, lockScroll, unlockScroll } from "../../src/lib/mode.js";
+import { createModeStore, createModeController, lockScroll, unlockScroll } from "../../src/lib/mode.js";
 
 describe("mode store", () => {
   it("starts on the pad and toggles back and forth", () => {
@@ -38,5 +38,52 @@ describe("scroll lock", () => {
     expect(document.body.style.overflow).toBe("hidden");
     unlockScroll();
     expect(document.body.style.overflow).toBe("");
+  });
+});
+
+describe("mode controller", () => {
+  const deferred = () => {
+    let resolve, reject;
+    const promise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+
+  it("enters creative only once the room has loaded", async () => {
+    const store = createModeStore();
+    const d = deferred();
+    const c = createModeController(store, () => d.promise);
+    const done = c.toggle();
+    expect(store.get()).toBe("pad");
+    d.resolve();
+    await done;
+    expect(store.get()).toBe("creative");
+  });
+
+  it("a second toggle while loading cancels the first", async () => {
+    const store = createModeStore();
+    const d = deferred();
+    const c = createModeController(store, () => d.promise);
+    const first = c.toggle();
+    c.toggle();
+    d.resolve();
+    await first;
+    expect(store.get()).toBe("pad");
+  });
+
+  it("stays on the pad if the room fails to load", async () => {
+    const store = createModeStore();
+    const c = createModeController(store, () => Promise.reject(new Error("offline")));
+    await c.toggle();
+    expect(store.get()).toBe("pad");
+  });
+
+  it("leaves creative immediately", async () => {
+    const store = createModeStore("creative");
+    const c = createModeController(store, () => new Promise(() => {}));
+    await c.toggle();
+    expect(store.get()).toBe("pad");
   });
 });

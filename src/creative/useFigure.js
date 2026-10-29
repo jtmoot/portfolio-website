@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { initialFigure, keyToDir, stepFigure } from "../lib/figure.js";
+import { initialFigure, keyToDir, standPoint, stepFigure } from "../lib/figure.js";
 
 const typing = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
 
@@ -18,15 +18,21 @@ export function useFigure({ active, stations, start, onFrame, wander = true }) {
 
   useEffect(() => {
     if (!active) return undefined;
-    const held = new Set();
-    const ctx = { stations: wander ? stations : [], footprints: stations.map((s) => s.footprint) };
+    // Keyed by e.code, so Shift (which turns "w" into "W") cannot strand a key in the set.
+    const held = new Map();
+    const desk = stations.find((s) => s.id === "desk") || stations[0];
+    const ctx = {
+      stations: wander ? stations : [],
+      footprints: stations.map((s) => s.footprint),
+      respawn: desk ? standPoint(desk) : start,
+    };
     let frame = 0;
     let last = 0;
 
     const dir = () => {
       let dx = 0;
       let dy = 0;
-      for (const k of held) {
+      for (const k of held.values()) {
         const d = keyToDir(k);
         if (d) {
           dx += d.dx;
@@ -38,9 +44,12 @@ export function useFigure({ active, stations, start, onFrame, wander = true }) {
     const down = (e) => {
       if (typing(e.target) || e.metaKey || e.ctrlKey || e.altKey || !keyToDir(e.key)) return;
       e.preventDefault();
-      held.add(e.key);
+      held.set(e.code || e.key, e.key.length === 1 ? e.key.toLowerCase() : e.key);
     };
-    const up = (e) => held.delete(e.key);
+    const up = (e) => held.delete(e.code || e.key);
+    // A keyup that happens in another window never arrives: let go of everything on blur.
+    const release = () => held.clear();
+    const hidden = () => document.visibilityState === "hidden" && held.clear();
     const tick = (now) => {
       const elapsed = last ? (now - last) / 1000 : 1 / 60;
       last = now;
@@ -59,13 +68,17 @@ export function useFigure({ active, stations, start, onFrame, wander = true }) {
 
     window.addEventListener("keydown", down);
     window.addEventListener("keyup", up);
+    window.addEventListener("blur", release);
+    document.addEventListener("visibilitychange", hidden);
     frame = window.requestAnimationFrame(tick);
     return () => {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
+      window.removeEventListener("blur", release);
+      document.removeEventListener("visibilitychange", hidden);
     };
-  }, [active, stations, wander]);
+  }, [active, stations, wander, start]);
 
   const tap = useCallback((p) => {
     tapRef.current = p;

@@ -51,3 +51,40 @@ export function enterCreative() {
   lockScroll();
   return 0;
 }
+
+/**
+ * The creative-mode toggle. Entering waits for `load` (the room's code) so the paper never tips
+ * onto an empty floor; toggling again while it loads cancels; a failed load stays on the pad.
+ * @param {ReturnType<typeof createModeStore>} store
+ * @param {() => Promise<unknown>} load
+ */
+export function createModeController(store, load) {
+  let ticket = 0;
+  let loading = false;
+  return {
+    get loading() {
+      return loading;
+    },
+    toggle() {
+      ticket++;
+      if (store.get() === "creative" || loading) {
+        loading = false;
+        store.set("pad");
+        return Promise.resolve();
+      }
+      const mine = ticket;
+      loading = true;
+      return Promise.resolve()
+        .then(load)
+        .then(
+          () => {
+            if (mine === ticket) store.set("creative");
+          },
+          () => {},
+        )
+        .finally(() => {
+          if (mine === ticket) loading = false;
+        });
+    },
+  };
+}

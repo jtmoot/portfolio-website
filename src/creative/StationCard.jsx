@@ -17,7 +17,7 @@ export default function StationCard({ station, style, onNavigate }) {
   const text = CARD_TEXT[station.id];
   const external = station.link?.startsWith("http");
   return (
-    <div className="station-card" style={style} role="status">
+    <div className="station-card" style={style}>
       <p>{text.line}</p>
       {station.link && text.cta && (
         <a

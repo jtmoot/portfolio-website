@@ -15,10 +15,18 @@ const StationHarness = lazy(() => import("./creative/StationHarness.jsx"));
 const PhoneStage = lazy(() => import("./creative/PhoneStage.jsx"));
 import { play, unlock } from "./lib/audio.js";
 import { getTheme, toggleTheme } from "./lib/theme.js";
-import { createModeStore } from "./lib/mode.js";
+import { createModeController, createModeStore } from "./lib/mode.js";
 
 const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
 const modeStore = createModeStore(params.get("mode") === "creative" ? "creative" : "pad");
+const PHONE = "(max-width: 819px)";
+/** The room's code: the floor overlay (which pulls in every drawing), plus the phone stage on phones. */
+const loadRoom = () =>
+  Promise.all([
+    import("./creative/Floor.jsx"),
+    typeof matchMedia === "function" && matchMedia(PHONE).matches ? import("./creative/PhoneStage.jsx") : null,
+  ]);
+const modeControl = createModeController(modeStore, loadRoom);
 
 export default function App() {
   const [theme, setThemeState] = useState(() => {
@@ -29,6 +37,20 @@ export default function App() {
   const mode = useSyncExternalStore(modeStore.subscribe, modeStore.get);
   const [roomLoaded, setRoomLoaded] = useState(mode === "creative");
   if (mode === "creative" && !roomLoaded) setRoomLoaded(true);
+
+  // Escape leaves creative mode; once the page has settled, fetch the room quietly in the background.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape" && modeStore.get() === "creative") modeControl.toggle();
+    };
+    window.addEventListener("keydown", onKey);
+    const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1));
+    const t = setTimeout(() => idle(() => loadRoom().catch(() => {})), 4000);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      clearTimeout(t);
+    };
+  }, []);
 
   useEffect(() => {
     const first = () => unlock();
@@ -58,7 +80,7 @@ export default function App() {
   };
   const onToggleMode = () => {
     play("tick");
-    modeStore.toggle();
+    modeControl.toggle();
   };
 
   return (
@@ -68,7 +90,7 @@ export default function App() {
           <>
           <main className="sheet">
             <Nav theme={theme} onToggleTheme={onToggleTheme} mode={mode} onToggleMode={onToggleMode} />
-            <section className="poster">
+            <section className="poster" inert={flipped || undefined}>
               <Margins />
               <Hero />
             </section>
@@ -77,7 +99,7 @@ export default function App() {
                 <Floor view={view} flipped={flipped} onNavigate={onNavigate} />
               </Suspense>
             )}
-            <div className="body">
+            <div className="body" inert={flipped || undefined}>
               <Experience />
               <Work />
               <Interests />

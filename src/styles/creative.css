@@ -168,6 +168,7 @@
   transition: opacity 0.3s ease;
   text-decoration: underline transparent;
   text-underline-offset: 0.25em;
+  text-shadow: 0 0 0.25em var(--paper), 0 0 0.25em var(--paper), 0 0 0.5em var(--paper);
 }
 
 .floor-layer[data-on] .station-label {
@@ -246,7 +247,10 @@
 /* Figure materials are unprefixed: the sprite frames render inside <use> shadow trees, where
    ancestor selectors such as ".iso .x" cannot match, but custom properties still inherit. */
 .fm-skin{--anatomy-paper:#e9c9ad;--anatomy-face:#e9c9ad;--anatomy-top:#f3d9c2;--anatomy-shade-0:#c99d7e;--anatomy-shade-1:#d4ab8d;--anatomy-shade-2:#dfb99b;--anatomy-shade-3:#e7c4a7}
-.fm-hair{--anatomy-paper:#2e2520;--anatomy-face:#2e2520;--anatomy-top:#3f332c;--anatomy-shade-0:#1f1915;--anatomy-shade-1:#251e1a;--anatomy-shade-2:#2a221d;--anatomy-shade-3:#302722}
+/* Hair tones come from variables on the figure host, which a night rule can reach (the frame itself cannot be matched). */
+.figure{--hair-0:#1f1915;--hair-1:#251e1a;--hair-2:#2a221d;--hair-3:#302722;--hair:#2e2520;--hair-top:#3f332c}
+html[data-theme="night"] .figure{--hair-0:#4a3d34;--hair-1:#54463c;--hair-2:#5e4f44;--hair-3:#68584c;--hair:#5a4a3f;--hair-top:#76655a}
+.fm-hair{--anatomy-paper:var(--hair);--anatomy-face:var(--hair);--anatomy-top:var(--hair-top);--anatomy-shade-0:var(--hair-0);--anatomy-shade-1:var(--hair-1);--anatomy-shade-2:var(--hair-2);--anatomy-shade-3:var(--hair-3)}
 .fm-hoodie{--anatomy-paper:#3b3f44;--anatomy-face:#3b3f44;--anatomy-top:#4d5258;--anatomy-shade-0:#2a2d31;--anatomy-shade-1:#303337;--anatomy-shade-2:#363a3e;--anatomy-shade-3:#3c4045;--anatomy-lo:#6c737a;--anatomy-faint:#565c62}
 .fm-hoodie .tb-body{fill:#3b3f44}.fm-hoodie .tb-shine{fill:#4d5258}.fm-hoodie .tb-shade{fill:#2a2d31}
 .fm-pants .tb-body{fill:#6c6f73}.fm-pants .tb-shine{fill:#7d8084}.fm-pants .tb-shade{fill:#55585c}

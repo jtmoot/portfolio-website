@@ -184,3 +184,33 @@ html[data-theme="night"] .iso .m-brain{fill:#3a3127}html[data-theme="night"] .is
 .iso .m-plate-fig{fill:var(--anatomy-mid);font-family:var(--anatomy-mono)}
 .iso .m-wall{--anatomy-paper:#f1f0eb;--anatomy-face:#f1f0eb;--anatomy-top:#d9d7cf;--anatomy-shade-0:#e8e6e0;--anatomy-shade-1:#ecebe5;--anatomy-shade-2:#f0efea;--anatomy-shade-3:#f4f3ee}
 html[data-theme="night"] .iso .m-wall{--anatomy-paper:#1c1d20;--anatomy-face:#1c1d20;--anatomy-top:#2a2b2f;--anatomy-shade-0:#17181a;--anatomy-shade-1:#191a1c;--anatomy-shade-2:#1b1c1e;--anatomy-shade-3:#1d1e20}
+
+/* Night: generated from each material's day values, mixed toward the night paper (tools note in the ledger). */
+html[data-theme="night"] .iso .m-alu{--anatomy-top:#444547;--anatomy-shade-0:#3a3b3c;--anatomy-shade-1:#3c3d3f;--anatomy-shade-2:#3e3f41;--anatomy-shade-3:#404143}
+html[data-theme="night"] .iso .m-strap{--anatomy-top:#404142;--anatomy-shade-0:#393a3b;--anatomy-shade-1:#3b3c3d;--anatomy-shade-2:#3d3d3e;--anatomy-shade-3:#3e3f40}
+html[data-theme="night"] .iso .m-uhmw{--anatomy-top:#434445;--anatomy-shade-0:#3e3e40;--anatomy-shade-1:#3f4041;--anatomy-shade-2:#404142;--anatomy-shade-3:#414243}
+html[data-theme="night"] .iso .m-knit{--anatomy-paper:#2e2f33;--anatomy-face:#2e2f33;--anatomy-top:#323437;--anatomy-shade-0:#28292d;--anatomy-shade-1:#292b2e;--anatomy-shade-2:#2b2d30;--anatomy-shade-3:#2d2e32;--anatomy-lo:#242629;--anatomy-hi:#202021}
+html[data-theme="night"] .iso .m-foam{--anatomy-top:#454548;--anatomy-shade-0:#3f4041;--anatomy-shade-1:#404143;--anatomy-shade-2:#414244;--anatomy-shade-3:#434345}
+html[data-theme="night"] .iso .m-b1{--anatomy-paper:#2a2a2a;--anatomy-face:#2a2a2a;--anatomy-top:#404041;--anatomy-shade-0:#212222;--anatomy-shade-1:#242425;--anatomy-shade-2:#272828;--anatomy-shade-3:#2a2a2b;--anatomy-lo:#292a2b;--anatomy-faint:#242526}
+html[data-theme="night"] .iso .m-b2{--anatomy-paper:#303132;--anatomy-face:#303132;--anatomy-top:#414142;--anatomy-shade-0:#2b2c2d;--anatomy-shade-1:#2c2d2e;--anatomy-shade-2:#2e2f30;--anatomy-shade-3:#303031;--anatomy-lo:#242426}
+html[data-theme="night"] .iso .m-b3{--anatomy-top:#424243;--anatomy-shade-0:#3d3d3d;--anatomy-shade-1:#3e3e3e;--anatomy-shade-2:#3f3f3f;--anatomy-shade-3:#414141;--anatomy-lo:#323231}
+html[data-theme="night"] .iso .m-b4{--anatomy-paper:#24272c;--anatomy-face:#24272c;--anatomy-top:#404141;--anatomy-shade-0:#202227;--anatomy-shade-1:#212428;--anatomy-shade-2:#22252a;--anatomy-shade-3:#23262b;--anatomy-lo:#2e3035;--anatomy-faint:#282b30}
+html[data-theme="night"] .iso .m-b5{--anatomy-paper:#2a2121;--anatomy-face:#2a2121;--anatomy-top:#414041;--anatomy-shade-0:#3c2825;--anatomy-shade-1:#402c28;--anatomy-shade-2:#292020;--anatomy-shade-3:#2a2121;--anatomy-lo:#352d2d;--anatomy-faint:#2f2727}
+html[data-theme="night"] .iso .m-paint{--anatomy-top:#454548;--anatomy-shade-0:#404042;--anatomy-shade-1:#414143;--anatomy-shade-2:#424244;--anatomy-shade-3:#434345}
+html[data-theme="night"] .iso .m-ceramic{--anatomy-top:#444446;--anatomy-shade-0:#3d3d3e;--anatomy-shade-1:#3e3f40;--anatomy-shade-2:#404041;--anatomy-shade-3:#424243}
+html[data-theme="night"] .iso .m-ceramic-dark{--anatomy-paper:#232324;--anatomy-face:#232324;--anatomy-top:#272728;--anatomy-shade-0:#2a2928;--anatomy-shade-1:#2d2c2c;--anatomy-shade-2:#30302e;--anatomy-shade-3:#222223;--anatomy-lo:#2c2c2d}
+html[data-theme="night"] .iso .m-moss{--anatomy-paper:#272926;--anatomy-face:#272926;--anatomy-top:#2a2c29;--anatomy-shade-0:#232422;--anatomy-shade-1:#242623;--anatomy-shade-2:#252724;--anatomy-shade-3:#272826;--anatomy-lo:#2c2e24}
+html[data-theme="night"] .iso .m-cane{--anatomy-paper:#333130;--anatomy-face:#333130;--anatomy-top:#363433;--anatomy-shade-0:#2d2c2b;--anatomy-shade-1:#2f2e2c;--anatomy-shade-2:#312f2e;--anatomy-shade-3:#32312f;--anatomy-lo:#282726}
+html[data-theme="night"] .iso .m-jar{--anatomy-top:#414345;--anatomy-shade-0:#3b3d40;--anatomy-shade-1:#3c3e41;--anatomy-shade-2:#3e4042;--anatomy-shade-3:#3f4143}
+html[data-theme="night"] .iso .m-stone{--anatomy-top:#414244;--anatomy-shade-0:#3a3a3c;--anatomy-shade-1:#3c3c3e;--anatomy-shade-2:#3d3e3f;--anatomy-shade-3:#3f4041}
+html[data-theme="night"] .iso .m-iron{--anatomy-paper:#212222;--anatomy-face:#212222;--anatomy-top:#292a2a;--anatomy-shade-0:#1a1b1c;--anatomy-shade-1:#1d1e1e;--anatomy-shade-2:#202021;--anatomy-shade-3:#222224;--anatomy-lo:#242426}
+html[data-theme="night"] .iso .m-enamel{--anatomy-paper:#222629;--anatomy-face:#222629;--anatomy-top:#212326;--anatomy-shade-0:#1c1f22;--anatomy-shade-1:#1f2426;--anatomy-shade-2:#22272a;--anatomy-shade-3:#272c2f;--anatomy-faint:#23262a;--anatomy-lo:#272a2d}
+html[data-theme="night"] .iso .m-rib{--anatomy-paper:#2a1f1e;--anatomy-face:#2a1f1e;--anatomy-top:#2e2221;--anatomy-shade-0:#3a231f;--anatomy-shade-1:#3f2622;--anatomy-shade-2:#442824;--anatomy-shade-3:#2a1f1f;--anatomy-lo:#352b2a}
+html[data-theme="night"] .iso .m-bone{--anatomy-top:#434242;--anatomy-shade-0:#3e3d3b;--anatomy-shade-1:#3f3e3c;--anatomy-shade-2:#403f3e;--anatomy-shade-3:#414140}
+html[data-theme="night"] .iso .m-towel{--anatomy-top:#424344;--anatomy-shade-0:#3d3d3e;--anatomy-shade-1:#3e3f3f;--anatomy-shade-2:#404040;--anatomy-shade-3:#414142}
+html[data-theme="night"] .iso .m-onion{--anatomy-top:#403d37;--anatomy-shade-0:#393128;--anatomy-shade-1:#3b342c;--anatomy-shade-2:#3d372f;--anatomy-shade-3:#3f3a33}
+html[data-theme="night"] .iso .m-glass-bottle{--anatomy-paper:#363630;--anatomy-face:#363630;--anatomy-top:#3b3b36;--anatomy-shade-0:#2e2e28;--anatomy-shade-1:#31312b;--anatomy-shade-2:#33332d;--anatomy-shade-3:#353630}
+html[data-theme="night"] .iso .m-wood-dark{--anatomy-paper:#282422;--anatomy-face:#282422;--anatomy-top:#2b2725;--anatomy-shade-0:#352c26;--anatomy-shade-1:#242120;--anatomy-shade-2:#262221;--anatomy-shade-3:#272422;--anatomy-lo:#312c29;--anatomy-faint:#2c2927}
+html[data-theme="night"] .iso .m-ivory{--anatomy-top:#454546;--anatomy-shade-0:#3e3d3c;--anatomy-shade-1:#3f3f3e;--anatomy-shade-2:#414140;--anatomy-shade-3:#434343}
+html[data-theme="night"] .iso .m-ebony{--anatomy-paper:#222222;--anatomy-face:#222222;--anatomy-top:#302f2f;--anatomy-shade-0:#1a1a1a;--anatomy-shade-1:#1c1c1d;--anatomy-shade-2:#202020;--anatomy-shade-3:#242424;--anatomy-lo:#262627;--anatomy-faint:#232324}
+html[data-theme="night"] .iso .m-steel{--anatomy-top:#3b3d40;--anatomy-shade-0:#25272a;--anatomy-shade-1:#2a2c2f;--anatomy-shade-2:#303235;--anatomy-shade-3:#36383b}

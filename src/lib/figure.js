@@ -8,6 +8,7 @@ export const TILE_FADE_MS = 4000;
 export const RESPAWN_MS = 1000;
 const FRAME_MS = 120;
 const ARRIVE = 0.02;
+const RESPAWN_FALLBACK = { x: 44, y: 26 };
 
 const S = Math.SQRT1_2;
 const KEYS = {
@@ -68,7 +69,8 @@ const clampWalls = (p) => ({ x: Math.min(p.x, FLOOR.w), y: Math.max(p.y, 0) });
  * Advances the figure by dt seconds. Pure: returns a new state.
  * @param {ReturnType<typeof initialFigure>} state
  * @param {{ dir: { dx: number, dy: number } | null, tapTarget: { x: number, y: number } | null, dt?: number }} input
- * @param {{ stations: { id: string, footprint: object }[], footprints: object[] }} ctx
+ * @param {{ stations: { id: string, footprint: object }[], footprints: object[], respawn?: { x: number, y: number } }} ctx
+ *   stations: the idle tour (empty to stay put); respawn: where he reappears after a fall
  * @param {number} [dtArg] seconds
  */
 export function stepFigure(state, input, ctx, dtArg) {
@@ -80,7 +82,7 @@ export function stepFigure(state, input, ctx, dtArg) {
     s.fallLeft -= ms;
     if (s.fallLeft <= 0) {
       const desk = ctx.stations.find((st) => st.id === "desk") || ctx.stations[0];
-      s.pos = standPoint(desk);
+      s.pos = ctx.respawn ? { ...ctx.respawn } : desk ? standPoint(desk) : { ...RESPAWN_FALLBACK };
       s.falling = false;
       s.fallLeft = 0;
       s.control = "idle";

@@ -42,7 +42,8 @@ export default function TypedIntro({ tokens, startDelay = 700, replayRef }) {
   }, [replayRef, run]);
 
   return (
-    <p className="typed" aria-label={frames.at(-1).html.replace(/<[^>]+>/g, "")}>
+    <p className="typed">
+      <span className="sr-only">{tokens.map((t) => t.text).join("")}</span>
       <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: html }} />
       <span className={`caret${typing ? "" : " idle"}`} aria-hidden="true" />
     </p>

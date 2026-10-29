@@ -99,4 +99,14 @@ describe("stepFigure", () => {
   it("standAt overrides the computed stand point", () => {
     expect(standPoint({ footprint: { x: 0, y: 0, w: 10, h: 10 }, standAt: { x: 3, y: 4 } })).toEqual({ x: 3, y: 4 });
   });
+
+  it("a fall with no stations to wander still respawns at the desk (reduced motion, hidden tab)", () => {
+    const ctx = { stations: [], footprints: CTX.footprints, respawn: { x: 43, y: 18 } };
+    const off = run(initialFigure({ x: 50, y: 77.5 }), { dir: { dx: 0, dy: 1 } }, 0.5);
+    const fell = stepFigure(off, { dir: null, tapTarget: null }, ctx, 60);
+    expect(fell.falling).toBe(true);
+    const back = stepFigure(fell, { dir: null, tapTarget: null }, ctx, 1.1);
+    expect(back.falling).toBe(false);
+    expect(back.pos).toEqual({ x: 43, y: 18 });
+  });
 });
