@@ -22,4 +22,23 @@ describe("figure sprite sheet", () => {
   it("records the feet anchor in meta", () => {
     expect(meta.figure.anchor).toHaveLength(2);
   });
+
+  it("dresses him from the photos: a quarter-zip and joggers, never a hoodie, and a watch", () => {
+    expect(sheet).not.toContain("fm-hoodie");
+    expect(sheet).toContain("fm-zip");
+    expect(sheet).toContain("fm-jog");
+    expect(sheet).toContain("fm-watch");
+  });
+
+  it("gives him swept hair: one mass with a sunlit top, strands from a loose middle part, pieces falling forward", () => {
+    const body = sheet.match(/<symbol id="f-dr-body"[\s\S]*?<\/symbol>/)[0];
+    expect(body).toContain('class="fm-hair-edge"');
+    expect(body).toContain('class="fm-hair-sun"');
+    expect(body).toContain('data-part="hair-part"');
+    expect((body.match(/class="fm-hair-lock"/g) || []).length).toBe(2);
+    const back = sheet.match(/<symbol id="f-ul-body"[\s\S]*?<\/symbol>/)[0];
+    expect(back).not.toContain("fm-hair-lock");
+    const idle = sheet.match(/<symbol id="f-dr-idle"[\s\S]*?<\/symbol>/)[0];
+    expect(idle).toContain('href="#f-dr-body"');
+  });
 });
