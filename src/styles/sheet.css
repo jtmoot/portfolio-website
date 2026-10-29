@@ -23,7 +23,7 @@ a {
   min-height: 100vh;
   background-color: var(--paper);
   background-image: radial-gradient(var(--dots) 1px, transparent 1.2px);
-  background-size: min(1.6vw, 24.2px) min(1.6vw, 24.2px);
+  background-size: clamp(16px, 1.6vw, 24.2px) clamp(16px, 1.6vw, 24.2px);
   transition: background-color 0.6s ease;
 }
 
@@ -454,5 +454,264 @@ button[aria-pressed="true"] .toggle-pill::after {
 
   .hero h1 {
     white-space: normal;
+  }
+}
+
+/* Body sections */
+.muted {
+  opacity: 0.6;
+}
+
+.xp {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.xrow {
+  display: grid;
+  grid-template-columns: 2.2cqw 1fr auto;
+  gap: 1cqw;
+  align-items: center;
+  padding: 0.5cqw 0.4cqw;
+  border-top: 1px solid var(--rule);
+  transition: background 0.15s;
+}
+
+.xrow:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.xrow:hover {
+  background: var(--rule);
+}
+
+.xrow b {
+  font-weight: 500;
+}
+
+.logo {
+  width: 2.2cqw;
+  height: 2.2cqw;
+  border: 1px solid var(--ink);
+  display: grid;
+  place-items: center;
+  font-size: 0.6cqw;
+  font-weight: 500;
+  object-fit: contain;
+  filter: grayscale(1);
+  transition: filter 0.2s;
+}
+
+.xrow:hover .logo {
+  filter: none;
+}
+
+.when {
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.now {
+  display: inline-block;
+  width: 0.5cqw;
+  height: 0.5cqw;
+  border-radius: 50%;
+  background: #2f7d4a;
+  margin-left: 0.5em;
+  vertical-align: 1px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6cqw;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 0.4cqw;
+  padding: 0.6cqw 0.6cqw 0.8cqw;
+  box-shadow: 0 0.4cqw 1cqw rgba(35, 35, 32, 0.08);
+}
+
+.win {
+  background: #16181c;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.win-bar {
+  display: flex;
+  gap: 0.25cqw;
+  align-items: center;
+  height: 1.4cqw;
+  padding: 0 0.5cqw;
+  position: relative;
+}
+
+.win-bar i {
+  width: 0.45cqw;
+  height: 0.45cqw;
+  border-radius: 50%;
+  background: #e0443e;
+}
+
+.win-bar i:nth-child(2) {
+  background: #dea123;
+}
+
+.win-bar i:nth-child(3) {
+  background: #1aab29;
+}
+
+.win-title {
+  margin-left: 0.5cqw;
+  font-size: 0.6cqw;
+  color: #7d8794;
+}
+
+.tag {
+  position: absolute;
+  right: 0.6cqw;
+  top: 50%;
+  transform: translateY(-50%) rotate(2deg);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.6cqw;
+  line-height: 1.4;
+  padding: 0 0.5cqw;
+}
+
+.win video,
+.win img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top left;
+  background: #16181c;
+}
+
+.card-title {
+  font-size: 1em;
+  font-weight: 500;
+  margin: 0.6cqw 0 0;
+}
+
+.card-line {
+  margin: 0;
+  opacity: 0.6;
+  font-size: 0.85em;
+}
+
+.card-links {
+  display: flex;
+  gap: 1cqw;
+  margin: 0.4cqw 0 0;
+  font-size: 0.85em;
+}
+
+.interests {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6cqw 3cqw;
+  margin-bottom: 3.2cqw;
+}
+
+.interests section {
+  margin: 0;
+}
+
+.interests p {
+  margin: 0;
+}
+
+.plain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contact-links {
+  display: flex;
+  gap: 0.5cqw;
+}
+
+@media (max-width: 819px) {
+  .xrow {
+    grid-template-columns: 32px 1fr;
+    gap: 4px 12px;
+    padding: 10px 4px;
+  }
+
+  .xrow .when {
+    grid-column: 2;
+    font-size: 12px;
+  }
+
+  .logo {
+    width: 32px;
+    height: 32px;
+    font-size: 10px;
+  }
+
+  .now {
+    width: 7px;
+    height: 7px;
+  }
+
+  .cards,
+  .interests {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .card {
+    padding: 8px 8px 12px;
+    border-radius: 6px;
+  }
+
+  .win-bar {
+    height: 22px;
+    gap: 4px;
+    padding: 0 8px;
+  }
+
+  .win-bar i {
+    width: 7px;
+    height: 7px;
+  }
+
+  .win-title,
+  .tag {
+    font-size: 10px;
+  }
+
+  .tag {
+    right: 8px;
+    padding: 0 6px;
+  }
+
+  .card-title {
+    margin-top: 8px;
+  }
+
+  .card-links {
+    gap: 14px;
+    margin-top: 6px;
+  }
+
+  .contact-links {
+    gap: 8px;
+    flex-wrap: wrap;
   }
 }

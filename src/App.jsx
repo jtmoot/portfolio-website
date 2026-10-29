@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import Nav from "./pad/Nav.jsx";
 import Hero from "./pad/Hero.jsx";
+import Experience from "./pad/Experience.jsx";
+import Work from "./pad/Work.jsx";
+import Interests from "./pad/Interests.jsx";
+import Contact from "./pad/Contact.jsx";
 import { play, unlock } from "./lib/audio.js";
 import StationHarness from "./creative/StationHarness.jsx";
 import { getTheme, toggleTheme } from "./lib/theme.js";
@@ -47,7 +51,12 @@ export default function App() {
           <Hero />
           <div className="margin margin-right" aria-hidden="true" />
         </section>
-        <div className="body" />
+        <div className="body">
+          <Experience />
+          <Work />
+          <Interests />
+          <Contact />
+        </div>
       </main>
     </div>
   );
