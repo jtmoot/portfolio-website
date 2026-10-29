@@ -1,5 +1,5 @@
 /** Where the figure appears when the polaroid lands: in front of the desk. */
-export const FIGURE_START = { x: 44, y: 26 };
+export const FIGURE_START = { x: 54, y: 26 };
 
 /**
  * Everything in the margins that travels onto the floor in creative mode.

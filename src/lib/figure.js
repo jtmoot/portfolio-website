@@ -1,4 +1,5 @@
 import { onPad, tileKey, tilesAround, resolveCollision, FLOOR } from "./floor.js";
+import { findPath } from "./path.js";
 
 /** Floor units per second (spec 5.5: 9 cqw/s). */
 export const SPEED = 9;
@@ -8,7 +9,7 @@ export const TILE_FADE_MS = 4000;
 export const RESPAWN_MS = 1000;
 const FRAME_MS = 120;
 const ARRIVE = 0.02;
-const RESPAWN_FALLBACK = { x: 44, y: 26 };
+const RESPAWN_FALLBACK = { x: 54, y: 26 };
 
 const S = Math.SQRT1_2;
 const KEYS = {
@@ -52,9 +53,6 @@ export function initialFigure(start) {
   };
 }
 
-/** The open aisle across the room, used to detour around furniture. */
-const AISLE_Y = 28;
-
 /** The point just in front of a station, where the idle walk stops. */
 export function standPoint(station) {
   if (station.standAt) return { ...station.standAt };
@@ -62,7 +60,7 @@ export function standPoint(station) {
   return { x: f.x + f.w / 2, y: Math.min(FLOOR.h - 1, f.y + f.h + 2) };
 }
 
-/** Back walls block: no walking past y = 0 or x = 100. The open front edges do not. */
+/** Back walls block: no walking past y = 0 or x = FLOOR.w. The open front edges do not. */
 const clampWalls = (p) => ({ x: Math.min(p.x, FLOOR.w), y: Math.max(p.y, 0) });
 
 /**
@@ -167,9 +165,12 @@ export function stepFigure(state, input, ctx, dtArg) {
     }
     if (moved === s.pos && !input.dir) {
       if (!s.route.length) {
-        // Walking to a goal and blocked: detour down to the open aisle, across, then on.
+        // Walking to a goal and blocked: find a way round the furniture.
         const end = s.target || (s.control === "idle" && ctx.stations.length ? standPoint(ctx.stations[s.idleIndex]) : null);
-        if (end) s.route = [{ x: s.pos.x, y: AISLE_Y }, { x: end.x, y: AISLE_Y }];
+        const route = end ? findPath(s.pos, end, ctx.footprints, FLOOR) : null;
+        if (route) s.route = route;
+        else if (s.target) s.target = null;
+        else s.pauseLeft = PAUSE_MS;
       } else {
         s.route = [];
         if (s.target) s.target = null; // the detour is blocked too: give up on the tap

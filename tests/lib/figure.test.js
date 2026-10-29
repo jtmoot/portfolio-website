@@ -44,21 +44,21 @@ describe("stepFigure", () => {
   });
 
   it("walking off the front edge sketches tiles in around it", () => {
-    const s0 = initialFigure({ x: 50, y: 77.5 });
+    const s0 = initialFigure({ x: 50, y: 99.5 });
     const s1 = run(s0, { dir: { dx: 0, dy: 1 } }, 0.3);
-    expect(s1.pos.y).toBeGreaterThan(78);
+    expect(s1.pos.y).toBeGreaterThan(100);
     expect(s1.tiles.size).toBeGreaterThanOrEqual(9);
   });
 
   it("cannot walk through the back walls", () => {
-    const s1 = run(initialFigure({ x: 99, y: 30 }), { dir: { dx: 1, dy: 0 } }, 1);
-    expect(s1.pos.x).toBeLessThanOrEqual(100);
+    const s1 = run(initialFigure({ x: 129, y: 30 }), { dir: { dx: 1, dy: 0 } }, 1);
+    expect(s1.pos.x).toBeLessThanOrEqual(130);
     const s2 = run(initialFigure({ x: 70, y: 20 }), { dir: { dx: 0, dy: -1 } }, 3);
     expect(s2.pos.y).toBeGreaterThanOrEqual(0);
   });
 
   it("left standing off the pad for a minute falls exactly once, then reappears at the desk", () => {
-    const off = run(initialFigure({ x: 50, y: 77.5 }), { dir: { dx: 0, dy: 1 } }, 0.5);
+    const off = run(initialFigure({ x: 50, y: 99.5 }), { dir: { dx: 0, dy: 1 } }, 0.5);
     const fell = stepFigure(off, { dir: null, tapTarget: null }, CTX, 60);
     expect(fell.falling).toBe(true);
     const back = stepFigure(fell, { dir: null, tapTarget: null }, CTX, 1.1);
@@ -102,7 +102,7 @@ describe("stepFigure", () => {
 
   it("a fall with no stations to wander still respawns at the desk (reduced motion, hidden tab)", () => {
     const ctx = { stations: [], footprints: CTX.footprints, respawn: { x: 43, y: 18 } };
-    const off = run(initialFigure({ x: 50, y: 77.5 }), { dir: { dx: 0, dy: 1 } }, 0.5);
+    const off = run(initialFigure({ x: 50, y: 99.5 }), { dir: { dx: 0, dy: 1 } }, 0.5);
     const fell = stepFigure(off, { dir: null, tapTarget: null }, ctx, 60);
     expect(fell.falling).toBe(true);
     const back = stepFigure(fell, { dir: null, tapTarget: null }, ctx, 1.1);

@@ -1,6 +1,8 @@
 /* Creative mode: the poster (first screen) tips into an isometric floor in one 1.5 s motion. */
 .stage {
   position: relative;
+  /* The room (130 cqw wide) and the panned poster run past the sheet: never let them scroll the page. */
+  overflow-x: clip;
 }
 
 .stage::after {
@@ -21,7 +23,30 @@
 .poster {
   z-index: 1;
   transform-origin: 50% 39cqw;
-  transition: transform 1.5s cubic-bezier(0.6, 0, 0.25, 1);
+  transition: transform 1.5s cubic-bezier(0.6, 0, 0.25, 1), translate 1.5s cubic-bezier(0.6, 0, 0.25, 1);
+}
+
+/* The follow camera: a screen-space pan written by useCamera as --pan-x / --pan-y (cqw).
+   It eases in with the flip; once settled the camera drives it every frame, so no transition. */
+.poster,
+.floor-layer,
+.phone-poster {
+  translate: calc(var(--pan-x, 0) * 1cqw) calc(var(--pan-y, 0) * 1cqw);
+}
+
+.floor-layer {
+  transition: translate 1.5s cubic-bezier(0.6, 0, 0.25, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stage[data-settled] .poster,
+  .stage[data-settled] .phone-poster {
+    transition: transform 1.5s cubic-bezier(0.6, 0, 0.25, 1), translate 0s;
+  }
+}
+
+.stage[data-settled] .floor-layer {
+  transition: none;
 }
 
 .poster::before {
@@ -34,15 +59,19 @@
   background-size: 1.6cqw 1.6cqw;
   box-shadow: 0 0 0 1px var(--rule), 0 2cqw 4cqw rgba(0, 0, 0, 0.18);
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease, right 0.4s ease, bottom 0.4s ease;
 }
 
 .stage[data-mode="creative"] .poster {
   transform: var(--pad-transform);
 }
 
+/* Once tipped, the paper grows out to the whole 130 by 100 room. */
 .stage[data-mode="creative"] .poster::before {
   opacity: 1;
+  right: -30cqw;
+  bottom: -22cqw;
+  transition: opacity 0.5s ease, right 1.1s cubic-bezier(0.32, 0.72, 0, 1) 0.5s, bottom 1.1s cubic-bezier(0.32, 0.72, 0, 1) 0.5s;
 }
 
 .nav {
@@ -122,8 +151,8 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 100cqw;
-  height: 78cqw;
+  width: 130cqw;
+  height: 100cqw;
   z-index: 2;
   pointer-events: none;
 }
@@ -182,27 +211,27 @@
 
 .station-card {
   position: absolute;
-  transform: translate(-50%, 0);
+  transform: translate(calc(-50% + var(--nudge, 0px)), 0);
   width: max-content;
-  max-width: 18cqw;
+  max-width: max(220px, 18cqw);
   background: var(--paper);
   color: var(--ink);
   border: 1px solid var(--rule);
   box-shadow: 0 0.6cqw 1.4cqw rgba(0, 0, 0, 0.18);
-  padding: 0.6cqw 0.8cqw;
-  font-size: 0.85cqw;
+  padding: max(8px, 0.6cqw) max(10px, 0.8cqw);
+  font-size: max(12px, 0.85cqw);
   line-height: 1.3;
   animation: card-in 0.25s ease;
 }
 
 .station-card p {
-  margin: 0 0 0.3cqw;
+  margin: 0 0 max(4px, 0.3cqw);
 }
 
 @keyframes card-in {
   from {
     opacity: 0;
-    transform: translate(-50%, -0.4cqw);
+    translate: 0 -0.4cqw;
   }
 }
 
@@ -287,7 +316,7 @@ html[data-theme="night"] .figure{--hair-0:#4a3d34;--hair-1:#54463c;--hair-2:#5e4
 
 .floor-hit {
   position: absolute;
-  inset: -20cqw -10cqw;
+  inset: -80cqw;
   pointer-events: none;
 }
 
@@ -304,6 +333,7 @@ html[data-theme="night"] .figure{--hair-0:#4a3d34;--hair-1:#54463c;--hair-2:#5e4
 .phone-stage {
   position: fixed;
   inset: 0;
+  overflow: hidden;
   z-index: 4;
   display: flex;
   align-items: flex-start;
@@ -328,12 +358,27 @@ html[data-theme="night"] .figure{--hair-0:#4a3d34;--hair-1:#54463c;--hair-2:#5e4
   position: relative;
   width: 100cqw;
   height: 78cqw;
-  transform-origin: 50% 39cqw;
-  transition: transform 1.5s cubic-bezier(0.6, 0, 0.25, 1);
+  transform-origin: 50cqw 39cqw;
+  transition: transform 1.5s cubic-bezier(0.6, 0, 0.25, 1), translate 1.5s cubic-bezier(0.6, 0, 0.25, 1);
+}
+
+.phone-poster::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   background-color: var(--paper);
   background-image: radial-gradient(var(--dots) 1px, transparent 1.2px);
   background-size: 1.6cqw 1.6cqw;
   box-shadow: 0 0 0 1px var(--rule), 0 2cqw 4cqw rgba(0, 0, 0, 0.18);
+  transition: right 1.1s cubic-bezier(0.32, 0.72, 0, 1) 0.5s, bottom 1.1s cubic-bezier(0.32, 0.72, 0, 1) 0.5s;
+}
+
+.phone-stage[data-on] .phone-poster::before {
+  right: -30cqw;
+  bottom: -22cqw;
 }
 
 .stage[data-phone][data-mode="creative"] .poster {
@@ -460,6 +505,71 @@ html[data-theme="night"] .figure{--hair-0:#4a3d34;--hair-1:#54463c;--hair-2:#5e4
     animation: none;
   }
   .sw-turn {
+    transition: none;
+  }
+}
+
+/* Arrows at the screen edge for stations the camera has left off screen. */
+.station-arrow {
+  position: absolute;
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.2em 0.45em;
+  transform: translate(-50%, -50%);
+  font: inherit;
+  font-family: var(--font-hand);
+  line-height: 1;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  box-shadow: 0 0.2cqw 0.6cqw rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  pointer-events: auto;
+  animation: card-in 0.25s ease;
+}
+
+.station-arrow[data-edge="right"] {
+  transform: translate(-100%, -50%);
+}
+
+.station-arrow[data-edge="left"] {
+  transform: translate(0, -50%);
+}
+
+.station-arrow[data-edge="top"] {
+  transform: translate(-50%, 0);
+}
+
+.station-arrow[data-edge="bottom"] {
+  transform: translate(-50%, -100%);
+}
+
+.station-arrow[hidden] {
+  display: none;
+}
+
+.station-arrow svg {
+  width: 1.6em;
+  height: 0.8em;
+  rotate: var(--turn, 0rad);
+}
+
+.station-arrow:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster,
+  .floor-layer,
+  .phone-poster {
+    transition: none;
+  }
+  .stage[data-mode="creative"] .poster::before,
+  .phone-poster::before {
     transition: none;
   }
 }

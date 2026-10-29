@@ -1,16 +1,24 @@
-/** The floor is the poster: 100 by 78 cqw of the sheet. */
-export const FLOOR = { w: 100, h: 78 };
+/**
+ * The room's floor, in floor units (cqw of the poster box; 1 unit = 5 cm). The poster, 100 by 78,
+ * is the front-left part of it; in creative mode the paper grows out to the whole room.
+ */
+export const FLOOR = { w: 130, h: 100 };
+export const POSTER = { w: 100, h: 78 };
+/** The room the view's scale is fitted to: the original one, so drawings keep today's size. */
+const REF = POSTER;
+/** Height of the back walls in floor units (230 cm). */
+const WALL = 46;
 
 /** Spec 5.1 view: true isometric (tilt 54.7, spin -45), scaled and dropped a little. */
 export const VIEW = { scale: 0.62, tilt: 54.7, spin: -45, drop: 6 };
 
-const ORIGIN = { x: FLOOR.w / 2, y: FLOOR.h / 2 };
+const ORIGIN = { x: POSTER.w / 2, y: POSTER.h / 2 };
 const RAD = Math.PI / 180;
 
 /** Height of the drawn scene in cqw per unit of scale: the floor diamond plus 230 cm walls. */
-const SCENE_PER_SCALE = 2 * ((FLOOR.w + FLOOR.h) / 2) * Math.SQRT1_2 * Math.cos(54.7 * RAD) + 46 * 0.8165;
+const SCENE_PER_SCALE = 2 * ((REF.w + REF.h) / 2) * Math.SQRT1_2 * Math.cos(54.7 * RAD) + WALL * 0.8165;
 /** Distance from the floor centre up to the top of the walls, per unit of scale. */
-const TOP_PER_SCALE = ((FLOOR.w + FLOOR.h) / 2) * Math.SQRT1_2 * Math.cos(54.7 * RAD) + 46 * 0.8165;
+const TOP_PER_SCALE = ((REF.w + REF.h) / 2) * Math.SQRT1_2 * Math.cos(54.7 * RAD) + WALL * 0.8165;
 const NAV_CQW = 5.5;
 
 /**
@@ -62,13 +70,35 @@ export function screenToFloor({ left, top }, v = VIEW) {
 export function fitView({ w, h }) {
   const cqw = Math.min(w, 1512) / 100;
   const avail = h / cqw - NAV_CQW - 1.5;
-  // Narrow screens have height to spare: let the room grow until the floor fills the width.
-  const cap = w < 820 ? 0.78 : VIEW.scale;
+  // Narrow screens have height to spare, and the camera pans: draw the room bigger there.
+  const cap = w < 820 ? 1 : VIEW.scale;
   const scale = Math.min(cap, avail / SCENE_PER_SCALE);
   const spare = Math.max(0, avail - SCENE_PER_SCALE * scale);
   const top = NAV_CQW + spare / 2;
   const drop = top - ORIGIN.y + TOP_PER_SCALE * scale;
   return { ...VIEW, scale: round(scale), drop: round(drop) };
+}
+
+/**
+ * The drawn room's bounding box in cqw of the poster box (before any camera pan): the floor and
+ * the tops of the two back walls, with a little margin.
+ * @param {typeof VIEW} v
+ */
+export function sceneBounds(v) {
+  const lift = WALL * 0.8165 * v.scale;
+  const floor = [[0, 0], [FLOOR.w, 0], [FLOOR.w, FLOOR.h], [0, FLOOR.h]].map(([x, y]) => floorToScreen({ x, y }, v));
+  const walls = [[0, 0], [FLOOR.w, 0], [FLOOR.w, FLOOR.h]].map(([x, y]) => {
+    const p = floorToScreen({ x, y }, v);
+    return { left: p.left, top: p.top - lift };
+  });
+  const all = [...floor, ...walls];
+  const pad = 2;
+  return {
+    left: Math.min(...all.map((p) => p.left)) - pad,
+    right: Math.max(...all.map((p) => p.left)) + pad,
+    top: Math.min(...all.map((p) => p.top)) - pad,
+    bottom: Math.max(...all.map((p) => p.top)) + pad,
+  };
 }
 
 function round(n) {

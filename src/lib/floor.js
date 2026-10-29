@@ -56,3 +56,55 @@ export const depthKey = ({ x, y }) => y - x;
 
 /** In front (10) when the feet are further forward than the footprint's back edge, else behind (1). */
 export const zIndexFor = (footprintTopY, feetY) => (feetY > footprintTopY ? 10 : 1);
+
+/**
+ * True when a point on the floor is nearer the viewer than a footprint box. The camera looks in
+ * from small x and large y, so a point is in front when it is past the box's front-left face
+ * (x below the box) or its front-right face (y beyond the box).
+ */
+export const inFront = (p, f) => p.x < f.x || p.y > f.y + f.h;
+
+const boxInFront = (a, b) => a.x + a.w <= b.x || a.y >= b.y + b.h;
+const centreDepth = (f) => depthKey({ x: f.x + f.w / 2, y: f.y + f.h / 2 });
+
+/**
+ * Paint order for stations: every box comes after each box it stands in front of. Boxes with no
+ * clear relation (overlapping footprints, such as a wall chart above a shelf) fall back to depth.
+ * @template {{ footprint: { x: number, y: number, w: number, h: number } }} T
+ * @param {T[]} boxes
+ * @returns {T[]}
+ */
+export function stackOrder(boxes) {
+  const left = [...boxes].sort((a, b) => centreDepth(a.footprint) - centreDepth(b.footprint));
+  const out = [];
+  while (left.length) {
+    const i = left.findIndex((a) => !left.some((b) => b !== a && boxInFront(a.footprint, b.footprint)));
+    out.push(left.splice(i === -1 ? 0 : i, 1)[0]);
+  }
+  return out;
+}
+
+/**
+ * Paint order of the stations with the figure slotted in, as ids ("figure" for him). He goes
+ * after every box he stands in front of and before every box he stands behind; boxes keep the
+ * order stackOrder gives them among themselves.
+ * @param {{ id: string, footprint: { x: number, y: number, w: number, h: number } }[]} boxes
+ * @param {{ x: number, y: number }} p his feet
+ * @returns {string[]}
+ */
+export function paintOrder(boxes, p) {
+  const fig = { id: "figure" };
+  // b must be drawn before a?
+  const mustPrecede = (b, a) => {
+    if (a === fig) return inFront(p, b.footprint);
+    if (b === fig) return !inFront(p, a.footprint);
+    return boxInFront(a.footprint, b.footprint);
+  };
+  const left = [...stackOrder(boxes), fig];
+  const out = [];
+  while (left.length) {
+    const i = left.findIndex((a) => !left.some((b) => b !== a && mustPrecede(b, a)));
+    out.push(left.splice(i === -1 ? 0 : i, 1)[0].id);
+  }
+  return out;
+}

@@ -1,3 +1,5 @@
+import { useLayoutEffect, useRef } from "react";
+
 /** One line and a link for each station, shown when the figure (or the pointer) is near it. */
 export const CARD_TEXT = {
   desk: { line: "where the work happens.", cta: "see experience" },
@@ -15,9 +17,30 @@ export const CARD_TEXT = {
  */
 export default function StationCard({ station, style, onNavigate }) {
   const text = CARD_TEXT[station.id];
+  const el = useRef(null);
+
+  // Keep the card on screen: the camera can leave a station near the edge. Re-checked a few times
+  // a second while open, since the camera may still be easing.
+  useLayoutEffect(() => {
+    const fit = () => {
+      const card = el.current;
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      const cur = Number.parseFloat(card.style.getPropertyValue("--nudge")) || 0;
+      const left = r.left - cur;
+      const right = r.right - cur;
+      let n = 0;
+      if (right > window.innerWidth - 8) n = window.innerWidth - 8 - right;
+      if (left + n < 8) n = 8 - left;
+      card.style.setProperty("--nudge", `${Math.round(n)}px`);
+    };
+    fit();
+    const t = setInterval(fit, 250);
+    return () => clearInterval(t);
+  }, []);
   const external = station.link?.startsWith("http");
   return (
-    <div className="station-card" style={style}>
+    <div ref={el} className="station-card" style={style}>
       <p>{text.line}</p>
       {station.link && text.cta && (
         <a

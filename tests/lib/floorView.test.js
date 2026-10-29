@@ -1,9 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { VIEW, floorToScreen, screenToFloor, padTransform, fitView, FLOOR } from "../../src/lib/floorView.js";
+import { VIEW, floorToScreen, screenToFloor, padTransform, fitView, FLOOR, POSTER, sceneBounds } from "../../src/lib/floorView.js";
 
 describe("floorView", () => {
-  it("the floor is 100 by 78 and the default view is the spec's 0.62 scale, 54.7 deg tilt, 6 cqw drop", () => {
-    expect(FLOOR).toEqual({ w: 100, h: 78 });
+  it("the room is 130 by 100 on a 100 by 78 poster, and the default view is 0.62 scale, 54.7 deg tilt, 6 cqw drop", () => {
+    expect(FLOOR).toEqual({ w: 130, h: 100 });
+    expect(POSTER).toEqual({ w: 100, h: 78 });
     expect(VIEW).toEqual({ scale: 0.62, tilt: 54.7, spin: -45, drop: 6 });
   });
 
@@ -45,6 +46,28 @@ describe("floorView", () => {
   it("phones get a larger room that still fits the width", () => {
     const v = fitView({ w: 390, h: 844 });
     expect(v.scale).toBeGreaterThan(0.62);
-    expect(v.scale).toBeLessThanOrEqual(0.78);
+    expect(v.scale).toBeLessThanOrEqual(1);
+  });
+});
+
+describe("sceneBounds", () => {
+  it("holds every floor corner and the tops of both back walls", () => {
+    const b = sceneBounds(VIEW);
+    for (const [x, y] of [[0, 0], [130, 0], [130, 100], [0, 100]]) {
+      const p = floorToScreen({ x, y }, VIEW);
+      expect(p.left).toBeGreaterThanOrEqual(b.left - 1e-6);
+      expect(p.left).toBeLessThanOrEqual(b.right + 1e-6);
+      expect(p.top).toBeLessThanOrEqual(b.bottom + 1e-6);
+    }
+    const corner = floorToScreen({ x: 130, y: 0 }, VIEW);
+    expect(b.top).toBeLessThan(corner.top - 46 * 0.8165 * VIEW.scale + 1e-6);
+  });
+});
+
+describe("fitView keeps today's drawing size", () => {
+  it("scales as the old 100 by 78 room did", () => {
+    expect(fitView({ w: 1512, h: 900 }).scale).toBeCloseTo(0.476, 3);
+    expect(fitView({ w: 390, h: 844 }).scale).toBeCloseTo(1, 3);
+    expect(fitView({ w: 1512, h: 1400 }).scale).toBe(0.62);
   });
 });
