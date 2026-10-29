@@ -20,6 +20,8 @@ const SCENE_PER_SCALE = 2 * ((REF.w + REF.h) / 2) * Math.SQRT1_2 * Math.cos(54.7
 /** Distance from the floor centre up to the top of the walls, per unit of scale. */
 const TOP_PER_SCALE = ((REF.w + REF.h) / 2) * Math.SQRT1_2 * Math.cos(54.7 * RAD) + WALL * 0.8165;
 const NAV_CQW = 5.5;
+/** Margin around the drawn room, in cqw. */
+const SCENE_PAD = 2;
 
 /**
  * The CSS transform for the poster in creative mode. Its origin is the poster centre.
@@ -63,28 +65,40 @@ export function screenToFloor({ left, top }, v = VIEW) {
 }
 
 /**
- * Fits the view to a viewport: shrinks the scale when the scene would not fit under the nav,
- * and drops the floor so the walls start just below the nav.
+ * Fits the view to a viewport. On desktop the whole room, walls included, fits under the nav and
+ * inside the width, so the camera has nothing to chase. Phones keep the old fit (the original
+ * 100 by 78 room, up to scale 1) and let the camera pan.
  * @param {{ w: number, h: number }} viewport px
  */
 export function fitView({ w, h }) {
   const cqw = Math.min(w, 1512) / 100;
   const avail = h / cqw - NAV_CQW - 1.5;
-  // Narrow screens have height to spare, and the camera pans: draw the room bigger there.
-  const cap = w < 820 ? 1 : VIEW.scale;
-  const scale = Math.min(cap, avail / SCENE_PER_SCALE);
-  const spare = Math.max(0, avail - SCENE_PER_SCALE * scale);
-  const top = NAV_CQW + spare / 2;
-  const drop = top - ORIGIN.y + TOP_PER_SCALE * scale;
-  return { ...VIEW, scale: round(scale), drop: round(drop) };
+  if (w < 820) {
+    const scale = Math.min(1, avail / SCENE_PER_SCALE);
+    const spare = Math.max(0, avail - SCENE_PER_SCALE * scale);
+    const drop = NAV_CQW + spare / 2 - ORIGIN.y + TOP_PER_SCALE * scale;
+    return { ...VIEW, scale: round(scale), drop: round(drop) };
+  }
+  // The room's extent per unit of scale, measured once at scale 1 with no drop.
+  const unit = sceneBounds({ ...VIEW, scale: 1, drop: 0 }, 0);
+  const tall = unit.bottom - unit.top;
+  const wide = unit.right - unit.left;
+  const pad = SCENE_PAD * 2;
+  const scale = Math.floor(Math.min(VIEW.scale, (avail - pad) / tall, (w / cqw - pad - 2) / wide) * 1000) / 1000;
+  const spare = Math.max(0, avail - pad - tall * scale);
+  const top = NAV_CQW + SCENE_PAD + spare / 2;
+  const drop = top - ORIGIN.y - (unit.top - ORIGIN.y) * scale;
+  // Round the drop down the page, never up under the nav.
+  return { ...VIEW, scale, drop: Math.ceil(drop * 1000) / 1000 };
 }
 
 /**
  * The drawn room's bounding box in cqw of the poster box (before any camera pan): the floor and
  * the tops of the two back walls, with a little margin.
  * @param {typeof VIEW} v
+ * @param {number} [pad] margin in cqw
  */
-export function sceneBounds(v) {
+export function sceneBounds(v, pad = SCENE_PAD) {
   const lift = WALL * 0.8165 * v.scale;
   const floor = [[0, 0], [FLOOR.w, 0], [FLOOR.w, FLOOR.h], [0, FLOOR.h]].map(([x, y]) => floorToScreen({ x, y }, v));
   const walls = [[0, 0], [FLOOR.w, 0], [FLOOR.w, FLOOR.h]].map(([x, y]) => {
@@ -92,7 +106,6 @@ export function sceneBounds(v) {
     return { left: p.left, top: p.top - lift };
   });
   const all = [...floor, ...walls];
-  const pad = 2;
   return {
     left: Math.min(...all.map((p) => p.left)) - pad,
     right: Math.max(...all.map((p) => p.left)) + pad,

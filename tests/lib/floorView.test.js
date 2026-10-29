@@ -30,10 +30,10 @@ describe("floorView", () => {
   });
 
   it("fitView shrinks the scale when the viewport is short and never grows past the spec", () => {
-    expect(fitView({ w: 1512, h: 2000 }).scale).toBe(0.62);
+    expect(fitView({ w: 1512, h: 2000 }).scale).toBeLessThanOrEqual(0.62);
     const short = fitView({ w: 1512, h: 700 });
     expect(short.scale).toBeLessThan(0.62);
-    expect(short.scale).toBeGreaterThan(0.3);
+    expect(short.scale).toBeGreaterThan(0.2);
   });
 
   it("screenToFloor inverts floorToScreen", () => {
@@ -64,10 +64,24 @@ describe("sceneBounds", () => {
   });
 });
 
-describe("fitView keeps today's drawing size", () => {
-  it("scales as the old 100 by 78 room did", () => {
-    expect(fitView({ w: 1512, h: 900 }).scale).toBeCloseTo(0.476, 3);
+describe("fitView fits the whole room on desktop", () => {
+  for (const [w, h] of [[1440, 900], [1512, 982], [1280, 720], [1920, 1080]]) {
+    it(`${w} by ${h}: the room and its walls sit under the nav and inside the width`, () => {
+      const v = fitView({ w, h });
+      const cqw = Math.min(w, 1512) / 100;
+      const b = sceneBounds(v);
+      expect(b.top).toBeGreaterThanOrEqual(5.5 - 1e-6);
+      expect(b.bottom).toBeLessThanOrEqual(h / cqw + 1e-6);
+      expect(b.right - b.left).toBeLessThanOrEqual(w / cqw + 1e-6);
+    });
+  }
+
+  it("is smaller than round 1's 0.476 at 1512 by 900, and never grows past the spec", () => {
+    expect(fitView({ w: 1512, h: 900 }).scale).toBeLessThan(0.476);
+    expect(fitView({ w: 1512, h: 3000 }).scale).toBeLessThanOrEqual(0.62);
+  });
+
+  it("phones keep the bigger, panning room", () => {
     expect(fitView({ w: 390, h: 844 }).scale).toBeCloseTo(1, 3);
-    expect(fitView({ w: 1512, h: 1400 }).scale).toBe(0.62);
   });
 });
