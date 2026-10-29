@@ -1,0 +1,157 @@
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+<style>
+  .intro { max-width: 72ch; margin-bottom: 1.4rem; }
+  .intro p { color: var(--text-secondary); margin: 0.4rem 0; }
+  .stage { position: relative; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 8px; border: 1px solid var(--border); background: #bcbcb4; container-type: inline-size; }
+  .stage * { box-sizing: border-box; }
+  .pad { position: absolute; inset: 0; background-color: #cfcfc8; background-image: radial-gradient(rgba(40,40,36,0.22) 1px, transparent 1.2px); background-size: 1.5cqw 1.5cqw; color: #1c1c1a; font-family: "IBM Plex Mono", monospace; font-size: 0.95cqw; line-height: 1.5; transform-style: preserve-3d; transform-origin: 50% 50%; transition: transform 1.5s cubic-bezier(.6,0,.25,1); box-shadow: 0 2cqw 4cqw rgba(0,0,0,0.15); }
+  .stage.flip .pad { transform: translateY(6cqw) scale(0.62) rotateX(54.7deg) rotateZ(-45deg); }
+  .hand { font-family: "Gloria Hallelujah", cursive; }
+  .ink { position: absolute; inset: 0; transition: opacity 1s; }
+  .stage.flip .ink { opacity: 0.18; }
+  .nav { position: absolute; left: 22.6cqw; width: 57cqw; top: 3.2cqw; display: flex; justify-content: space-between; font-size: 0.8cqw; }
+  .nav span { margin-right: 1.2cqw; }
+  .toggle { display: inline-flex; align-items: center; gap: 0.5em; cursor: pointer; }
+  .toggle i { width: 1.7cqw; height: 1cqw; border-radius: 1cqw; border: 1px solid currentColor; position: relative; display: inline-block; }
+  .toggle i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 0.55cqw; height: 0.55cqw; border-radius: 50%; background: currentColor; transition: left 0.2s; }
+  .on .toggle i::after { left: calc(100% - 0.55cqw - 2px); }
+  .hero { position: absolute; left: 38.6cqw; top: 8cqw; width: 33.6cqw; }
+  .pad h1 { font-size: 2cqw; margin: 0 0 0.6cqw; line-height: 1.2; }
+  .pad h1 .nm { background: #4a4634; color: #e9e0c6; padding: 0 0.2em; border-radius: 2px; }
+  .pad h2 { position: absolute; left: 20.4cqw; top: 32cqw; font-size: 2cqw; margin: 0; }
+  .rows { position: absolute; left: 20.4cqw; top: 36cqw; width: 59cqw; }
+  .rows div { border-top: 1px solid rgba(35,35,32,0.15); padding: 0.5cqw 0.4cqw; display: flex; justify-content: space-between; }
+  .rows b { font-weight: 500; }
+  /* things that travel: positioned on the pad plane, billboarded after the flip */
+  .obj { position: absolute; transform-origin: 50% 100%; transition: left 1.5s cubic-bezier(.6,0,.25,1), top 1.5s cubic-bezier(.6,0,.25,1), width 1.5s cubic-bezier(.6,0,.25,1), transform 1.5s cubic-bezier(.6,0,.25,1); }
+  .stage.flip .obj { transform: rotateZ(45deg) rotateX(-54.7deg) !important; background: transparent; box-shadow: none; }
+  .obj.poster-r, .obj.pol { transition: left 1.5s cubic-bezier(.6,0,.25,1), top 1.5s cubic-bezier(.6,0,.25,1), width 1.5s cubic-bezier(.6,0,.25,1), transform 1.5s cubic-bezier(.6,0,.25,1), background 0.5s 0.6s, box-shadow 0.5s 0.6s; }
+  .stage.flip .obj.poster-r .in, .stage.flip .obj.pol canvas { opacity: 0; }
+  .obj .in, .obj.pol canvas { transition: opacity 0.5s 0.5s; }
+  .obj .flat, .obj .iso { transition: opacity 0.7s; }
+  .obj .flat { filter: drop-shadow(0 0.4cqw 0.4cqw rgba(35,35,32,0.25)); }
+  .obj .flat canvas { display: block; width: 100%; }
+  .obj .iso { position: absolute; left: 50%; bottom: 0; width: 210%; transform: translateX(-50%); opacity: 0; }
+  .obj .iso svg { display: block; width: 100%; overflow: visible; }
+  .stage.flip .obj .flat { opacity: 0; transition-delay: 0.5s; }
+  .stage.flip .obj .iso { opacity: 1; transition-delay: 0.9s; }
+  .obj .lb { position: absolute; left: 100%; bottom: 0.3cqw; transform: translate(1.2cqw, 0); font: 1.9cqw "Gloria Hallelujah", cursive; white-space: nowrap; opacity: 0; transition: opacity 0.6s 1.3s; color: #1c1c1a; }
+  .stage.flip .obj .lb { opacity: 0.8; }
+  .poster-r { background: #e9e8e2; box-shadow: 0 0.5cqw 1.2cqw rgba(35,35,32,0.22); padding: 0.4cqw; }
+  .poster-r .in { background: #1c1c1a; color: #cfcfc8; font-size: 0.6cqw; line-height: 1.35; padding: 0.5cqw; aspect-ratio: 3/4; display: flex; align-items: flex-end; }
+  .pol { background: #f2f1ec; padding: 0.4cqw 0.4cqw 1.3cqw; box-shadow: 0 0.5cqw 1.2cqw rgba(35,35,32,0.22); }
+  .pol canvas { width: 100%; aspect-ratio: 1; display: block; background: #e4e3dd; }
+  .fig { position: absolute; width: 7cqw; transform-origin: 50% 100%; opacity: 0; transition: opacity 0.6s 1.6s; }
+  .stage.flip .fig { opacity: 1; transform: rotateZ(45deg) rotateX(-54.7deg); }
+  .fig svg { display: block; width: 100%; overflow: visible; }
+  .cap { position: absolute; right: 1.6cqw; bottom: 1.2cqw; font: 1cqw "Gloria Hallelujah", cursive; color: #1c1c1a; opacity: 0; transition: opacity 0.6s 1.6s; }
+  .stage.flip .cap { opacity: 0.75; }
+  .back { position: absolute; left: 1.6cqw; top: 1.4cqw; font: 0.8cqw "IBM Plex Mono", monospace; background: #1c1c1a; color: #cfcfc8; border: 0; border-radius: 3px; padding: 0.35cqw 0.9cqw; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.5s 1.4s; }
+  .stage.flip .back { opacity: 1; pointer-events: auto; }
+  .notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+  .notes div { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45; }
+  .notes b { color: var(--text-primary); font-weight: 600; display: block; margin-bottom: 0.15rem; }
+  .pick { margin-top: 1rem; }
+</style>
+
+<h2>The flip, drawn: margins onto the paper</h2>
+<div class="intro">
+  <p>No three.js. One motion: the paper falls flat into an isometric view with its writing still faintly on it, and in the same motion the stickers, posters, and polaroid slide in from the margins to their spots on the board. As each one lands it turns into an isometric drawing of the station it stands for: brain to desk, king to chess table, shoe to rack, posters to shelf and kitchen, the polaroid stays a photo on a stand. A small drawn figure then walks the board. Click creative mode in the nav.</p>
+</div>
+
+<div class="stage" id="stage">
+  <div class="pad" id="pad">
+    <div class="ink">
+      <div class="nav">
+        <div><span>home</span><span>work</span><span>now</span><span>shelf</span><span>contact</span></div>
+        <div style="opacity:.75"><span>7:40 pm pittsburgh</span><span>day / night</span><span class="toggle" id="tg">creative mode <i></i></span></div>
+      </div>
+      <div class="hero">
+        <h1 class="hand">hello, i'm <span class="nm">joshua moorehead</span></h1>
+        <div style="opacity:.85">I build the layer between models and the hardware they run on. Data pipelines, GPU profiling, and the systems work that gets training and serving to run reliably.</div>
+      </div>
+      <h2 class="hand">experience</h2>
+      <div class="rows">
+        <div><span><b>Carnegie Mellon</b> MS ECE, ML systems</span><span class="hand">2025 to now</span></div>
+        <div><span><b>Baron Filtration</b> led data engineering</span><span class="hand">2024 to 2025</span></div>
+        <div><span><b>University of South Carolina</b> autoencoder research</span><span class="hand">2023</span></div>
+      </div>
+    </div>
+
+    <!-- travelers: data-to = "left,top,width" on the board in cqw -->
+    <div class="obj" style="left:1.9cqw; top:7.5cqw; width:9.7cqw; transform:rotate(-4deg)" data-to="28,4,16"><div class="flat"><canvas data-src="/files/obj-brain.png" data-cell="2.4" data-crop="0.03,0.1,0.95,0.8"></canvas></div><div class="iso" data-draw="desk"></div><div class="lb">desk · gpu box</div></div>
+    <div class="obj" style="left:7.8cqw; top:23.5cqw; width:8cqw; transform:rotate(3deg)" data-to="60,46,15"><div class="flat"><canvas data-src="/files/obj-shoe.jpg" data-cell="2.4" data-crop="0,0.48,1,0.52"></canvas></div><div class="iso" data-draw="rack"></div><div class="lb">rack · 5x5</div></div>
+    <div class="obj" style="left:4cqw; top:37.3cqw; width:6cqw; transform:rotate(-5deg)" data-to="30,44,12"><div class="flat"><canvas data-src="/files/obj-king.png" data-cell="2.2" data-crop="0,0,1,1"></canvas></div><div class="iso" data-draw="chess"></div><div class="lb">chess · 1500 rapid</div></div>
+    <div class="obj poster-r" style="left:86.2cqw; top:5.5cqw; width:7.6cqw; transform:rotate(4deg)" data-to="8,6,13"><div class="flat"><div class="in">THE MYTHICAL<br>MAN-MONTH</div></div><div class="iso" data-draw="shelf"></div><div class="lb">shelf · reading stack</div></div>
+    <div class="obj poster-r" style="left:87.5cqw; top:21.4cqw; width:6.8cqw; transform:rotate(-3deg)" data-to="88,14,16"><div class="flat"><div class="in" style="background:#e4e3dd;color:#1c1c1a">make it work, make it right, make it fast.</div></div><div class="iso" data-draw="kitchen"></div><div class="lb">kitchen · cast iron</div></div>
+    <div class="obj poster-r" style="left:87cqw; top:37.4cqw; width:7.4cqw; transform:rotate(2deg)" data-to="58,2,7"><div class="flat"><div class="in">a history print</div></div><div class="iso" data-draw="frame"></div><div class="lb">the wall</div></div>
+    <div class="obj pol" style="left:29.7cqw; top:13.6cqw; width:7.2cqw; transform:rotate(-3deg)" data-to="50,28,10"><div class="flat"><canvas id="dots"></canvas></div><div class="iso" data-draw="photo"></div></div>
+
+    <div class="fig" id="fig"><svg viewBox="0 0 40 70"></svg></div>
+  </div>
+  <button class="back" id="back">back to the pad</button>
+  <div class="cap" id="cap">fig 1 · joshua's room · pittsburgh</div>
+</div>
+
+<div class="notes">
+  <div><b>What moves</b>Seven things travel: three stickers from the left, three posters from the right, the polaroid from the middle. Each slides along the paper to its spot while the paper itself tips. They land upright, like cards standing on a board.</div>
+  <div><b>What they become</b>Hairline isometric drawings in the pad's own ink and paper tones, the anatomy style. These five are my quick versions. The real ones get drawn properly from your actual desk, rack, and kitchen, which is a description each, no photos needed.</div>
+  <div><b>What it costs</b>Three to four days. No models, no character rig, nothing to download. Works on a phone because it is all CSS and SVG.</div>
+</div>
+
+<div class="pick options">
+  <div class="option" data-choice="flip-drawn-travel" onclick="toggleSelect(this)"><div class="letter">A</div><div class="content"><h3>This is the motion</h3><p>Margins travel onto the fallen paper and become drawings. Write the spec.</p></div></div>
+  <div class="option" data-choice="flip-drawn-adjust" onclick="toggleSelect(this)"><div class="letter">B</div><div class="content"><h3>Right idea, adjust</h3><p>Tell me what to change: speed, angle, how far the paper falls, what lands where.</p></div></div>
+</div>
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var INK = '#1c1c1a', T = ['#e9e8e2', '#cfcfc8', '#b4b3ab'], RUST = '#8a4a2a', TEAL = '#3f8f8c';
+  function mk(n, a, p) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; }
+  function isoDrawer(svg, S, OX, OY) {
+    function iso(x, y, z) { return [OX + (x - y) * S * 0.866, OY + (x + y) * S * 0.5 - z * S]; }
+    function poly(pts, fill, w) { return mk('polygon', { points: pts.map(function (q) { return q.join(','); }).join(' '), fill: fill, stroke: INK, 'stroke-width': w || 0.8, 'stroke-linejoin': 'round' }, svg); }
+    function box(x, y, z, w, d, h, t) { t = t || T; var a = iso(x, y, z + h), b = iso(x + w, y, z + h), c = iso(x + w, y + d, z + h), dd = iso(x, y + d, z + h), e = iso(x, y + d, z), f = iso(x + w, y + d, z), g = iso(x + w, y, z); poly([a, b, c, dd], t[0]); poly([dd, c, f, e], t[1]); poly([c, b, g, f], t[2]); }
+    function cyl(x, y, z, r, h, t) { t = t || T; var n = 18, top = [], bot = []; for (var i = 0; i < n; i++) { var a = i / n * 6.283; top.push(iso(x + Math.cos(a) * r, y + Math.sin(a) * r, z + h)); bot.push(iso(x + Math.cos(a) * r, y + Math.sin(a) * r, z)); } var side = []; for (var i = 4; i <= 13; i++) side.push(top[i]); for (var i = 13; i >= 4; i--) side.push(bot[i]); poly(side, t[1]); poly(top, t[0]); }
+    function line(a, b, w, c) { mk('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: c || INK, 'stroke-width': w || 0.8, 'stroke-linecap': 'round' }, svg); }
+    function rect(pts, fill) { poly(pts, fill, 0.8); }
+    return { iso: iso, box: box, cyl: cyl, line: line, rect: rect, poly: poly };
+  }
+  var draws = {
+    desk: function (svg) { var d = isoDrawer(svg, 22, 100, 60); d.box(0, 0, 0, 3.2, 1.4, 1.5); d.box(0.7, 0.4, 1.5, 1.6, 0.1, 1.0); d.rect([d.iso(0.8, 0.4, 2.4), d.iso(2.2, 0.4, 2.4), d.iso(2.2, 0.4, 1.65), d.iso(0.8, 0.4, 1.65)], '#cfe3e2'); d.box(3.4, 0, 0, 0.8, 1.4, 1.8); for (var v = 0; v < 6; v++) d.line(d.iso(3.4, 0.5 + v * 0.14, 0.3), d.iso(3.4, 0.5 + v * 0.14, 1.4), 0.5); mk('circle', { cx: d.iso(4.1, 0.2, 1.6)[0], cy: d.iso(4.1, 0.2, 1.6)[1], r: 1.4, fill: TEAL }, svg); },
+    rack: function (svg) { var d = isoDrawer(svg, 20, 100, 30); [[0, 0], [2.2, 0], [0, 1.5], [2.2, 1.5]].forEach(function (p) { d.box(p[0], p[1], 0, 0.3, 0.3, 3.2); }); d.line(d.iso(-0.3, 0.7, 2.4), d.iso(2.8, 0.7, 2.4), 1.8); [-0.2, 0.05, 2.5, 2.75].forEach(function (px) { var c = d.iso(px, 0.7, 2.4); mk('ellipse', { cx: c[0], cy: c[1], rx: 3.5, ry: 9, fill: T[2], stroke: INK, 'stroke-width': 0.8 }, svg); }); d.cyl(1.1, 2.3, 0, 0.35, 0.5); },
+    chess: function (svg) { var d = isoDrawer(svg, 24, 100, 60); d.cyl(1, 1, 0, 1.1, 1.2); for (var cx = 0; cx < 4; cx++) for (var cy = 0; cy < 4; cy++) { var q = [d.iso(0.3 + cx * 0.35, 0.3 + cy * 0.35, 1.2), d.iso(0.65 + cx * 0.35, 0.3 + cy * 0.35, 1.2), d.iso(0.65 + cx * 0.35, 0.65 + cy * 0.35, 1.2), d.iso(0.3 + cx * 0.35, 0.65 + cy * 0.35, 1.2)]; mk('polygon', { points: q.map(function (z) { return z.join(','); }).join(' '), fill: (cx + cy) % 2 ? INK : T[0], stroke: 'none' }, svg); } d.cyl(0.5, 0.5, 1.2, 0.09, 0.5); d.cyl(1.4, 1.4, 1.2, 0.09, 0.4, [INK, '#4a4a46', '#4a4a46']); d.cyl(0.9, 1.0, 1.2, 0.09, 0.3); },
+    shelf: function (svg) { var d = isoDrawer(svg, 22, 100, 30); d.box(0, 0, 0, 0.5, 2.6, 3.0); for (var s = 0; s < 3; s++) for (var bk = 0; bk < 7; bk++) d.box(0.1, 0.15 + bk * 0.34, 0.2 + s * 0.95, 0.4, 0.26, 0.55 + (bk % 3) * 0.1, bk % 3 === 1 ? [RUST, '#6e3a20', '#5a2e18'] : bk % 3 === 2 ? [T[2], '#9a9992', '#86857e'] : T); },
+    kitchen: function (svg) { var d = isoDrawer(svg, 22, 100, 60); d.box(0, 0, 0, 3.3, 1.5, 1.6); d.cyl(1.1, 0.7, 1.6, 0.5, 0.12, [T[2], '#8a8982', '#8a8982']); d.line(d.iso(1.1, 0.7, 1.72), d.iso(2.0, 0.7, 1.72), 2); d.box(2.4, 0.3, 1.6, 0.6, 0.6, 0.8); mk('circle', { cx: d.iso(1.1, 0.7, 1.74)[0], cy: d.iso(1.1, 0.7, 1.74)[1], r: 2, fill: RUST }, svg); },
+    frame: function (svg) { var d = isoDrawer(svg, 24, 100, 70); d.box(0, 0, 0, 0.15, 1.6, 2.2, [T[0], INK, '#4a4a46']); d.rect([d.iso(0.16, 0.15, 2.05), d.iso(0.16, 1.45, 2.05), d.iso(0.16, 1.45, 0.15), d.iso(0.16, 0.15, 0.15)], INK); },
+    photo: function (svg) { var d = isoDrawer(svg, 24, 100, 70); d.box(0, 0, 0, 0.12, 1.4, 1.8, [T[0], T[0], T[1]]); d.rect([d.iso(0.13, 0.12, 1.65), d.iso(0.13, 1.28, 1.65), d.iso(0.13, 1.28, 0.5), d.iso(0.13, 0.12, 0.5)], '#9a9992'); }
+  };
+  document.querySelectorAll('.iso').forEach(function (el) { var svg = mk('svg', { viewBox: '0 0 200 120' }, el); draws[el.dataset.draw](svg); });
+  // figure
+  var fsvg = document.querySelector('#fig svg'); var fd = isoDrawer(fsvg, 14, 20, 50);
+  function drawFig(w) { while (fsvg.firstChild) fsvg.removeChild(fsvg.firstChild); var sw = Math.sin(w) * 0.18; fd.box(-0.12, -0.1, 0, 0.14, 0.2, 0.55 + sw * 0.3); fd.box(0.02, -0.1, 0, 0.14, 0.2, 0.55 - sw * 0.3); fd.box(-0.2, -0.16, 0.55, 0.4, 0.32, 0.65, [RUST, '#6e3a20', '#5a2e18']); fd.cyl(0, 0, 1.22, 0.17, 0.3, [T[0], T[1], T[1]]); }
+  drawFig(0);
+  // portrait
+  var cv = document.getElementById('dots'), ctx = cv.getContext('2d'), N = 48, S = 240; cv.width = S; cv.height = S;
+  var img = new Image(); img.src = '/files/headshot.jpg';
+  img.onload = function () { var off = document.createElement('canvas'); off.width = N; off.height = N; var o = off.getContext('2d'); var side = Math.min(img.width, img.height); o.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, N, N); var d = o.getImageData(0, 0, N, N).data, cell = S / N; ctx.fillStyle = '#232320'; for (var y = 0; y < N; y++) for (var x = 0; x < N; x++) { var k = (y * N + x) * 4, lum = (0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]) / 255, r = (1 - lum) * cell * 0.62; if (r > 0.35) { ctx.beginPath(); ctx.arc(x * cell + cell / 2, y * cell + cell / 2, r, 0, 6.283); ctx.fill(); } } };
+  // stickers
+  function sticker(cv) { var src = cv.dataset.src, cell = parseFloat(cv.dataset.cell) || 2.5, crop = (cv.dataset.crop || '0,0,1,1').split(',').map(Number); var im = new Image(); im.src = src; im.onload = function () { var sx = im.width * crop[0], sy = im.height * crop[1], sw = im.width * crop[2], sh = im.height * crop[3]; var W = 260, H = Math.round(W * sh / sw), pad = 10; var off = document.createElement('canvas'); off.width = W; off.height = H; var o = off.getContext('2d'); o.drawImage(im, sx, sy, sw, sh, 0, 0, W, H); var d = o.getImageData(0, 0, W, H).data; var mask = document.createElement('canvas'); mask.width = W; mask.height = H; var m = mask.getContext('2d'), mi = m.createImageData(W, H); for (var i = 0; i < W * H; i++) { var k = i * 4, a = d[k + 3], lum = (0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2]); var inside = a > 40 && lum < 238; mi.data[k] = 255; mi.data[k + 1] = 255; mi.data[k + 2] = 255; mi.data[k + 3] = inside ? 255 : 0; } m.putImageData(mi, 0, 0); cv.width = W + pad * 2; cv.height = H + pad * 2; var g = cv.getContext('2d'); for (var t = 0; t < 24; t++) { var ang = t / 24 * 6.283; g.drawImage(mask, pad + Math.cos(ang) * 6, pad + Math.sin(ang) * 6); } g.drawImage(mask, pad, pad); g.fillStyle = '#2a2a27'; for (var y = 0; y < H; y += cell) for (var x = 0; x < W; x += cell) { var k2 = ((y | 0) * W + (x | 0)) * 4; if (mi.data[k2 + 3] === 0) continue; var l = (0.299 * d[k2] + 0.587 * d[k2 + 1] + 0.114 * d[k2 + 2]) / 255; var r = Math.max(0.35, (1 - l) * cell * 0.72); g.beginPath(); g.arc(pad + x + cell / 2, pad + y + cell / 2, r, 0, 6.283); g.fill(); } }; }
+  document.querySelectorAll('.flat canvas[data-src]').forEach(sticker);
+
+  // the flip: swap each traveler's position to its board spot
+  var stage = document.getElementById('stage'), objs = document.querySelectorAll('.obj'), flipped = false;
+  objs.forEach(function (o) { o.dataset.from = o.style.left + '|' + o.style.top + '|' + o.style.width; });
+  function setFlip(on) {
+    flipped = on; stage.classList.toggle('flip', on); document.getElementById('pad').classList.toggle('on', on);
+    objs.forEach(function (o) { if (on) { var t = o.dataset.to.split(','); o.style.left = t[0] + 'cqw'; o.style.top = t[1] + 'cqw'; o.style.width = t[2] + 'cqw'; } else { var f = o.dataset.from.split('|'); o.style.left = f[0]; o.style.top = f[1]; o.style.width = f[2]; } });
+  }
+  document.getElementById('tg').addEventListener('click', function () { setFlip(!flipped); });
+  document.getElementById('back').addEventListener('click', function () { setFlip(false); });
+  // figure walks the board between stations
+  var fig = document.getElementById('fig'), route = [[40, 18], [36, 40], [58, 44], [80, 24], [40, 18]], seg = 0, t = 0, last = 0;
+  function tick(ts) { var dt = Math.min(0.05, (ts - last) / 1000 || 0); last = ts; if (flipped) { var a = route[seg], b = route[seg + 1], len = Math.hypot(b[0] - a[0], b[1] - a[1]); t += dt * 9 / len; if (t >= 1) { t = 0; seg = (seg + 1) % (route.length - 1); a = route[seg]; b = route[seg + 1]; } fig.style.left = (a[0] + (b[0] - a[0]) * t) + 'cqw'; fig.style.top = (a[1] + (b[1] - a[1]) * t) + 'cqw'; drawFig(ts / 1000 * 10); } requestAnimationFrame(tick); }
+  fig.style.left = '40cqw'; fig.style.top = '18cqw'; requestAnimationFrame(tick);
+})();
+</script>
