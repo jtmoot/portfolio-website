@@ -1,0 +1,243 @@
+html,
+body {
+  background: var(--paper);
+  color: var(--text);
+}
+
+body {
+  font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.stage {
+  min-height: 100vh;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dots) 1px, transparent 1.2px);
+  background-size: min(1.6vw, 24.2px) min(1.6vw, 24.2px);
+  transition: background-color 0.6s ease;
+}
+
+/* The sheet: every size inside is in cqw of the sheet, so the page scales as one picture. */
+.sheet {
+  position: relative;
+  max-width: 1512px;
+  margin: 0 auto;
+  container-type: inline-size;
+  font-size: 0.926cqw;
+  line-height: 1.323cqw;
+  padding-bottom: 8cqw;
+}
+
+.hand {
+  font-family: var(--font-hand);
+  font-weight: 400;
+}
+
+.sheet h1,
+.sheet h2 {
+  font-family: var(--font-hand);
+  font-weight: 400;
+  font-size: 1.984cqw;
+  line-height: 2.38cqw;
+  margin: 0;
+}
+
+.sheet h2 {
+  margin-bottom: 0.9cqw;
+}
+
+/* First screen: hero and margins. */
+.poster {
+  position: relative;
+  height: 78cqw;
+}
+
+.hero {
+  position: absolute;
+  left: 38.6cqw;
+  top: 8cqw;
+  width: 33.6cqw;
+}
+
+.margin {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.margin > * {
+  pointer-events: auto;
+}
+
+/* Body column starts 32cqw down the poster and runs on below it. */
+.body {
+  position: relative;
+  margin-top: -46cqw;
+  margin-left: 20.4cqw;
+  width: 59.3cqw;
+}
+
+.body > section {
+  margin-bottom: 3.2cqw;
+  scroll-margin-top: 4cqw;
+}
+
+/* Nav */
+.nav {
+  position: absolute;
+  left: 22.6cqw;
+  top: 3.24cqw;
+  width: 57.1cqw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.794cqw;
+  z-index: 5;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.6cqw;
+}
+
+.nav a {
+  text-decoration: none;
+}
+
+.nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+}
+
+.nav-clock {
+  opacity: 0.6;
+}
+
+.nav button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.toggle-pill {
+  display: inline-block;
+  width: 1.7cqw;
+  height: 1cqw;
+  border-radius: 1cqw;
+  border: 1px solid currentColor;
+  position: relative;
+}
+
+.toggle-pill::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.18cqw;
+  width: 0.55cqw;
+  height: 0.55cqw;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translateY(-50%);
+  transition: left 0.25s ease;
+}
+
+button[aria-pressed="true"] .toggle-pill::after {
+  left: calc(100% - 0.73cqw);
+}
+
+/* Phones: the poster stops scaling, margins hide, the body is one column with 16px gutters. */
+@media (max-width: 819px) {
+  .sheet {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 0 16px 64px;
+  }
+
+  .sheet h1,
+  .sheet h2 {
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  .sheet h2 {
+    margin-bottom: 12px;
+  }
+
+  .nav {
+    position: static;
+    width: auto;
+    font-size: 12px;
+    padding: 16px 0;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav-links {
+    gap: 14px;
+  }
+
+  .nav-right {
+    gap: 14px;
+  }
+
+  .toggle-pill {
+    width: 24px;
+    height: 14px;
+    border-radius: 14px;
+  }
+
+  .toggle-pill::after {
+    left: 2px;
+    width: 8px;
+    height: 8px;
+  }
+
+  button[aria-pressed="true"] .toggle-pill::after {
+    left: calc(100% - 10px);
+  }
+
+  .poster {
+    height: auto;
+  }
+
+  .hero {
+    position: static;
+    width: auto;
+    padding: 24px 0 32px;
+  }
+
+  .margin {
+    display: none;
+  }
+
+  .body {
+    margin: 0;
+    width: auto;
+  }
+
+  .body > section {
+    margin-bottom: 40px;
+  }
+}

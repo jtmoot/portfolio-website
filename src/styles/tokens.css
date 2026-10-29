@@ -1,0 +1,38 @@
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Gloria Hallelujah";
+  src: url("/fonts/GloriaHallelujah-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --paper: #f4f3ee;
+  --dots: #c9c7bd;
+  --ink: #2a2a28;
+  --text: #2a2a28;
+  --mid: #b8b6ad;
+  --stage: #bcbcb4;
+  --rule: rgba(42, 42, 40, 0.15);
+  --card: #ebe9e2;
+  --font-hand: "Gloria Hallelujah", cursive;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: light;
+}
+
+html[data-theme="night"] {
+  --paper: #17181a;
+  --dots: #2c2d31;
+  --ink: #d9d7cf;
+  --text: #d9d7cf;
+  --mid: #5a5a56;
+  --stage: #0f1012;
+  --rule: rgba(217, 215, 207, 0.14);
+  --card: #1f2023;
+  color-scheme: dark;
+}
