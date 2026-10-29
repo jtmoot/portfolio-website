@@ -34,7 +34,7 @@ export const ACTIONS = {
   library: { facing: "ul", frames: [["book1", 700], ["book2", 1300], ["book3", 450], ["book2", 900], ["book1", 550]] },
   kitchen: { facing: "ur", frames: [["cook1", 700], ["cook2", 260], ["cook3", 260], ["cook2", 260], ["cook3", 260], ["cook2", 260], ["cook1", 900]] },
   chess: { facing: "ul", frames: [["chess1", 800], ["chess2", 1000], ["chess1", 700]] },
-  gym: { facing: "dr", loop: true, frames: [["kb1", 520], ["kb2", 520]] },
+  gym: { facing: "dr", loop: true, frames: [["kb1", 380], ["kb2", 160], ["kb3", 420], ["kb2", 160]] },
 };
 
 /**

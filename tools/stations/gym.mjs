@@ -154,7 +154,8 @@ export default station("gym", {
 
     // --- Plyo box (plywood, 50 x 60 x 75) ------------------------------------------------------
     const plyo = () => {
-      const X0 = 22, X1 = 72, Y0 = -108, Y1 = -48, H = 75;
+      // Clear of the rack's right upright (y = -55), with a walkway between them.
+      const X0 = 18, X1 = 68, Y0 = -152, Y1 = -92, H = 75;
       const s = [];
       s.push(halo({ x: X0, y: Y0, w: X1 - X0, d: Y1 - Y0, r: 2 }, F0, 2));
       s.push(`<g class="m-wood">${box(X0, Y0, F0, X1, Y1, F0 + H, { r: 0.6, steps: 2, bevel: 0.5, tone: "hi", crease: "lo" })}</g>`);
@@ -233,7 +234,7 @@ export default station("gym", {
     const floor = [
       { p: [45, 2, 0], svg: kettlebell(42, -22, 10.5) },
       { p: [45, 22, 0], svg: kettlebell(44, 12, 8.6) },
-      { p: [47, -78, 0], svg: plyo() },
+      { p: [43, -122, 0], svg: plyo() },
       { p: [55, 80, 0], svg: shoe(38, 63) + shoe(35, 76) },
       { p: [70, -100, 0], svg: ladder.join("") },
     ];

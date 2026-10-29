@@ -42,7 +42,7 @@ export const LAYOUT = {
     id: "gym",
     label: "gym",
     pos: { x: 72, y: 69 },
-    footprint: { x: 50, y: 58, w: 44, h: 22 },
+    footprint: { x: 50, y: 58, w: 54, h: 25 },
     link: "#running",
     labelAt: { x: 84, y: 85, z: 0 },
     standAt: { x: 64, y: 85 },

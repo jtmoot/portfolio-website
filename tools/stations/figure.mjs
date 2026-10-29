@@ -60,7 +60,7 @@ const riseOf = (b, P) => k.iso([0, 0, b], P)[1] - k.iso([0, 0, 0], P)[1];
  * hair, long on top with a loose middle part and a few pieces falling forward.
  * @param {object} c drawing context
  * @param {"dr" | "dl" | "ur" | "ul"} facing
- * @param {{ swing?: number, gait?: "w" | "j", phase?: number, arms?: { L?: object, R?: object }, extras?: (h: object) => { at: number[], svg: string }[] }} pose
+ * @param {{ swing?: number, gait?: "w" | "j", phase?: number, sink?: number, arms?: { L?: object, R?: object }, extras?: (h: object) => { at: number[], svg: string }[] }} pose
  *   gait and phase: a walk or jog frame at this angle of the cycle (radians); swing: legs apart
  *   without a gait (0 is standing);
  *   arms: elbow and hand points in (forward, his-left, z) cm, overriding the walk swing per arm;
@@ -82,8 +82,10 @@ function person(c, facing, pose = {}) {
   const gait = pose.gait ? GAITS[pose.gait] : null;
   const th = pose.phase ?? 0;
   const stride = gait ? gait.amp * Math.cos(th) : 20 * swing;
-  /** The jog's bounce: highest with the legs apart, lowest as they pass. */
-  const b = gait ? gait.bounce * Math.abs(Math.cos(th)) : 0;
+  /** The jog's bounce (highest with the legs apart, lowest as they pass), less any sink: a
+   * pose's hinge, where his hips drop and his knees bend (the bottom of a kettlebell swing). */
+  const sink = pose.sink ?? 0;
+  const b = (gait ? gait.bounce * Math.abs(Math.cos(th)) : 0) - sink;
   const front = facing === "dr" || facing === "dl";
 
   // Shadow.
@@ -95,7 +97,7 @@ function person(c, facing, pose = {}) {
     // The leg swinging forward lifts its foot and drives its knee; the planted one stays down.
     const lift = gait ? gait.lift * Math.max(0, -side * Math.sin(th)) : 0;
     const hip = pt(0, side * 9, 94 + b);
-    const knee = pt(reach * 0.55 + 1.5 + lift * 0.8, side * 8.6, 50 + lift * 0.85 + b * 0.5);
+    const knee = pt(reach * 0.55 + 1.5 + lift * 0.8 + sink * 0.9, side * 8.6, 50 + lift * 0.85 + b * 0.5);
     const ankle = pt(reach - lift * 0.3, side * 8.4, 11 + lift);
     put(G.lerp3(hip, knee, 0.5), `<g class="fm-jog">${c.tube([hip, knee], 7, { tone: "hi", spacing: 7 })}</g>`);
     put(G.lerp3(knee, ankle, 0.5), `<g class="fm-jog">${c.tube([knee, G.lerp3(knee, ankle, 0.85)], 5.6, { tone: "hi", spacing: 7 })}</g>`);
@@ -267,8 +269,11 @@ const POSES = {
   cook3: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [16, -16, 121], hand: [34, -3, 118] } }, extras: shaker([34, -3, 118]) },
   chess1: { arms: { L: hang(1), R: { elbow: [12, -18, 112], hand: [28, -9, 94] } }, extras: pawn([28, -9, 94]) },
   chess2: { arms: { L: hang(1), R: { elbow: [14, -16, 106], hand: [34, -5, 86] } }, extras: pawn([34, -5, 86]) },
-  kb1: { arms: { L: { elbow: [6, 11, 114], hand: [9, 3.5, 84] }, R: { elbow: [6, -11, 114], hand: [9, -3.5, 84] } }, extras: bell([10, 0, 70]) },
-  kb2: { arms: { L: { elbow: [22, 9, 134], hand: [44, 3.5, 140] }, R: { elbow: [22, -9, 134], hand: [44, -3.5, 140] } }, extras: bell([47, 0, 128]) },
+  // Kettlebell swing: hike the bell back between the legs in a hinge, drive the hips through,
+  // float it to chest height on straight arms.
+  kb1: { sink: 12, arms: { L: { elbow: [8, 11, 104], hand: [12, 3.5, 66] }, R: { elbow: [8, -11, 104], hand: [12, -3.5, 66] } }, extras: bell([14, 0, 53]) },
+  kb2: { sink: 4, arms: { L: { elbow: [13, 10, 116], hand: [25, 3.5, 98] }, R: { elbow: [13, -10, 116], hand: [25, -3.5, 98] } }, extras: bell([28, 0, 86]) },
+  kb3: { arms: { L: { elbow: [24, 9, 141], hand: [44, 3.5, 148] }, R: { elbow: [24, -9, 141], hand: [44, -3.5, 148] } }, extras: bell([47, 0, 136]) },
   wave1: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [8, -24, 178] } } },
   wave2: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [9, -33, 175] } } },
 };

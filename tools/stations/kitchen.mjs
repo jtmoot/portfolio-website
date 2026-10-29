@@ -152,16 +152,17 @@ export default station("kitchen", {
       L(k.pathOf([at([POT.x - 5, POT.y - 2, LZ - 1.2]), at([POT.x + 4, POT.y + 3, LZ - 1.2])]), { tone: "faint" }) + `</g>`);
     pot.push(`<g data-part="lid"><g class="m-enamel">${S(lidBody, { tone: "hi", crease: "lo", inner: L(G.arcOf(LF, 0.8, 13.8, P), { tone: "faint" }) })}</g>` +
       `<g class="m-steel">${S(knob, { tone: "hi", crease: "lo" })}</g></g>`);
-    // Steam: three wisps rising from the lid's edge.
-    const wisp = (dx, dy, phase) => {
+    // Steam, always rising: five wisps from the lid's edge, tall enough to read at room scale.
+    const wisp = (dx, dy, phase, tall) => {
       const pts = [];
-      for (let i = 0; i <= 16; i++) {
-        const t = i / 16;
-        pts.push(at([POT.x + dx + Math.sin(t * 5 + phase) * 2.2, POT.y + dy + Math.cos(t * 4 + phase) * 1.2, LZ + 6 + t * 30]));
+      for (let i = 0; i <= 24; i++) {
+        const t = i / 24;
+        const spread = 1 + t * 1.6;
+        pts.push(at([POT.x + dx + Math.sin(t * 6 + phase) * 2.6 * spread, POT.y + dy + Math.cos(t * 5 + phase) * 1.6 * spread, LZ + 6 + t * tall]));
       }
       return `<path class="m-steam" d="${k.pathOf(pts)}" pathLength="100"/>`;
     };
-    pot.push(`<g data-part="steam">${wisp(-6, -4, 0)}${wisp(2, -6, 1.7)}${wisp(7, 2, 3.1)}</g>`);
+    pot.push(`<g data-part="steam">${wisp(-6, -4, 0, 58)}${wisp(2, -6, 1.7, 66)}${wisp(7, 2, 3.1, 52)}${wisp(-1, 5, 4.4, 62)}${wisp(5, -1, 5.6, 70)}</g>`);
     // A pinch of spice falling into the pot (shown while active).
     const pinch = [];
     for (let i = 0; i < 9; i++) pinch.push(at([POT.x - 2 + (i % 3) * 1.6, POT.y - 1 + ((i * 7) % 3) * 1.2, LZ + 18 + i * 1.6]));
