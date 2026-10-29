@@ -9,6 +9,8 @@ import Contact from "./pad/Contact.jsx";
 import HoverPreview from "./pad/HoverPreview.jsx";
 import Cursor from "./pad/Cursor.jsx";
 import Stage from "./creative/Stage.jsx";
+import Shelf from "./pad/Shelf.jsx";
+import { pageOf } from "./lib/route.js";
 
 const Floor = lazy(() => import("./creative/Floor.jsx"));
 const StationHarness = lazy(() => import("./creative/StationHarness.jsx"));
@@ -18,6 +20,7 @@ import { getTheme, toggleTheme } from "./lib/theme.js";
 import { createModeController, createModeStore } from "./lib/mode.js";
 
 const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
+const PAGE = typeof window !== "undefined" ? pageOf(window.location.pathname) : "pad";
 const modeStore = createModeStore(params.get("mode") === "creative" ? "creative" : "pad");
 const PHONE = "(max-width: 819px)";
 /** The room's code: the floor overlay (which pulls in every drawing), plus the phone stage on phones. */
@@ -45,7 +48,7 @@ export default function App() {
     };
     window.addEventListener("keydown", onKey);
     const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1));
-    const t = setTimeout(() => idle(() => loadRoom().catch(() => {})), 4000);
+    const t = PAGE === "pad" ? setTimeout(() => idle(() => loadRoom().catch(() => {})), 4000) : 0;
     return () => {
       window.removeEventListener("keydown", onKey);
       clearTimeout(t);
@@ -74,7 +77,20 @@ export default function App() {
     play("click");
     setThemeState(toggleTheme());
   };
+  if (PAGE === "shelf") {
+    return (
+      <>
+        <Shelf theme={theme} onToggleTheme={onToggleTheme} />
+        <HoverPreview />
+        <Cursor />
+      </>
+    );
+  }
   const onNavigate = (href) => {
+    if (href.startsWith("/")) {
+      window.location.assign(href);
+      return;
+    }
     modeStore.set("pad");
     setTimeout(() => document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" }), 1600);
   };

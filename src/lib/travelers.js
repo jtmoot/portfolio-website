@@ -8,7 +8,7 @@ export const FIGURE_START = { x: 54, y: 26 };
  */
 export const TRAVELERS = [
   { id: "brain", kind: "sticker", station: "anatomy", tag: null, from: { left: 1.9, top: 6, width: 7.8, rot: -4 } },
-  { id: "book", kind: "sticker", station: "library", tag: { text: "my shelf", href: "#reading" }, from: { left: 6.4, top: 20, width: 7.6, rot: 3 } },
+  { id: "book", kind: "sticker", station: "library", tag: { text: "my shelf", href: "/shelf" }, from: { left: 6.4, top: 20, width: 7.6, rot: 3 } },
   { id: "king", kind: "sticker", station: "chess", tag: { text: "my rating", href: "https://www.chess.com/member/breakfast_enjoyer" }, from: { left: 3.4, top: 33, width: 4.6, rot: -5 } },
   { id: "novablast", kind: "sticker", station: "gym", tag: { text: "my runs", href: "https://www.strava.com/athletes/121070736" }, from: { left: 2.6, top: 49, width: 5.8, rot: 4 } },
   { id: "poster-history", kind: "poster", station: "corkboard", from: { left: 86.2, top: 5.5, width: 7.6, rot: -7 } },

@@ -32,7 +32,7 @@ describe("STATIONS", () => {
     const links = Object.fromEntries(STATIONS.map((s) => [s.id, s.link]));
     expect(links).toEqual({
       desk: "#experience",
-      library: "#reading",
+      library: "/shelf",
       gym: "#running",
       kitchen: "#cooking",
       chess: "https://www.chess.com/member/breakfast_enjoyer",

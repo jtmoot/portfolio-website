@@ -18,7 +18,7 @@ export const LAYOUT = {
     label: "library",
     pos: { x: 17, y: 0 },
     footprint: { x: 8, y: 0, w: 18, h: 7 },
-    link: "#reading",
+    link: "/shelf",
     labelAt: { x: 11, y: 10, z: 0 },
   },
   plants: {

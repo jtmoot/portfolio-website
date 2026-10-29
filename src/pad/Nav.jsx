@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const LINKS = [
   ["experience", "#experience"],
   ["work", "#work"],
-  ["reading", "#reading"],
+  ["shelf", "/shelf"],
   ["contact", "#contact"],
 ];
 
@@ -23,9 +23,10 @@ function pittsburghTime() {
 /**
  * Top navigation: section links on the left; the local clock, theme and creative-mode toggles on the right.
  * It sits in a zero-height sticky dock; once the page scrolls it compacts into a frosted pill.
- * @param {{ theme: "day" | "night", onToggleTheme: () => void, mode: "pad" | "creative", onToggleMode: () => void }} props
+ * On /shelf it links back into the pad (`base` "/") and has no creative-mode toggle.
+ * @param {{ theme: "day" | "night", onToggleTheme: () => void, mode?: "pad" | "creative", onToggleMode?: () => void, base?: string }} props
  */
-export default function Nav({ theme, onToggleTheme, mode, onToggleMode }) {
+export default function Nav({ theme, onToggleTheme, mode = "pad", onToggleMode, base = "" }) {
   const [clock, setClock] = useState(pittsburghTime);
   const [compact, setCompact] = useState(false);
 
@@ -46,7 +47,7 @@ export default function Nav({ theme, onToggleTheme, mode, onToggleMode }) {
       <nav className="nav" aria-label="Sections" data-compact={compact || undefined}>
         <div className="nav-links">
           {LINKS.map(([label, href]) => (
-            <a key={href} href={href} data-c="ring">
+            <a key={href} href={href.startsWith("#") ? `${base}${href}` : href} data-c="ring">
               {label}
             </a>
           ))}
@@ -56,17 +57,19 @@ export default function Nav({ theme, onToggleTheme, mode, onToggleMode }) {
           <button type="button" onClick={onToggleTheme} aria-pressed={theme === "night"} data-c="ring">
             {theme === "night" ? "night" : "day"}
           </button>
-          <button
-            type="button"
-            onClick={onToggleMode}
-            onPointerEnter={() => import("../creative/Floor.jsx")}
-            onFocus={() => import("../creative/Floor.jsx")}
-            aria-pressed={mode === "creative"}
-            data-c="ring"
-          >
-            {mode === "creative" ? "back to the pad" : "creative mode"}
-            <span className="toggle-pill" aria-hidden="true" />
-          </button>
+          {onToggleMode && (
+            <button
+              type="button"
+              onClick={onToggleMode}
+              onPointerEnter={() => import("../creative/Floor.jsx")}
+              onFocus={() => import("../creative/Floor.jsx")}
+              aria-pressed={mode === "creative"}
+              data-c="ring"
+            >
+              {mode === "creative" ? "back to the pad" : "creative mode"}
+              <span className="toggle-pill" aria-hidden="true" />
+            </button>
+          )}
         </div>
       </nav>
     </div>

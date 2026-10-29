@@ -1,4 +1,7 @@
-import { CHESS, READING } from "../content/data.js";
+import { CHESS } from "../content/data.js";
+import { SHELF } from "../content/shelf.js";
+
+const NOW = SHELF.find((s) => s.id === "now").books;
 
 /** Off the keyboard: reading, chess, running, cooking. Static content, nothing fetched. */
 export default function Interests() {
@@ -7,12 +10,17 @@ export default function Interests() {
       <section id="reading" aria-labelledby="reading-h">
         <h2 id="reading-h">reading</h2>
         <ul className="plain">
-          {READING.map((b) => (
-            <li key={b.title}>
-              {b.title} <span className="muted">{b.note}</span>
+          {NOW.map((b) => (
+            <li key={b.id}>
+              {b.title.toLowerCase()} <span className="muted">{b.author.toLowerCase()}</span>
             </li>
           ))}
         </ul>
+        <p>
+          <a href="/shelf" data-c="ring">
+            the whole shelf
+          </a>
+        </p>
       </section>
       <section id="chess" aria-labelledby="chess-h">
         <h2 id="chess-h">chess</h2>

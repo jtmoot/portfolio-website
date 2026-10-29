@@ -152,11 +152,5 @@ export const EXPERIENCE = [
   },
 ];
 
-/** Reading stack: placeholders until Joshua sends titles. */
-export const READING = [
-  { title: "a history book", note: "title to come" },
-  { title: "a systems book", note: "title to come" },
-  { title: "a philosophy book", note: "title to come" },
-];
 
 export const CHESS = { handle: "breakfast_enjoyer", href: "https://www.chess.com/member/breakfast_enjoyer" };

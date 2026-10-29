@@ -20,7 +20,7 @@ describe("Margins", () => {
     expect(shoe.getAttribute("target")).toBe("_blank");
     expect(shoe.textContent).toContain("my runs");
     const book = host.querySelector('[data-traveler="book"] a');
-    expect(book.getAttribute("href")).toBe("#reading");
+    expect(book.getAttribute("href")).toBe("/shelf");
     expect(book.hasAttribute("target")).toBe(false);
     expect(host.querySelector('[data-traveler="king"] .obj-tag').textContent).toContain("my rating");
     await act(async () => root.unmount());
