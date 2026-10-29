@@ -44,8 +44,8 @@ export const LAYOUT = {
     pos: { x: 72, y: 69 },
     footprint: { x: 50, y: 58, w: 44, h: 22 },
     link: "#running",
-    labelAt: { x: 68, y: 87, z: 0 },
-    standAt: { x: 72, y: 52 },
+    labelAt: { x: 84, y: 85, z: 0 },
+    standAt: { x: 64, y: 85 },
   },
   chess: {
     id: "chess",

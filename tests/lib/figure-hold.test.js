@@ -21,7 +21,7 @@ describe("station pause", () => {
 describe("hold", () => {
   it("freezes the idle tour while a card is held open", () => {
     const at = standPoint(STATIONS[0]);
-    const arrived = run(initialFigure(at), {}, 0.1);
+    const arrived = run(initialFigure(at, { greet: false }), {}, 0.1);
     expect(arrived.pauseLeft).toBeGreaterThan(0);
     const held = run(arrived, { hold: true }, PAUSE_MS / 1000 + 2);
     expect(held.idleIndex).toBe(arrived.idleIndex);

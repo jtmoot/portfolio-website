@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { ACTIONS } from "../../src/lib/figure.js";
 
 const ART = resolve(process.cwd(), "src/creative/stations/art");
 
@@ -40,5 +41,11 @@ describe("figure sprite sheet", () => {
     expect(back).not.toContain("fm-hair-lock");
     const idle = sheet.match(/<symbol id="f-dr-idle"[\s\S]*?<\/symbol>/)[0];
     expect(idle).toContain('href="#f-dr-body"');
+  });
+
+  it("has every pose the figure can ask for: each station action in its facing, and the wave", () => {
+    for (const a of Object.values(ACTIONS)) for (const [name] of a.frames) expect(sheet, `${a.facing}-${name}`).toContain(`id="f-${a.facing}-${name}"`);
+    expect(sheet).toContain('id="f-dr-wave1"');
+    expect(sheet).toContain('id="f-dr-wave2"');
   });
 });

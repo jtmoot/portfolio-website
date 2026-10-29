@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { STATIONS } from "./stations/index.js";
 import Walls from "./stations/Walls.jsx";
@@ -16,6 +16,7 @@ import { useLinger } from "./useLinger.js";
 import { useCamera } from "./useCamera.js";
 import StationArrow from "./StationArrow.jsx";
 import { loadSpeed, saveSpeed } from "../lib/speed.js";
+import { greetingFor, loadGreeting } from "../lib/greeting.js";
 
 const FRAME_NAMES = ["idle", "w1", "w2", "w3", "w4"];
 const still = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -51,6 +52,17 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
   const [nearId, setNearId] = useState(null);
   const [tiles, setTiles] = useState([]);
   const figureEl = useRef(null);
+  const bubbleEl = useRef(null);
+  const [hello, setHello] = useState(() => greetingFor(null));
+  // "Hello, Pittsburgh!": the city from the site's /api/hello, else the time zone.
+  useEffect(() => {
+    if (!flipped) return undefined;
+    let live = true;
+    loadGreeting().then((text) => live && setHello(text));
+    return () => {
+      live = false;
+    };
+  }, [flipped]);
   const layerEl = useRef(null);
   const viewRef = useRef(view);
   viewRef.current = view;
@@ -100,7 +112,15 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
           if (target) target.style.zIndex = String(z);
         }
       }
-      const href = `#f-${s.facing}-${FRAME_NAMES[s.frame] || "idle"}`;
+      const href = s.pose ? `#f-${s.facing}-${s.pose}` : `#f-${s.facing}-${FRAME_NAMES[s.frame] || "idle"}`;
+      const say = bubbleEl.current;
+      if (say) {
+        say.hidden = !s.greeting;
+        if (s.greeting) {
+          say.style.left = `${p.left}cqw`;
+          say.style.top = `${p.top - (214 / 5) * 0.8165 * v.scale}cqw`;
+        }
+      }
       const use = el.querySelector(".figure-svg use");
       if (use && use.getAttribute("href") !== href) use.setAttribute("href", href);
       el.classList.toggle("falling", s.falling);
@@ -118,7 +138,7 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
     }
   }, [tiles.length]);
 
-  const { tap, stateRef } = useFigure({ active: flipped, stations: STATIONS, start: FIGURE_START, onFrame, wander: !still(), hold: hoverId !== null, speed });
+  const { tap, stateRef } = useFigure({ active: flipped, stations: STATIONS, start: FIGURE_START, onFrame, wander: !still(), hold: hoverId !== null, speed, greet: !still() });
   if (import.meta.env.DEV && typeof window !== "undefined") window.__figure = stateRef;
 
   const onTap = (e) => {
@@ -168,6 +188,9 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
         );
       })}
       <Figure ref={figureEl} />
+      <p ref={bubbleEl} className="speech hand" style={{ fontSize: labelSize }} hidden>
+        {hello}
+      </p>
       {STATIONS.map((st) => (
         <StationArrow
           key={st.id}

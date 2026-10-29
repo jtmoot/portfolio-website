@@ -7,17 +7,18 @@ const typing = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$
  * Runs the figure while `active`: a requestAnimationFrame loop, arrow keys / WASD, and taps.
  * Everything it attaches is removed when `active` turns false or the component unmounts.
  * @param {{ active: boolean, stations: object[], start: { x: number, y: number }, onFrame: (state: object) => void, wander?: boolean, hold?: boolean, speed?: number }} opts
- *   hold: a station card is open, so the idle tour waits; speed: the speed wheel's multiplier
+ *   hold: a station card is open, so the idle tour waits; speed: the speed wheel's multiplier;
+ *   greet: wave at the screen when the room first opens
  * @returns {{ tap: (p: { x: number, y: number }) => void, stateRef: { current: object } }}
  */
-export function useFigure({ active, stations, start, onFrame, wander = true, hold = false, speed = 1 }) {
+export function useFigure({ active, stations, start, onFrame, wander = true, hold = false, speed = 1, greet = false }) {
   const stateRef = useRef(null);
   const live = useRef({ hold, speed });
   live.current = { hold, speed };
   const tapRef = useRef(null);
   const onFrameRef = useRef(onFrame);
   onFrameRef.current = onFrame;
-  if (!stateRef.current) stateRef.current = initialFigure(start);
+  if (!stateRef.current) stateRef.current = initialFigure(start, { greet });
 
   useEffect(() => {
     if (!active) return undefined;

@@ -8,6 +8,39 @@ export const PAUSE_MS = 4000;
 export const TILE_FADE_MS = 4000;
 export const RESPAWN_MS = 1000;
 const FRAME_MS = 120;
+/** How long he waves at the screen when the room opens. */
+export const GREET_MS = 3800;
+const WAVE_MS = 320;
+
+/**
+ * What he does at each station during the stop, as sprite poses (f-{facing}-{pose}) and their
+ * durations. `facing` is the one direction those poses are drawn for: towards the station.
+ * Looping actions repeat for the whole stop; the rest play once and hold their last frame.
+ */
+export const ACTIONS = {
+  desk: { facing: "ul", loop: true, frames: [["type1", 260], ["type2", 260]] },
+  library: { facing: "ul", frames: [["book1", 700], ["book2", 1300], ["book3", 450], ["book2", 900], ["book1", 550]] },
+  kitchen: { facing: "ur", frames: [["cook1", 700], ["cook2", 260], ["cook3", 260], ["cook2", 260], ["cook3", 260], ["cook2", 260], ["cook1", 900]] },
+  chess: { facing: "ul", frames: [["chess1", 800], ["chess2", 1000], ["chess1", 700]] },
+  gym: { facing: "dr", loop: true, frames: [["kb1", 520], ["kb2", 520]] },
+};
+
+/**
+ * The pose for a station's action, t ms into the stop; null for stations with no action.
+ * @param {string} id
+ * @param {number} t
+ */
+export function poseAt(id, t) {
+  const a = ACTIONS[id];
+  if (!a) return null;
+  const total = a.frames.reduce((sum, [, ms]) => sum + ms, 0);
+  let at = a.loop ? ((t % total) + total) % total : Math.min(t, total - 1);
+  for (const [name, ms] of a.frames) {
+    if (at < ms) return name;
+    at -= ms;
+  }
+  return a.frames.at(-1)[0];
+}
 const ARRIVE = 0.02;
 const RESPAWN_FALLBACK = { x: 54, y: 26 };
 
@@ -33,9 +66,15 @@ export function facingOf({ dx, dy }) {
   return (sy >= 0 ? "d" : "u") + (sx >= 0 ? "r" : "l");
 }
 
-/** @param {{ x: number, y: number }} start */
-export function initialFigure(start) {
+/**
+ * @param {{ x: number, y: number }} start
+ * @param {{ greet?: boolean }} [opts] greet: wave at the screen before setting off (off under reduced motion)
+ */
+export function initialFigure(start, { greet = true } = {}) {
   return {
+    greeting: greet,
+    greetLeft: greet ? GREET_MS : 0,
+    pose: greet ? "wave1" : null,
     pos: { ...start },
     facing: "dr",
     frame: 0,
@@ -52,6 +91,9 @@ export function initialFigure(start) {
     now: 0,
   };
 }
+
+/** The screen facing that looks from p towards the middle of a footprint. */
+const facingToward = (p, f) => facingOf({ dx: f.x + f.w / 2 - p.x, dy: f.y + f.h / 2 - p.y });
 
 /** The point just in front of a station, where the idle walk stops. */
 export function standPoint(station) {
@@ -97,6 +139,25 @@ export function stepFigure(state, input, ctx, dtArg) {
     return s;
   }
 
+  // The hello: he faces the screen and waves until the greeting ends or someone steers.
+  if (s.greeting) {
+    if (input.dir || input.tapTarget) {
+      s.greeting = false;
+      s.greetLeft = 0;
+      s.pose = null;
+    } else {
+      s.greetLeft -= ms;
+      s.facing = "dr";
+      s.frame = 0;
+      s.pose = Math.floor((GREET_MS - s.greetLeft) / WAVE_MS) % 2 ? "wave2" : "wave1";
+      if (s.greetLeft <= 0) {
+        s.greeting = false;
+        s.pose = null;
+      }
+      return s;
+    }
+  }
+
   // Walk-off tiles fade; standing on a faded one off the pad means a fall.
   for (const [key, seen] of s.tiles) if (s.now - seen > TILE_FADE_MS) s.tiles.delete(key);
   if (!onPad(s.pos) && !s.tiles.has(tileKey(s.pos))) {
@@ -132,8 +193,15 @@ export function stepFigure(state, input, ctx, dtArg) {
     let goal = holding ? null : s.route[0] || s.target;
     if (!goal && !holding && s.control === "idle" && ctx.stations.length) {
       if (s.pauseLeft > 0) {
+        // At a station: face it and do its little action.
+        const st = ctx.stations[s.idleIndex];
+        s.facing = ACTIONS[st.id]?.facing ?? facingToward(s.pos, st.footprint);
+        s.pose = poseAt(st.id, PAUSE_MS - s.pauseLeft);
         s.pauseLeft -= ms;
-        if (s.pauseLeft <= 0) s.idleIndex = (s.idleIndex + 1) % ctx.stations.length;
+        if (s.pauseLeft <= 0) {
+          s.idleIndex = (s.idleIndex + 1) % ctx.stations.length;
+          s.pose = null;
+        }
       } else if (!s.route.length) {
         goal = standPoint(ctx.stations[s.idleIndex]);
       }
@@ -180,6 +248,7 @@ export function stepFigure(state, input, ctx, dtArg) {
     const didMove = moved !== s.pos;
     s.pos = { x: moved.x, y: moved.y };
     if (didMove) {
+      s.pose = null;
       s.facing = facingOf(step);
       s.frameClock += ms;
       if (s.frameClock >= FRAME_MS) {

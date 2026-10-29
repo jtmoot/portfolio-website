@@ -2,6 +2,7 @@
 // Output: one sprite sheet of 20 <symbol>s, f-{dl|dr|ul|ur}-{idle|w1|w2|w3|w4}, sharing one viewBox
 // whose anchor (meta) is the point between his feet.
 import { k, G, CAM, SCALE, context } from "./lib.mjs";
+import { ACTIONS } from "../../src/lib/figure.js";
 
 const H = 183; // cm
 const FACINGS = {
@@ -11,7 +12,8 @@ const FACINGS = {
   ul: [-1, 0],
 };
 const FRAMES = { idle: 0, w1: 1, w2: 0.35, w3: -1, w4: -0.35 };
-const BOUNDS = [[-40, -40, 0], [40, -40, 0], [-40, 40, 0], [40, 40, 0], [-40, -40, H + 6], [40, -40, H + 6], [-40, 40, H + 6], [40, 40, H + 6]];
+const R = 56; // reach: room for a kettlebell swung out in front
+const BOUNDS = [[-R, -R, 0], [R, -R, 0], [-R, R, 0], [R, R, 0], [-R, -R, H + 6], [R, -R, H + 6], [-R, R, H + 6], [R, R, H + 6]];
 const PAD = 2;
 
 function projection() {
@@ -199,6 +201,53 @@ function person(c, facing, pose = {}) {
   };
 }
 
+// --- Station actions and the wave: arm poses in (forward, his-left, z) cm, plus what he holds ---
+const hang = (side) => ({ elbow: [0, side * 22.5, 118], hand: [0, side * 22, 96] });
+const book = (centre, lift = 0) => (h) => {
+  const { pt, c, S } = h;
+  const F = G.frameOf(h.ptv(centre), h.f, h.s, [0, 0, 1]);
+  const page = (sign) => [[0, -1.2], [sign * 11.5, 0], [sign * 11.5, 15.5], [0, 14.3]].map(([u, v]) => (sign > 0 ? [u, v] : [u, v]));
+  const left = G.prismOf(F, page(1), -0.4, 0.4, h.P);
+  const right = G.prismOf(F, page(-1).reverse(), -0.4, 0.4, h.P);
+  const lifted = lift ? G.prismOf(G.frameOf(h.ptv([centre[0] - 3, centre[1], centre[2]]), h.f, h.s, [0, 0, 1]), [[0, -1], [-6, 4], [-8, 14], [0, 14.3]].reverse(), -0.2, 0.2, h.P) : null;
+  void pt;
+  void c;
+  return [
+    { at: h.ptv(centre), svg: `<g class="fm-page">${S(left, { tone: "hi", crease: "lo" })}${S(right, { tone: "hi", crease: "lo" })}${lifted ? S(lifted, { tone: "hi", crease: "lo" }) : ""}</g>` },
+  ];
+};
+const shaker = (hand) => (h) => {
+  const q = h.ptv(hand);
+  return [{ at: G.add3(q, [0, 0, 6]), svg: `<g class="fm-silver">${h.c.cyl(q[0], q[1], 2.1, q[2] + 2, q[2] + 9, { steps: 14, tone: "hi", crease: "lo" })}</g><g class="fm-dark">${h.c.cyl(q[0], q[1], 2.2, q[2] + 9, q[2] + 10.4, { steps: 14, tone: "hi", crease: "lo" })}</g>` }];
+};
+const pawn = (hand) => (h) => {
+  const q = G.add3(h.ptv(hand), [0, 0, -3]);
+  return [{ at: q, svg: `<g class="fm-dark">${h.S(G.sphereOf(q, 1.7, h.P, { steps: 8 }), { tone: "hi", crease: "lo" })}</g>` }];
+};
+const bell = (centre) => (h) => {
+  const q = h.ptv(centre);
+  const handle = [h.ptv([centre[0], centre[1] + 4.5, centre[2] + 4]), h.ptv([centre[0], centre[1] + 3.6, centre[2] + 9.5]), h.ptv([centre[0], centre[1], centre[2] + 11]), h.ptv([centre[0], centre[1] - 3.6, centre[2] + 9.5]), h.ptv([centre[0], centre[1] - 4.5, centre[2] + 4])];
+  return [{ at: q, svg: `<g class="fm-iron">${h.c.tube(handle, 1.3, { tone: "hi", spacing: 3 })}${h.S(G.sphereOf(q, 7.5, h.P, { steps: 16 }), { tone: "hi", crease: "lo" })}</g>` }];
+};
+const POSES = {
+  type1: { arms: { L: { elbow: [8, 18, 117], hand: [27, 9, 105] }, R: { elbow: [8, -18, 117], hand: [27, -10, 103.5] } } },
+  type2: { arms: { L: { elbow: [8, 18, 117], hand: [27, 9.5, 103.4] }, R: { elbow: [8, -18, 117], hand: [27.5, -9.5, 105.5] } } },
+  book1: { arms: { L: hang(1), R: { elbow: [12, -19, 122], hand: [30, -13, 108] } } },
+  book2: { arms: { L: { elbow: [10, 18, 122], hand: [22, 12, 132] }, R: { elbow: [10, -18, 122], hand: [22, -4, 132] } }, extras: book([24, 4, 128]) },
+  book3: { arms: { L: { elbow: [10, 18, 122], hand: [22, 12, 132] }, R: { elbow: [12, -16, 126], hand: [21, 1, 140] } }, extras: book([24, 4, 128], 1) },
+  cook1: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [12, -18, 126], hand: [26, -8, 130] } }, extras: shaker([26, -8, 130]) },
+  cook2: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [16, -16, 124], hand: [34, -3, 123] } }, extras: shaker([34, -3, 123]) },
+  cook3: { arms: { L: { elbow: [12, 19, 116], hand: [28, 12, 106] }, R: { elbow: [16, -16, 121], hand: [34, -3, 118] } }, extras: shaker([34, -3, 118]) },
+  chess1: { arms: { L: hang(1), R: { elbow: [12, -18, 112], hand: [28, -9, 94] } }, extras: pawn([28, -9, 94]) },
+  chess2: { arms: { L: hang(1), R: { elbow: [14, -16, 106], hand: [34, -5, 86] } }, extras: pawn([34, -5, 86]) },
+  kb1: { arms: { L: { elbow: [6, 11, 114], hand: [9, 3.5, 84] }, R: { elbow: [6, -11, 114], hand: [9, -3.5, 84] } }, extras: bell([10, 0, 70]) },
+  kb2: { arms: { L: { elbow: [22, 9, 134], hand: [44, 3.5, 140] }, R: { elbow: [22, -9, 134], hand: [44, -3.5, 140] } }, extras: bell([47, 0, 128]) },
+  wave1: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [8, -24, 178] } } },
+  wave2: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [9, -33, 175] } } },
+};
+const POSE_FACING = { wave1: "dr", wave2: "dr" };
+for (const a of Object.values(ACTIONS)) for (const [name] of a.frames) POSE_FACING[name] = a.facing;
+
 export default {
   render() {
     const { P, width, height } = projection();
@@ -208,6 +257,13 @@ export default {
         const c = context(P, `fig-${facing}-${name}`);
         const fig = person(c, facing, { swing });
         if (name === "idle") symbols.push(`<symbol id="f-${facing}-body" viewBox="0 0 ${width} ${height}">${fig.body}</symbol>`);
+        symbols.push(`<symbol id="f-${facing}-${name}" viewBox="0 0 ${width} ${height}">${fig.back}<use href="#f-${facing}-body" width="${width}" height="${height}"/>${fig.front}</symbol>`);
+      }
+      // Action poses, only in the facing each one is used in.
+      for (const [name, pose] of Object.entries(POSES)) {
+        if (POSE_FACING[name] !== facing) continue;
+        const c = context(P, `fig-${facing}-${name}`);
+        const fig = person(c, facing, pose);
         symbols.push(`<symbol id="f-${facing}-${name}" viewBox="0 0 ${width} ${height}">${fig.back}<use href="#f-${facing}-body" width="${width}" height="${height}"/>${fig.front}</symbol>`);
       }
     }
