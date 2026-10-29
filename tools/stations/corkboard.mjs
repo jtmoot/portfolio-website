@@ -1,14 +1,16 @@
 // A corkboard on the back wall holding Joshua's four posters (history, tech, philosophy, finance)
-// as pinned sheets, each a small drawing standing in for the real print.
+// as pinned sheets, each a small drawing standing in for the real print, and the covers of the
+// four podcasts he listens to (images from public/podcasts) along the bottom.
 // Local world: wall plane x = 0, board centred on y = 0. Centimetres.
 import { station, k } from "./lib.mjs";
+import { PODCASTS } from "../../src/content/shelf.js";
 
 const W = 72, H = 50, Z0 = 112;
 const FR = 2.4; // frame width
 const D = 2.2; // board depth
 
 export default station("corkboard", {
-  label: "A corkboard with four pinned sheets: a map for history, a circuit for tech, a bust for philosophy and a chart for finance.",
+  label: "A corkboard with four pinned sheets (a map for history, a circuit for tech, a bust for philosophy and a chart for finance) and the covers of four podcasts.",
   bounds: [[0, -W / 2 - 1, Z0 - 2], [0, W / 2 + 1, Z0 - 2], [D + 1, -W / 2 - 1, Z0 - 2], [0, -W / 2, Z0 + H + 2], [0, W / 2, Z0 + H + 2], [D + 1, W / 2 + 1, Z0 + H]],
   pad: 4,
   draw(c) {
@@ -76,9 +78,18 @@ export default station("corkboard", {
     out.push(sheet(cu(-3), Z0 + 32, 15, 19, 3, chip, "b"));
     out.push(sheet(cu(15), Z0 + 29, 16, 21, -2, bust, "a"));
     out.push(sheet(cu(0), Z0 + 11, 22, 14, 2, candles, "c"));
-    // An index card and a ticket stub.
-    out.push(sheet(cu(-24), Z0 + 9, 13, 9, 6, (p, P2) => line(P2([p(-5, 1.5), p(4, 1.5)], false)) + line(P2([p(-5, -0.5), p(3, -0.5)], false)) + line(P2([p(-5, -2.5), p(1, -2.5)], false)), "b"));
-    out.push(sheet(cu(24), Z0 + 10, 11, 6, -7, (p, P2) => `<path class="iso-line" data-tone="lo" data-dashed="true" data-free="true" d="${P2([p(2.5, -2.5), p(2.5, 2.5)], false)}"/>`, "c"));
+    // The podcasts: four square covers, two either side of the chart, each on a pin.
+    const SQ = 8;
+    const tile = (u, v, rot, pod, pin) => {
+      const x = u - SQ / 2, y = -(v + SQ / 2);
+      const spin = `rotate(${rot} ${u.toFixed(2)} ${(-v).toFixed(2)})`;
+      return `<g transform="${T}"><g transform="${spin}"><rect class="m-sheet-shadow" x="${x + 0.5}" y="${y + 0.7}" width="${SQ}" height="${SQ}"/>` +
+        `<image href="${pod.art}" x="${x}" y="${y}" width="${SQ}" height="${SQ}" preserveAspectRatio="xMidYMid slice"/>` +
+        `<rect class="iso-line" data-tone="lo" fill="none" x="${x}" y="${y}" width="${SQ}" height="${SQ}"/>` +
+        `<circle class="m-pin-${pin}" cx="${u.toFixed(2)}" cy="${(y + 1.2).toFixed(2)}" r="0.9"/></g></g>`;
+    };
+    const SPOTS = [[cu(-27.5), Z0 + 9, -4, "b"], [cu(-18), Z0 + 10.5, 3, "a"], [cu(18), Z0 + 10, -3, "c"], [cu(27.5), Z0 + 9.5, 5, "b"]];
+    PODCASTS.forEach((pod, i) => out.push(tile(SPOTS[i][0], SPOTS[i][1], SPOTS[i][2], pod, SPOTS[i][3])));
     return out.join("");
   },
 });

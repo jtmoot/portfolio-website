@@ -28,3 +28,25 @@ describe("StationCard", () => {
     host.remove();
   });
 });
+
+describe("StationCard, corkboard", () => {
+  it("lists the podcasts with their art, each opening on Spotify in a new tab", async () => {
+    const { PODCASTS } = await import("../../src/content/shelf.js");
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<StationCard station={{ id: "corkboard", link: null }} style={{}} onNavigate={() => {}} />));
+    const links = [...host.querySelectorAll(".pods a")];
+    expect(links.map((a) => a.getAttribute("href"))).toEqual(PODCASTS.map((p) => p.href));
+    expect(links.every((a) => a.target === "_blank")).toBe(true);
+    expect(host.querySelectorAll(".pods img")).toHaveLength(4);
+    await act(async () => root.unmount());
+  });
+});
+
+describe("corkboard drawing", () => {
+  it("pins the four podcast covers on the board", async () => {
+    const { readFileSync } = await import("node:fs");
+    const svg = readFileSync("src/creative/stations/art/corkboard.svg", "utf8");
+    for (const id of ["how-to-take-over-the-world", "founders", "maxinomics", "ai-daily-brief"]) expect(svg).toContain(`href="/podcasts/${id}.jpg"`);
+  });
+});

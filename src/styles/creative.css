@@ -624,3 +624,42 @@ html[data-theme="night"] .figure{--hair-0:#5b4430;--hair-1:#664d37;--hair-2:#715
     scale: 0.8;
   }
 }
+
+/* The corkboard's card: the podcasts, each with its cover. */
+.station-card .pods {
+  list-style: none;
+  margin: 0.5em 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45em;
+}
+
+.station-card .pods a {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  text-decoration: none;
+}
+
+.station-card .pods img {
+  width: 2.2em;
+  height: 2.2em;
+  border-radius: 0.25em;
+  box-shadow: 0 1px 3px rgba(35, 35, 32, 0.25);
+}
+
+.station-card .pods span {
+  display: grid;
+  line-height: 1.25;
+}
+
+.station-card .pods i {
+  font-style: normal;
+  font-size: 0.85em;
+  opacity: 0.55;
+}
+
+.station-card .pods a:hover span {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}

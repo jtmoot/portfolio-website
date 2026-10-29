@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
+import { PODCASTS } from "../content/shelf.js";
 
 /** One line and a link for each station, shown when the figure (or the pointer) is near it. */
 export const CARD_TEXT = {
@@ -8,7 +9,7 @@ export const CARD_TEXT = {
   kitchen: { line: "short ribs, low and slow.", cta: "see cooking" },
   gym: { line: "barbell, kettlebells, sprints, a weighted vest.", cta: "see training" },
   chess: { line: "rapid, as breakfast_enjoyer.", cta: "open chess.com" },
-  corkboard: { line: "history, tech, philosophy, finance.", cta: null },
+  corkboard: { line: "pinned up: the podcasts on in the background.", cta: null },
   anatomy: { line: "the brain, in sagittal section.", cta: null },
 };
 
@@ -42,6 +43,21 @@ export default function StationCard({ station, style, onNavigate }) {
   return (
     <div ref={el} className="station-card" style={style}>
       <p>{text.line}</p>
+      {station.id === "corkboard" && (
+        <ul className="pods">
+          {PODCASTS.map((p) => (
+            <li key={p.id}>
+              <a href={p.href} target="_blank" rel="noreferrer" data-c="ring">
+                <img src={p.art} alt="" width="28" height="28" />
+                <span>
+                  {p.name.toLowerCase()}
+                  <i>{p.host.toLowerCase()}</i>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
       {station.link && text.cta && (
         <a
           href={station.link}
