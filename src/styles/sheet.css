@@ -186,7 +186,9 @@ button[aria-pressed="true"] .toggle-pill::after {
   }
 
   .nav {
-    position: static;
+    position: relative;
+    left: auto;
+    top: auto;
     width: auto;
     font-size: 12px;
     padding: 16px 0;

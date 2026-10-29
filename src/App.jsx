@@ -12,6 +12,7 @@ import Stage from "./creative/Stage.jsx";
 
 const Floor = lazy(() => import("./creative/Floor.jsx"));
 const StationHarness = lazy(() => import("./creative/StationHarness.jsx"));
+const PhoneStage = lazy(() => import("./creative/PhoneStage.jsx"));
 import { play, unlock } from "./lib/audio.js";
 import { getTheme, toggleTheme } from "./lib/theme.js";
 import { createModeStore } from "./lib/mode.js";
@@ -63,14 +64,15 @@ export default function App() {
   return (
     <>
       <Stage store={modeStore}>
-        {({ view, flipped }) => (
+        {({ view, flipped, phone }) => (
+          <>
           <main className="sheet">
             <Nav theme={theme} onToggleTheme={onToggleTheme} mode={mode} onToggleMode={onToggleMode} />
             <section className="poster">
               <Margins />
               <Hero />
             </section>
-            {roomLoaded && (
+            {roomLoaded && !phone && (
               <Suspense fallback={null}>
                 <Floor view={view} flipped={flipped} onNavigate={onNavigate} />
               </Suspense>
@@ -82,6 +84,12 @@ export default function App() {
               <Contact />
             </div>
           </main>
+          {roomLoaded && phone && (
+            <Suspense fallback={null}>
+              <PhoneStage view={view} flipped={flipped} onNavigate={onNavigate} />
+            </Suspense>
+          )}
+          </>
         )}
       </Stage>
       <HoverPreview />

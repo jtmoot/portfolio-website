@@ -62,7 +62,9 @@ export function screenToFloor({ left, top }, v = VIEW) {
 export function fitView({ w, h }) {
   const cqw = Math.min(w, 1512) / 100;
   const avail = h / cqw - NAV_CQW - 1.5;
-  const scale = Math.min(VIEW.scale, avail / SCENE_PER_SCALE);
+  // Narrow screens have height to spare: let the room grow until the floor fills the width.
+  const cap = w < 820 ? 0.78 : VIEW.scale;
+  const scale = Math.min(cap, avail / SCENE_PER_SCALE);
   const spare = Math.max(0, avail - SCENE_PER_SCALE * scale);
   const top = NAV_CQW + spare / 2;
   const drop = top - ORIGIN.y + TOP_PER_SCALE * scale;

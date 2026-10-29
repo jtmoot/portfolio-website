@@ -29,9 +29,9 @@ const centre = (f) => ({ x: f.x + f.w / 2, y: f.y + f.h / 2 });
 /**
  * The flat overlay that holds the room drawings, positioned over the tipped paper by projecting
  * floor points through the same view as the poster's transform.
- * @param {{ view: object, flipped: boolean, onNavigate: (href: string) => void, children?: import("react").ReactNode }} props
+ * @param {{ view: object, flipped: boolean, onNavigate: (href: string) => void, children?: import("react").ReactNode, posterSelector?: string }} props
  */
-export default function Floor({ view, flipped, onNavigate, children }) {
+export default function Floor({ view, flipped, onNavigate, children, posterSelector = ".poster" }) {
   const [hoverId, setHoverId] = useState(null);
   const [nearId, setNearId] = useState(null);
   const [tiles, setTiles] = useState([]);
@@ -72,7 +72,7 @@ export default function Floor({ view, flipped, onNavigate, children }) {
     const cqw = rect.width / 100;
     tap(screenToFloor({ left: (e.clientX - rect.left) / cqw, top: (e.clientY - rect.top) / cqw }, view));
   };
-  const poster = typeof document !== "undefined" ? document.querySelector(".poster") : null;
+  const poster = typeof document !== "undefined" ? document.querySelector(posterSelector) : null;
   const labelSize = `${1.45 * (view.scale / 0.62)}cqw`;
 
   return (

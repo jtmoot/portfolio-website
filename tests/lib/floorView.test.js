@@ -41,4 +41,10 @@ describe("floorView", () => {
     expect(back.x).toBeCloseTo(12.5, 6);
     expect(back.y).toBeCloseTo(61, 6);
   });
+
+  it("phones get a larger room that still fits the width", () => {
+    const v = fitView({ w: 390, h: 844 });
+    expect(v.scale).toBeGreaterThan(0.62);
+    expect(v.scale).toBeLessThanOrEqual(0.78);
+  });
 });

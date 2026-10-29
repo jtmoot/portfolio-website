@@ -295,3 +295,63 @@
   .figure.falling { animation: none; opacity: 0; }
   .walk-tile { animation: none; }
 }
+
+/* Phones: a separate fixed sheet tips; the page fades under it. */
+.phone-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: flex-start;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.phone-stage[data-on] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.phone-sheet {
+  position: relative;
+  width: 100vw;
+  container-type: inline-size;
+  margin-top: 0;
+}
+
+.phone-poster {
+  position: relative;
+  width: 100cqw;
+  height: 78cqw;
+  transform-origin: 50% 39cqw;
+  transition: transform 1.5s cubic-bezier(0.6, 0, 0.25, 1);
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dots) 1px, transparent 1.2px);
+  background-size: 1.6cqw 1.6cqw;
+  box-shadow: 0 0 0 1px var(--rule), 0 2cqw 4cqw rgba(0, 0, 0, 0.18);
+}
+
+.stage[data-phone][data-mode="creative"] .poster {
+  transform: none;
+}
+
+.stage[data-phone][data-mode="creative"] .poster::before {
+  opacity: 0;
+}
+
+.stage[data-phone][data-mode="creative"] .hero {
+  opacity: 0;
+}
+
+.stage[data-phone][data-mode="creative"] .polaroid {
+  left: auto;
+  top: auto;
+  width: 120px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone-poster {
+    transition: none;
+  }
+}
