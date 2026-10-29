@@ -323,15 +323,43 @@ button[aria-pressed="true"] .toggle-pill::after {
   margin: 0.9cqw 0 1cqw;
 }
 
-.replay {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  border-bottom: 1px dotted currentColor;
+/* Garvit's intro tools: two faded icons after the paragraph, full strength on hover. */
+.intro-tools {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 0.6em;
+  vertical-align: -0.12em;
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 1.55em;
+  height: 1.55em;
   padding: 0;
-  margin-left: 0.9em;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: inherit;
+  opacity: 0.4;
   cursor: pointer;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.icon-btn:hover,
+.icon-btn:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.icon-btn svg {
+  width: 0.85em;
+  height: 0.85em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .typed {

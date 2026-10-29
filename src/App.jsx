@@ -71,7 +71,7 @@ export default function App() {
   }
 
   const onToggleTheme = () => {
-    play("tick");
+    play("click");
     setThemeState(toggleTheme());
   };
   const onNavigate = (href) => {
@@ -79,7 +79,7 @@ export default function App() {
     setTimeout(() => document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" }), 1600);
   };
   const onToggleMode = () => {
-    play("tick");
+    play("flip");
     modeControl.toggle();
   };
 

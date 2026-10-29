@@ -27,7 +27,7 @@ describe("TypedIntro first gesture", () => {
     const stop = vi.fn();
     const loop = vi.fn(() => stop);
     const unlock = vi.fn();
-    vi.doMock("../../src/lib/audio.js", () => ({ play: vi.fn(), loop, unlock }));
+    vi.doMock("../../src/lib/audio.js", () => ({ play: vi.fn(), loop, unlock, isMuted: () => false, setMuted: vi.fn() }));
     const { default: Intro } = await import("../../src/pad/TypedIntro.jsx");
     const host = document.createElement("div");
     const root = createRoot(host);
@@ -54,5 +54,51 @@ describe("TypedIntro first gesture", () => {
     vi.doUnmock("../../src/lib/audio.js");
     vi.useRealTimers();
     vi.unstubAllGlobals();
+  });
+});
+
+describe("TypedIntro sound controls", () => {
+  const mount = async () => {
+    vi.resetModules();
+    vi.useFakeTimers();
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    let muted = false;
+    const audio = { play: vi.fn(), loop: vi.fn(() => () => {}), unlock: vi.fn(), isMuted: () => muted, setMuted: vi.fn((v) => (muted = v)) };
+    vi.doMock("../../src/lib/audio.js", () => audio);
+    const { default: Intro } = await import("../../src/pad/TypedIntro.jsx");
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<Intro tokens={[{ text: "hi." }]} startDelay={0} />));
+    await act(async () => vi.advanceTimersByTime(2000));
+    const done = async () => {
+      await act(async () => root.unmount());
+      vi.doUnmock("../../src/lib/audio.js");
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    };
+    return { host, audio, done };
+  };
+
+  it("replays the intro with sound from a small icon button", async () => {
+    const { host, audio, done } = await mount();
+    const replay = host.querySelector('button[aria-label="Replay the intro with sound"]');
+    expect(replay).not.toBeNull();
+    expect(replay.textContent.trim()).toBe("");
+    audio.loop.mockClear();
+    await act(async () => replay.click());
+    expect(host.querySelector("[aria-hidden=true]").textContent).toBe("");
+    await act(async () => vi.advanceTimersByTime(2000));
+    expect(audio.loop).toHaveBeenCalledWith("pencil");
+    await done();
+  });
+
+  it("toggles mute and shows the state", async () => {
+    const { host, audio, done } = await mount();
+    const mute = host.querySelector('button[aria-label="Mute sound"]');
+    expect(mute.getAttribute("aria-pressed")).toBe("false");
+    await act(async () => mute.click());
+    expect(audio.setMuted).toHaveBeenCalledWith(true);
+    expect(mute.getAttribute("aria-pressed")).toBe("true");
+    await done();
   });
 });

@@ -10,7 +10,7 @@ describe("audio", () => {
     const ctor = vi.fn();
     vi.stubGlobal("Audio", ctor);
     const audio = await import("../../src/lib/audio.js");
-    await expect(audio.play("tick")).resolves.toBeUndefined();
+    await expect(audio.play("click")).resolves.toBeUndefined();
     expect(ctor).not.toHaveBeenCalled();
   });
 
@@ -34,7 +34,7 @@ describe("audio", () => {
     vi.stubGlobal("matchMedia", () => ({ matches: true }));
     const audio = await import("../../src/lib/audio.js");
     audio.unlock();
-    await audio.play("tick");
+    await audio.play("click");
     expect(ctor).not.toHaveBeenCalled();
   });
 });
@@ -65,5 +65,68 @@ describe("audio loop", () => {
     const stop = audio.loop("pencil");
     expect(() => stop()).not.toThrow();
     expect(ctor).not.toHaveBeenCalled();
+  });
+});
+
+describe("audio files and mute", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.unstubAllGlobals();
+    localStorage.clear();
+  });
+
+  const live = async () => {
+    const clips = [];
+    vi.stubGlobal("Audio", vi.fn(function Fake(src) {
+      const clip = { src, play: vi.fn(() => Promise.resolve()), pause: vi.fn(), currentTime: 0, loop: false };
+      clips.push(clip);
+      return clip;
+    }));
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const audio = await import("../../src/lib/audio.js");
+    audio.unlock();
+    return { audio, clips };
+  };
+
+  it("serves the recorded clips: pencil, click and flip", async () => {
+    const { audio, clips } = await live();
+    await audio.play("pencil");
+    await audio.play("click");
+    await audio.play("flip");
+    expect(clips.map((c) => c.src)).toEqual(["/audio/pencil.mp3", "/audio/click.mp3", "/audio/flip.mp3"]);
+  });
+
+  it("is unmuted by default and remembers a mute across visits", async () => {
+    const { audio } = await live();
+    expect(audio.isMuted()).toBe(false);
+    audio.setMuted(true);
+    expect(localStorage.getItem("pad.muted")).toBe("1");
+    vi.resetModules();
+    const again = await import("../../src/lib/audio.js");
+    expect(again.isMuted()).toBe(true);
+  });
+
+  it("plays and loops nothing while muted", async () => {
+    const { audio, clips } = await live();
+    audio.setMuted(true);
+    await audio.play("click");
+    const stop = audio.loop("pencil");
+    expect(clips).toHaveLength(0);
+    expect(() => stop()).not.toThrow();
+  });
+
+  it("muting stops a loop that is already playing", async () => {
+    const { audio, clips } = await live();
+    audio.loop("pencil");
+    audio.setMuted(true);
+    expect(clips[0].pause).toHaveBeenCalled();
+  });
+
+  it("survives storage that throws", async () => {
+    vi.stubGlobal("localStorage", { getItem: () => { throw new Error("blocked"); }, setItem: () => { throw new Error("blocked"); } });
+    const { audio } = await live();
+    expect(audio.isMuted()).toBe(false);
+    expect(() => audio.setMuted(true)).not.toThrow();
+    expect(audio.isMuted()).toBe(true);
   });
 });
