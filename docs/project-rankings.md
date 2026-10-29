@@ -6,7 +6,7 @@ Which projects the portfolio features, in order, and the media for each. Media l
 
 | # | Project | Media | Link |
 |---|---|---|---|
-| 01 | **Forge**: ML experiment tracking with hardware-aware profiling | `forge.*` (16s): dashboard → project logs → Multi-Asset experiment → efficiency frontier → model registry | [jtmoot/forge](https://github.com/jtmoot/forge) · [live](https://forgelab.up.railway.app) |
+| 01 | **Forge**: ML experiment tracking, hardware-aware profiling, and model serving (micro-batching, ONNX Runtime fp32/int8 behind a parity gate, load-tested on Railway: 20.3K req/s at 3.8 ms p99, 29× naive PyTorch) | `forge.*` (18.7s): dashboard → Multi-Asset experiment → efficiency frontier → agent answers "Which serving config keeps p99 under 10ms?" (thinking time cut) → `/serving` latency-vs-throughput curves, ending on the recommended int8 config | [jtmoot/forge](https://github.com/jtmoot/forge) · [live](https://forgelab.up.railway.app) · [serving](https://forgelab.up.railway.app/serving) |
 | 02 | **Ladies on the Links**: production site for a women's golf league, maintained through an issue → Claude → PR → auto-merge pipeline, with a Cloudflare-native tee sheet synced from Bookwhen | `lotl.*` (20s): home → Schedule → live tee sheet with filters. Member names are blurred | [jtmoot/lotl-site](https://github.com/jtmoot/lotl-site) · [live](https://ladiesonthelinksgolf.com) |
 | 03 | **Distributed System**: fault-tolerant replicated service (heartbeats, GFD/LFD membership, active + passive replication, checkpointing). CMU 18-749 team project | `distsys.*` (16s): replay of real logs from a local run. Six panes (GFD, LFD2, C1, S1, S2, S3); backup S2 is killed, LFD2 detects it, GFD membership drops to S1, S3, and clients keep being served | [C3viche/distributed-system](https://github.com/C3viche/distributed-system) |
 | 04 | **Robot Learning**: PPO vs SAC vs model-based RL on CarRacing-v3 (CMU 16-831), plus SayCan-Extended: GPT-3.5 planning, ViLD detection, direct PyBullet control, batching and caching (USC CSCE 585) | `carracing.*` (10s of the final PPO policy, with its title bar: "peak 685 @ 960k · final 638"), `carracing-training.jpg`; `saycan.*` (8s: pipeline → PyBullet sim → batching results) | [csce585-mlsystems/SayCan-Extended](https://github.com/csce585-mlsystems/SayCan-Extended) (CarRacing repo is private) |
@@ -26,4 +26,3 @@ Which projects the portfolio features, in order, and the media for each. Media l
 ## Notes
 
 - GitHub handle is `jtmoot`. `github.com/joshuamoorehead` returns a 404.
-- The Forge agent page currently errors: Railway logs show `anthropic.AuthenticationError 401 invalid x-api-key`, so the key on Railway is revoked. Re-record `forge.*` with the agent step once it's fixed.
