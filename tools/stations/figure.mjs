@@ -352,9 +352,10 @@ const POSES = {
   water2: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 1) },
   water3: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 2) },
   // Reading in the chair: the book open on his lap, turning a page, a sip of tea.
-  sit1: { sit: true, sink: 44, front: true, arms: { L: { elbow: [10, 19, 78], hand: [24, 9, 86] }, R: { elbow: [10, -19, 78], hand: [24, -9, 86] } }, extras: book([27, 0, 88]) },
-  sit2: { sit: true, sink: 44, front: true, arms: { L: { elbow: [10, 19, 78], hand: [24, 9, 86] }, R: { elbow: [12, -17, 84], hand: [24, -3, 97] } }, extras: book([27, 0, 88], 1) },
-  sip: { sit: true, sink: 44, front: true, arms: { L: { elbow: [10, 19, 78], hand: [22, 6, 80] }, R: { elbow: [8, -20, 86], hand: [11, -7, 112] } }, extras: (h) => [...book([25, 4, 80])(h), ...mug([12, -7, 112])(h)] },
+  // Held high enough to show over the club chair's back from behind.
+  sit1: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [12, -19, 88], hand: [24, -9, 98] } }, extras: book([27, 0, 100]) },
+  sit2: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [13, -17, 92], hand: [24, -3, 108] } }, extras: book([27, 0, 100], 1) },
+  sip: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 86], hand: [23, 6, 94] }, R: { elbow: [8, -20, 90], hand: [11, -7, 114] } }, extras: (h) => [...book([26, 4, 96])(h), ...mug([12, -7, 114])(h)] },
   wave1: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [8, -24, 178] } } },
   wave2: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [9, -33, 175] } } },
 };

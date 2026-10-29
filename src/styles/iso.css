@@ -162,6 +162,8 @@ html[data-theme="night"] .iso .m-steam{stroke:#cfcfc8}
 .iso .m-spice-0{fill:#b0562f}.iso .m-spice-1{fill:#d1a948}.iso .m-spice-2{fill:#6f6a3a}.iso .m-spice-3{fill:#8a3b2a}
 .iso .m-wood-tube .tb-body,.iso .m-wood-tube .tb-shine{fill:#e3d3b8}
 .iso .m-steel-tube .tb-body{fill:#cbcccd}
+.iso .m-bracket .tb-body{fill:#484846}.iso .m-bracket .tb-shine{fill:#5c5c59}.iso .m-bracket .tb-shade{fill:#2f2f2e}
+html[data-theme="night"] .iso .m-bracket .tb-body{fill:#151515}
 .iso .m-wood-dark{--anatomy-paper:#6e5843;--anatomy-face:#6e5843;--anatomy-top:#80684f;--anatomy-shade-0:#544231;--anatomy-shade-1:#5c4936;--anatomy-shade-2:#64503c;--anatomy-shade-3:#6c5741;--anatomy-lo:#9b8166;--anatomy-faint:#86705a}
 .iso .m-sq-l{fill:#ece0c8;stroke:none}.iso .m-sq-d{fill:#8c6c4e;stroke:none}
 html[data-theme="night"] .iso .m-sq-l{fill:#3a3227}html[data-theme="night"] .iso .m-sq-d{fill:#1f1912}
@@ -221,6 +223,10 @@ html[data-theme="night"] .iso .m-steel{--anatomy-top:#3b3d40;--anatomy-shade-0:#
 @media (prefers-reduced-motion:reduce){.iso [data-part="code"],.iso [data-sway]{animation:none}}
 
 /* The reading corner. */
+.iso .m-leather{--anatomy-paper:#7a4a2c;--anatomy-face:#7a4a2c;--anatomy-top:#94603a;--anatomy-shade-0:#5a361f;--anatomy-shade-1:#643c23;--anatomy-shade-2:#6f4327;--anatomy-shade-3:#78492b;--anatomy-lo:#3e2414}
+.iso .m-leather-hi{--anatomy-paper:#8a5733;--anatomy-face:#8a5733;--anatomy-top:#a56d42;--anatomy-shade-0:#683f24;--anatomy-shade-1:#72462a;--anatomy-shade-2:#7d4d2e;--anatomy-shade-3:#875532;--anatomy-lo:#46291a}
+html[data-theme="night"] .iso .m-leather{--anatomy-paper:#3d2618;--anatomy-face:#3d2618;--anatomy-top:#4a2f1d;--anatomy-shade-0:#2c1b10;--anatomy-shade-1:#311f13;--anatomy-shade-2:#362215;--anatomy-shade-3:#3b2517;--anatomy-lo:#6a4a33}
+html[data-theme="night"] .iso .m-leather-hi{--anatomy-paper:#452b1b;--anatomy-face:#452b1b;--anatomy-top:#533421;--anatomy-shade-0:#321f13;--anatomy-shade-1:#382316;--anatomy-shade-2:#3e2718;--anatomy-shade-3:#432a1a;--anatomy-lo:#70503a}
 .iso .m-velvet{--anatomy-paper:#7d8a6a;--anatomy-face:#7d8a6a;--anatomy-top:#94a080;--anatomy-shade-0:#5f6a50;--anatomy-shade-1:#677358;--anatomy-shade-2:#707c60;--anatomy-shade-3:#788566;--anatomy-lo:#4e5842}
 .iso .m-velvet-hi{--anatomy-paper:#8a9776;--anatomy-face:#8a9776;--anatomy-top:#a1ac8c;--anatomy-shade-0:#6a755a;--anatomy-shade-1:#737e62;--anatomy-shade-2:#7c886a;--anatomy-shade-3:#859172;--anatomy-lo:#56604a}
 .iso .m-rug{--anatomy-paper:#d9c7a6;--anatomy-face:#d9c7a6;--anatomy-top:#e2d2b4;--anatomy-shade-0:#c2ae8b;--anatomy-shade-1:#c9b693;--anatomy-shade-2:#d0bd9b;--anatomy-shade-3:#d6c4a2;--anatomy-faint:#b39d78}

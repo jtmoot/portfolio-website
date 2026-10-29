@@ -43,7 +43,7 @@ export const ACTIONS = {
   library: { facing: "ul", frames: [["book1", 700], ["book2", 1300], ["book3", 450], ["book2", 900], ["book1", 550]] },
   kitchen: { facing: "ur", frames: [["cook1", 600], ["cook2", 240], ["cook3", 240], ["cook2", 240], ["cook3", 240], ["cook2", 240], ["cook3", 240], ["cook2", 240], ["cook3", 240], ["cook1", 600]] },
   plants: { facing: "ul", frames: [["water1", 600], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water1", 600]] },
-  reading: { facing: "dr", frames: [["sit1", 1300], ["sit2", 450], ["sit1", 900], ["sip", 850], ["sit1", 450]] },
+  reading: { facing: "ur", frames: [["sit1", 1300], ["sit2", 450], ["sit1", 900], ["sip", 850], ["sit1", 450]] },
   chess: { facing: "dr", over: true, frames: [["chess1", 900], ["chess2", 1500], ["chess3", 1100]] },
   gym: { facing: "dr", loop: true, frames: [["kb1", 380], ["kb2", 160], ["kb3", 420], ["kb2", 160]] },
 };

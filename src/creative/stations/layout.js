@@ -60,12 +60,13 @@ export const LAYOUT = {
   reading: {
     id: "reading",
     label: "Reading chair",
-    // Front left, beside the chess table: the chair's seat is where he sits.
+    // Front left, beside the chess table, facing into the room: the seat is where he sits.
     pos: { x: 9, y: 43 },
-    // The chair's back, the side table and the lamp; the seat stays open so he can sit in it.
-    footprint: { x: 0, y: 30, w: 27, h: 9.4 },
+    // The chair's back (nearest the viewer, so it draws over him), the lamp behind it and the side
+    // table by its near arm; the seat stays open so he can walk in and sit.
+    footprint: { x: 0, y: 30, w: 4.2, h: 24 },
     link: "/shelf",
-    labelAt: { x: 2, y: 54, z: 0 },
+    labelAt: { x: 1, y: 62, z: 0 },
     standAt: { x: 9, y: 43 },
   },
   corkboard: {
