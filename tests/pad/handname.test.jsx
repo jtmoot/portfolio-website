@@ -27,14 +27,14 @@ const mount = async (reduce = false) => {
 };
 
 describe("HandName", () => {
-  it("writes the name out letter by letter, with the pencil only while it writes", async () => {
+  it("writes the name out letter by letter, with the typing sound only while it writes", async () => {
     const { host, root, ref, audio, stop, typed, STEP_MS } = await mount();
     expect(host.querySelector(".sr-only").textContent).toBe("Hi, I'm Josh");
     await act(async () => ref.current.run());
     await act(async () => vi.advanceTimersByTime(150 + STEP_MS * 3));
     expect(typed().length).toBeGreaterThan(0);
     expect(typed().length).toBeLessThan("Hi, I'm Josh".length);
-    expect(audio.loop).toHaveBeenCalledWith("pencil");
+    expect(audio.loop).toHaveBeenCalledWith("typing");
     expect(stop).not.toHaveBeenCalled();
     await act(async () => vi.advanceTimersByTime(STEP_MS * 20));
     expect(typed()).toBe("Hi, I'm Josh");

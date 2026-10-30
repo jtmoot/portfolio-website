@@ -47,7 +47,7 @@ describe("Shelf extras", () => {
     const { host, root } = await mount();
     const a = host.querySelector(".recommend a");
     expect(a.textContent).toContain("Recommend a book");
-    expect(a.getAttribute("href")).toBe("mailto:jtmoorehead1@gmail.com?subject=A%20book%20recommendation");
+    expect(a.getAttribute("href")).toBe("mailto:josh.moorehead@outlook.com?subject=A%20book%20recommendation");
     await act(async () => root.unmount());
     vi.unstubAllGlobals();
   });

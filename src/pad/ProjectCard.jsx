@@ -24,7 +24,7 @@ const ARROW = (
 
 /**
  * A project card, Garvit style: the demo in a browser window (with play and pause), a numbered
- * kind line with a badge, the name and a handwritten subtitle, the write-up, chips, and a footer
+ * kind line with a badge, the name and a subtitle, the write-up, chips, and a footer
  * that leads with "launch live" and keeps the code link on the right. The clip plays while at
  * least half of it is in view.
  * @param {{ project: object, n?: number, wide?: boolean }} props
@@ -91,14 +91,14 @@ export default function ProjectCard({ project, n = 1, wide = false }) {
       </div>
       <div className="card-body">
         <p className="card-meta">
-          <span className="hand">
+          <span>
             № {String(n).padStart(3, "0")}
             {kind && ` · ${kind}`}
           </span>
           {badge && <span className="badge">[{badge}]</span>}
         </p>
         <h3 className="card-title">{title}</h3>
-        <p className="card-line hand">{tagline}</p>
+        <p className="card-line">{tagline}</p>
         {body && <p className="card-text">{body}</p>}
         {stack.length > 0 && (
           <ul className="chips">

@@ -4,8 +4,8 @@ import { SOCIALS } from "../content/data.js";
 export default function Contact() {
   return (
     <section id="contact" aria-labelledby="contact-h">
-      <h2 id="contact-h">Say hello</h2>
-      <p>The fastest way is email. I read everything.</p>
+      <h2 id="contact-h">Contact</h2>
+      <p>Email is the best way to reach me.</p>
       <p className="contact-links">
         {SOCIALS.map((s) => (
           <a

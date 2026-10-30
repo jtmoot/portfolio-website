@@ -49,7 +49,7 @@ export default function HoverPreview() {
   return (
     <div ref={el} className={`preview${shown ? " on" : ""}`} aria-hidden="true">
       {card?.src ? <img src={card.src} alt="" /> : <div className="preview-ph">{card?.ph}</div>}
-      {card?.cap && <div className="preview-cap hand">{card.cap}</div>}
+      {card?.cap && <div className="preview-cap">{card.cap}</div>}
     </div>
   );
 }

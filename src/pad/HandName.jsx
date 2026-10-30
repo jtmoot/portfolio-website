@@ -1,18 +1,18 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { loop } from "../lib/audio.js";
 
-/** One letter every 65 ms after a 150 ms beat, with the pencil only while it writes (garvitsingla.in's timing). */
+/** One letter every 65 ms after a 150 ms beat, with the typing sound only while it writes. */
 export const STEP_MS = 65;
 const LEAD_MS = 150;
 
 const still = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /**
- * The name, written out in the hand font. run() rewrites it with the pencil sound; the rest of
- * the line stays laid out (invisibly) so nothing reflows while it writes.
- * @param {{ text: string, children?: import("react").ReactNode }} props children: drawn under the name (the scribble)
+ * The name, typing itself out. run() retypes it with the sound; the rest of the line stays laid
+ * out (invisibly) so nothing reflows while it types.
+ * @param {{ text: string }} props
  */
-const HandName = forwardRef(function HandName({ text, children }, ref) {
+const HandName = forwardRef(function HandName({ text }, ref) {
   const [n, setN] = useState(text.length);
   const [writing, setWriting] = useState(false);
   const timers = useRef([]);
@@ -34,7 +34,7 @@ const HandName = forwardRef(function HandName({ text, children }, ref) {
     }
     setN(0);
     setWriting(true);
-    timers.current.push(setTimeout(() => (stopSound.current = loop("pencil")), LEAD_MS));
+    timers.current.push(setTimeout(() => (stopSound.current = loop("typing")), LEAD_MS));
     for (let i = 1; i <= text.length; i++) timers.current.push(setTimeout(() => setN(i), LEAD_MS + i * STEP_MS));
     timers.current.push(
       setTimeout(() => {
@@ -55,7 +55,6 @@ const HandName = forwardRef(function HandName({ text, children }, ref) {
         <span className="name-typed">{text.slice(0, n)}</span>
         <span className="name-ghost">{text.slice(n)}</span>
       </span>
-      {children}
     </h1>
   );
 });

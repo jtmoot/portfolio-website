@@ -18,4 +18,4 @@ off      barbells, sprints, short ribs, history books, rapid chess
 
 ### reach me
 
-[portfolio](https://dinq.me/joshuamoorehead) &nbsp; [linkedin](https://www.linkedin.com/in/joshuamoorehead) &nbsp; [email](mailto:jtmoorehead1@gmail.com) &nbsp; [my runs](https://www.strava.com/athletes/121070736) &nbsp; [my rating](https://www.chess.com/member/breakfast_enjoyer)
+[portfolio](https://dinq.me/joshuamoorehead) &nbsp; [linkedin](https://www.linkedin.com/in/joshua-moorehead) &nbsp; [email](mailto:josh.moorehead@outlook.com) &nbsp; [my runs](https://www.strava.com/athletes/121070736) &nbsp; [my rating](https://www.chess.com/member/breakfast_enjoyer)

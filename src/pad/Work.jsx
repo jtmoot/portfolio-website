@@ -8,7 +8,7 @@ export const isWide = (i) => i % 3 === 2;
 export default function Work() {
   return (
     <section id="work" aria-labelledby="work-h">
-      <h2 id="work-h">Things I&apos;ve built &amp; shipped</h2>
+      <h2 id="work-h">Projects</h2>
       <div className="cards">
         {PROJECTS.map((p, i) => (
           <ProjectCard key={p.id} project={p} n={i + 1} wide={isWide(i)} />

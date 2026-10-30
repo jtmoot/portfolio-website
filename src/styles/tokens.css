@@ -11,6 +11,49 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/Newsreader-Variable.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Serif";
+  src: url("/fonts/IBMPlexSerif-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Serif";
+  src: url("/fonts/IBMPlexSerif-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("/fonts/IBMPlexSans-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("/fonts/IBMPlexSans-600.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/IBMPlexMono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   --paper: #f4f3ee;
   --dots: #c9c7bd;
@@ -22,7 +65,11 @@
   --card: #ebe9e2;
   --font-hand: "Gloria Hallelujah", cursive;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --font-sans: "Helvetica Neue", Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* Headings and body: "serif" by default; see src/lib/font.js. The hand font stays in the room. */
+  --font-head: "Newsreader", Georgia, serif;
+  --head-weight: 500;
+  --head-tracking: -0.012em;
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --sheet-card: #f9f7f0;
   --card-line: rgba(42, 42, 40, 0.13);
   --live: #b4561c;
@@ -42,4 +89,18 @@ html[data-theme="night"] {
   --card-line: rgba(217, 215, 207, 0.13);
   --live: #e3915a;
   color-scheme: dark;
+}
+
+html[data-font="sans"] {
+  --font-head: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --head-weight: 600;
+  --head-tracking: -0.022em;
+}
+
+html[data-font="plex"] {
+  --font-head: "IBM Plex Serif", Georgia, serif;
+  --head-weight: 500;
+  --head-tracking: -0.01em;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }

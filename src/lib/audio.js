@@ -1,7 +1,7 @@
-const FILES = { pencil: "/audio/pencil.mp3", click: "/audio/click.mp3", flip: "/audio/flip.mp3" };
+const FILES = { typing: "/audio/typing.mp3", click: "/audio/click.mp3", flip: "/audio/flip.mp3" };
 const MUTE_KEY = "pad.muted";
-/** Playback volume per clip: the pencil sits quietly under the page, as on garvitsingla.in. */
-const VOLUME = { pencil: 0.4, click: 0.8, flip: 0.9 };
+/** Playback volume per clip: the typing sits quietly under the page. */
+const VOLUME = { typing: 0.5, click: 0.8, flip: 0.9 };
 const FADE_MS = 300;
 const cache = {};
 const playing = new Set();
@@ -53,7 +53,7 @@ export function unlock() {
 
 /**
  * Plays a short clip. A no-op before unlock, while muted, under reduced motion, or when the file is missing.
- * @param {"pencil" | "click" | "flip"} name
+ * @param {"typing" | "click" | "flip"} name
  * @returns {Promise<void>}
  */
 export async function play(name) {
@@ -72,7 +72,7 @@ export async function play(name) {
  * Loops a clip until the returned stop() is called, which fades it out over FADE_MS (pass
  * { fade: false } to cut it). Before unlock, while muted, under reduced motion, or without Audio,
  * nothing plays and stop() does nothing.
- * @param {"pencil" | "click" | "flip"} name
+ * @param {"typing" | "click" | "flip"} name
  * @returns {() => void} stop
  */
 export function loop(name) {

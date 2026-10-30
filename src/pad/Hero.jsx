@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import DotPortrait from "./DotPortrait.jsx";
 import HandName from "./HandName.jsx";
+import IntroTools from "./IntroTools.jsx";
 import TypedIntro from "./TypedIntro.jsx";
 import { unlock } from "../lib/audio.js";
 import { INTRO, ROLE, SOCIALS } from "../content/data.js";
@@ -8,8 +9,9 @@ import { FIGURE_START } from "../lib/travelers.js";
 
 /**
  * The first screen's centre: the polaroid, the name, the typed intro and the ways to reach Joshua.
- * The name writes itself on load; browsers keep the page silent until a gesture, so (like
- * garvitsingla.in) the first click or key press rewrites it with the pencil, and the paragraph too.
+ * The name types itself on load; browsers keep the page silent until a gesture, so the first click
+ * or key press retypes it with the sound, and the paragraph too. The creative-mode toggle only
+ * unlocks sound: it plays its own page flip.
  */
 export default function Hero() {
   const name = useRef(null);
@@ -25,8 +27,8 @@ export default function Hero() {
       window.removeEventListener("pointerdown", first);
       window.removeEventListener("keydown", first);
       unlock();
-      // The replay and mute icons do their own thing.
-      if (e.target instanceof Element && e.target.closest(".intro-tools")) return;
+      // The replay and mute icons do their own thing, and the toggle turns the page instead.
+      if (e.target instanceof Element && e.target.closest('.intro-tools, [data-sound="flip"]')) return;
       replay();
     };
     window.addEventListener("pointerdown", first);
@@ -43,15 +45,13 @@ export default function Hero() {
         <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" />
       </figure>
       <div className="hero">
-        <HandName ref={name} text="Hello, I'm Joshua Moorehead">
-          <svg className="scribble" viewBox="0 0 300 16" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M2 8 C 60 2, 140 12, 298 6 M20 13 C 100 9, 200 15, 280 11" />
-          </svg>
-        </HandName>
-        <p className="role">{ROLE}</p>
-        <TypedIntro ref={intro} tokens={INTRO} onReplay={replay} />
+        <HandName ref={name} text="Joshua Moorehead" />
+        <p className="role">
+          {ROLE}
+          <IntroTools onReplay={replay} />
+        </p>
+        <TypedIntro ref={intro} tokens={INTRO} />
         <p className="socials">
-          <span className="hand">Reach me</span>
           {SOCIALS.map((s) => (
             <a
               key={s.label}

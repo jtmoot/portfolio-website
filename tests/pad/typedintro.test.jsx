@@ -33,54 +33,11 @@ describe("TypedIntro is silent", () => {
     await act(async () => vi.advanceTimersByTime(2000));
     expect(host.querySelector("[aria-hidden=true]").textContent).toBe("hi.");
     expect(loop).not.toHaveBeenCalled();
+    expect(host.querySelector("button")).toBeNull();
     await act(async () => root.unmount());
     vi.doUnmock("../../src/lib/audio.js");
     vi.useRealTimers();
     vi.unstubAllGlobals();
-  });
-});
-
-describe("TypedIntro sound controls", () => {
-  const mount = async () => {
-    vi.resetModules();
-    vi.useFakeTimers();
-    vi.stubGlobal("matchMedia", () => ({ matches: false }));
-    let muted = false;
-    const audio = { play: vi.fn(), loop: vi.fn(() => () => {}), unlock: vi.fn(), isMuted: () => muted, setMuted: vi.fn((v) => (muted = v)) };
-    vi.doMock("../../src/lib/audio.js", () => audio);
-    const { default: Intro } = await import("../../src/pad/TypedIntro.jsx");
-    const host = document.createElement("div");
-    const root = createRoot(host);
-    let n = 0;
-    await act(async () => root.render(<Intro tokens={[{ text: "hi." }]} startDelay={0} onReplay={() => (n += 1)} />));
-    await act(async () => vi.advanceTimersByTime(2000));
-    const replays = () => n;
-    const done = async () => {
-      await act(async () => root.unmount());
-      vi.doUnmock("../../src/lib/audio.js");
-      vi.useRealTimers();
-      vi.unstubAllGlobals();
-    };
-    return { host, audio, done, replays };
-  };
-
-  it("asks the hero to replay from a small icon button", async () => {
-    const { host, done, replays } = await mount();
-    const replay = host.querySelector('button[aria-label="Replay the intro with sound"]');
-    expect(replay.textContent.trim()).toBe("");
-    await act(async () => replay.click());
-    expect(replays()).toBe(1);
-    await done();
-  });
-
-  it("toggles mute and shows the state", async () => {
-    const { host, audio, done } = await mount();
-    const mute = host.querySelector('button[aria-label="Mute sound"]');
-    expect(mute.getAttribute("aria-pressed")).toBe("false");
-    await act(async () => mute.click());
-    expect(audio.setMuted).toHaveBeenCalledWith(true);
-    expect(mute.getAttribute("aria-pressed")).toBe("true");
-    await done();
   });
 });
 

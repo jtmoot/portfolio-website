@@ -1,22 +1,20 @@
-/** The typed intro. Placeholder copy until Joshua writes his own; marked tokens get the highlighter. */
+/** The typed intro; marked tokens get the highlighter. */
 export const INTRO = [
   { text: "I build " },
-  { text: "ML systems", mark: true },
-  { text: " and the data plumbing under them. Right now that means an MS in ECE at " },
+  { text: "machine learning systems", mark: true },
+  { text: " and the data infrastructure beneath them. I'm completing an MS in Electrical and Computer Engineering at " },
   { text: "Carnegie Mellon", mark: true },
-  { text: ", an experiment tracker called " },
+  { text: ", focused on AI/ML systems. Most recently I built " },
   { text: "Forge", mark: true },
-  { text: ", and too many games on " },
-  { text: "chess.com", mark: true },
-  { text: ". Off the keyboard: barbells, sprints, short ribs, and history books." },
+  { text: ", an MLOps platform that serves models at 20.3K requests per second with 3.8 ms p99 latency. Outside of work, I lift, run, cook, read history and play chess." },
 ];
 
 export const ROLE = "ML systems engineer";
 
 export const SOCIALS = [
   { label: "GitHub", href: "https://github.com/jtmoot", prev: "/previews/github.jpg", cap: "GitHub, jtmoot" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/joshuamoorehead", ph: "LinkedIn screenshot goes here", cap: "LinkedIn" },
-  { label: "Email", href: "mailto:jtmoorehead1@gmail.com", ph: "jtmoorehead1@gmail.com", cap: "Email" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/joshua-moorehead", ph: "LinkedIn screenshot goes here", cap: "LinkedIn" },
+  { label: "Email", href: "mailto:josh.moorehead@outlook.com", ph: "josh.moorehead@outlook.com", cap: "Email" },
 ];
 
 /** Featured projects, in the order of docs/project-rankings.md. Media lives in public/media. */

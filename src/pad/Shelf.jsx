@@ -111,7 +111,7 @@ export default function Shelf({ theme = "day", onToggleTheme = () => {} }) {
           ),
         )}
         <section className="recommend" aria-label="Recommend a book">
-          <a href="mailto:jtmoorehead1@gmail.com?subject=A%20book%20recommendation" data-c="ring">
+          <a href="mailto:josh.moorehead@outlook.com?subject=A%20book%20recommendation" data-c="ring">
             Recommend a book{ARROW}
           </a>
         </section>

@@ -24,7 +24,7 @@ describe("audio", () => {
     vi.stubGlobal("matchMedia", () => ({ matches: false }));
     const audio = await import("../../src/lib/audio.js");
     audio.unlock();
-    await expect(audio.play("pencil")).resolves.toBeUndefined();
+    await expect(audio.play("typing")).resolves.toBeUndefined();
     expect(play).toHaveBeenCalled();
   });
 
@@ -52,7 +52,7 @@ describe("audio loop", () => {
     vi.stubGlobal("matchMedia", () => ({ matches: false }));
     const audio = await import("../../src/lib/audio.js");
     audio.unlock();
-    const stop = audio.loop("pencil");
+    const stop = audio.loop("typing");
     expect(clip.loop).toBe(true);
     expect(clip.play).toHaveBeenCalled();
     stop();
@@ -65,7 +65,7 @@ describe("audio loop", () => {
     const ctor = vi.fn();
     vi.stubGlobal("Audio", ctor);
     const audio = await import("../../src/lib/audio.js");
-    const stop = audio.loop("pencil");
+    const stop = audio.loop("typing");
     expect(() => stop()).not.toThrow();
     expect(ctor).not.toHaveBeenCalled();
   });
@@ -91,12 +91,12 @@ describe("audio files and mute", () => {
     return { audio, clips };
   };
 
-  it("serves the recorded clips: pencil, click and flip", async () => {
+  it("serves the recorded clips: typing, click and flip", async () => {
     const { audio, clips } = await live();
-    await audio.play("pencil");
+    await audio.play("typing");
     await audio.play("click");
     await audio.play("flip");
-    expect(clips.map((c) => c.src)).toEqual(["/audio/pencil.mp3", "/audio/click.mp3", "/audio/flip.mp3"]);
+    expect(clips.map((c) => c.src)).toEqual(["/audio/typing.mp3", "/audio/click.mp3", "/audio/flip.mp3"]);
   });
 
   it("is unmuted by default and remembers a mute across visits", async () => {
@@ -113,14 +113,14 @@ describe("audio files and mute", () => {
     const { audio, clips } = await live();
     audio.setMuted(true);
     await audio.play("click");
-    const stop = audio.loop("pencil");
+    const stop = audio.loop("typing");
     expect(clips).toHaveLength(0);
     expect(() => stop()).not.toThrow();
   });
 
   it("muting stops a loop that is already playing", async () => {
     const { audio, clips } = await live();
-    audio.loop("pencil");
+    audio.loop("typing");
     audio.setMuted(true);
     expect(clips[0].pause).toHaveBeenCalled();
   });
@@ -134,7 +134,7 @@ describe("audio files and mute", () => {
   });
 });
 
-describe("audio, Garvit's pencil", () => {
+describe("audio, the typing sound", () => {
   beforeEach(() => {
     vi.resetModules();
     vi.unstubAllGlobals();
@@ -155,10 +155,10 @@ describe("audio, Garvit's pencil", () => {
     return { audio, clips };
   };
 
-  it("plays the pencil quietly, at 0.4, and fades it out when stopped", async () => {
+  it("plays the typing quietly, at 0.5, and fades it out when stopped", async () => {
     const { audio, clips } = await live();
-    const stop = audio.loop("pencil");
-    expect(clips[0].volume).toBeCloseTo(0.4, 5);
+    const stop = audio.loop("typing");
+    expect(clips[0].volume).toBeCloseTo(0.5, 5);
     stop();
     expect(clips[0].pause).not.toHaveBeenCalled();
     vi.advanceTimersByTime(400);
@@ -169,7 +169,7 @@ describe("audio, Garvit's pencil", () => {
 
   it("stopAll silences every loop (leaving the pad for creative mode)", async () => {
     const { audio, clips } = await live();
-    audio.loop("pencil");
+    audio.loop("typing");
     audio.stopAll();
     vi.advanceTimersByTime(400);
     expect(clips[0].pause).toHaveBeenCalled();
