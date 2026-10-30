@@ -19,8 +19,8 @@ export function station(id, spec) {
   return { id, ...spec, render: () => render(id, spec) };
 }
 
-function render(id, { label, bounds, pad = 6, draw }) {
-  const P0 = { origin: [0, 0], scale: SCALE, ...CAM };
+function render(id, { label, bounds, pad = 6, draw, cam = CAM, role = "img" }) {
+  const P0 = { origin: [0, 0], scale: SCALE, ...cam };
   const flat = bounds.map((p) => k.iso(p, P0));
   const minX = Math.min(...flat.map((p) => p[0]));
   const maxX = Math.max(...flat.map((p) => p[0]));
@@ -30,7 +30,7 @@ function render(id, { label, bounds, pad = 6, draw }) {
   const width = round(maxX - minX + pad * 2);
   const height = round(maxY - minY + pad * 2);
   const body = draw(context(P, id));
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" class="iso-svg st-${id}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${label.replace(/"/g, "&quot;")}">${body}</svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" class="iso-svg st-${id}" viewBox="0 0 ${width} ${height}" role="${role}" aria-label="${label.replace(/"/g, "&quot;")}">${body}</svg>`;
   return { svg, meta: { width, height, anchor: [round(P.origin[0]), round(P.origin[1])] } };
 }
 

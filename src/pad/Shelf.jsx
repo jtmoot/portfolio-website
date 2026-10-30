@@ -1,6 +1,7 @@
 import Nav from "./Nav.jsx";
 import Contact from "./Contact.jsx";
-import DeskProps from "./DeskProps.jsx";
+import Bookcase from "./Bookcase.jsx";
+import Cover from "./Cover.jsx";
 import { SHELF, goodreads } from "../content/shelf.js";
 
 const ARROW = (
@@ -9,18 +10,7 @@ const ARROW = (
   </svg>
 );
 
-/** A cover image, or a typeset cover for a book without one. */
-function Cover({ book }) {
-  if (book.cover) return <img className="cover" src={book.cover} alt="" loading="lazy" />;
-  return (
-    <span className="cover cover-drawn" aria-hidden="true">
-      <b>{book.title}</b>
-      <i>{book.author}</i>
-    </span>
-  );
-}
-
-/** One featured book, Garvit style: cover, handwritten title, author, topic chips, a Goodreads link. */
+/** One featured book: cover, title, author, topic chips, a Goodreads link. */
 function Row({ book }) {
   const href = goodreads(book);
   return (
@@ -29,7 +19,7 @@ function Row({ book }) {
         <Cover book={book} />
       </a>
       <div>
-        <h3 className="hand book-title">{book.title}</h3>
+        <h3 className="book-title">{book.title}</h3>
         <p className="book-by">by {book.author}</p>
         <ul className="chips">
           {book.topics.map((t) => (
@@ -65,41 +55,34 @@ function Tile({ book }) {
 }
 
 /**
- * /shelf: Joshua's library, after garvitsingla.in/shelf. Reading now and the textbooks are
- * featured rows in window cards; up next and already read are cover grids.
+ * /shelf: Joshua's library. The bookcase comes first; below it the same books as plain lists,
+ * with reading now and the textbooks as featured rows and the rest as cover grids.
  * @param {{ theme?: "day" | "night", onToggleTheme?: () => void }} props
  */
 export default function Shelf({ theme = "day", onToggleTheme = () => {} }) {
   return (
     <main className="sheet shelf-page">
       <Nav theme={theme} onToggleTheme={onToggleTheme} base="/" />
-      <DeskProps />
       <div className="shelf">
         <a className="back" href="/" data-c="ring">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          Back to the pad
+          Back
         </a>
-        <h1 className="hand">The shelf</h1>
+        <h1>Library</h1>
+        <Bookcase />
         {SHELF.map((s) =>
           s.books.some((b) => b.topics.length) ? (
-            <section key={s.id} id={`shelf-${s.id}`} className="shelf-card" aria-labelledby={`shelf-${s.id}-h`}>
-              <div className="shelf-bar">
-                <i />
-                <i />
-                <i />
-                <h2 id={`shelf-${s.id}-h`}>
-                  /{s.id === "now" ? "shelf" : "textbooks"} · {s.title}
-                </h2>
-              </div>
+            <section key={s.id} id={`shelf-${s.id}`} className="shelf-list" aria-labelledby={`shelf-${s.id}-h`}>
+              <h2 id={`shelf-${s.id}-h`}>{s.title}</h2>
               {s.books.map((b) => (
                 <Row key={b.id} book={b} />
               ))}
             </section>
           ) : (
             <section key={s.id} id={`shelf-${s.id}`} className="shelf-grid" aria-labelledby={`shelf-${s.id}-h`}>
-              <h2 id={`shelf-${s.id}-h`} className="hand">
+              <h2 id={`shelf-${s.id}-h`}>
                 {s.title} <span className="count">{s.books.length}</span>
               </h2>
               <ul className="tiles">

@@ -52,11 +52,11 @@ describe("Shelf extras", () => {
     vi.unstubAllGlobals();
   });
 
-  it("puts a few desk objects in the margins, as decoration only", async () => {
+  it("is plain: a bookcase and lists, with no doodles or fake window bars", async () => {
     const { host, root } = await mount();
-    const props = host.querySelectorAll(".shelf-margin .desk-prop");
-    expect(props.length).toBeGreaterThanOrEqual(4);
-    for (const p of props) expect(p.closest("[aria-hidden=true]")).not.toBeNull();
+    expect(host.querySelector(".bookcase svg")).not.toBeNull();
+    expect(host.querySelectorAll(".desk-prop, .shelf-bar")).toHaveLength(0);
+    expect(host.querySelector("h1").textContent).toBe("Library");
     await act(async () => root.unmount());
     vi.unstubAllGlobals();
   });

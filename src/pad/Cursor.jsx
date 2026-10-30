@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 const finePointer = () => typeof matchMedia === "function" && matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 /** What counts as clickable: real controls, plus elements that opt in with data-c="ring". */
-const CLICKABLE = 'a[href], button, summary, [role="button"], [role="slider"], [data-c="ring"], video';
+const CLICKABLE = 'a[href], button, summary, [role="button"], [role="slider"], [data-c="ring"], [data-hit], [data-front], video';
 /** A station in the room: he walks there if you click, so it gets its own, quieter state. */
 const AREA = ".floor-station";
 
