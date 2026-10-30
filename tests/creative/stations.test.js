@@ -4,7 +4,7 @@ import { initialFigure, standPoint, stepFigure } from "../../src/lib/figure.js";
 import { collides } from "../../src/lib/floor.js";
 import { FIGURE_START } from "../../src/lib/travelers.js";
 
-const FLOOR = { w: 130, h: 100 };
+const FLOOR = { w: 150, h: 100 };
 const WALL_PIECES = new Set(["anatomy", "corkboard"]);
 
 describe("STATIONS", () => {
@@ -91,5 +91,39 @@ describe("the anatomy chart", () => {
     expect(chart.label).toBeNull();
     expect(TOUR.map((s) => s.id)).not.toContain("anatomy");
     expect(TOUR.length).toBe(STATIONS.length - 1);
+  });
+});
+
+describe("the reading corner", () => {
+  it("draws him between the chair's two layers when he sits, and over both when he walks in front", async () => {
+    const { STATIONS, paintBoxes } = await import("../../src/creative/stations/index.js");
+    const { paintOrder } = await import("../../src/lib/floor.js");
+    const { standPoint } = await import("../../src/lib/figure.js");
+    const reading = STATIONS.find((s) => s.id === "reading");
+    const seated = paintOrder(paintBoxes(STATIONS), standPoint(reading));
+    expect(seated.indexOf("reading")).toBeLessThan(seated.indexOf("figure"));
+    expect(seated.indexOf("figure")).toBeLessThan(seated.indexOf("reading-front"));
+    const inFront = paintOrder(paintBoxes(STATIONS), { x: 2, y: 66 });
+    expect(inFront.indexOf("reading-front")).toBeLessThan(inFront.indexOf("figure"));
+  });
+
+  it("keeps him out of the arms, lamp and table, with the seat still open", async () => {
+    const { STATIONS } = await import("../../src/creative/stations/index.js");
+    const { bodyFootprints, standPoint } = await import("../../src/lib/figure.js");
+    const { collides } = await import("../../src/lib/floor.js");
+    const reading = STATIONS.find((s) => s.id === "reading");
+    const boxes = bodyFootprints(STATIONS);
+    expect(boxes.length).toBeGreaterThan(STATIONS.length);
+    expect(boxes.some((f) => collides(standPoint(reading), f))).toBe(false);
+    for (const b of reading.blocks) expect(boxes.some((f) => collides({ x: b.x + b.w / 2, y: b.y + b.h / 2 }, f))).toBe(true);
+  });
+
+  it("has coffee, not tea", async () => {
+    const { readFileSync } = await import("node:fs");
+    const front = readFileSync("src/creative/stations/art/reading-front.svg", "utf8");
+    expect(front).toContain("m-coffee");
+    expect(front).not.toContain("m-tea");
+    const { CARD_TEXT } = await import("../../src/creative/StationCard.jsx");
+    expect(CARD_TEXT.reading.line).toContain("coffee");
   });
 });

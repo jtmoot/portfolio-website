@@ -2,7 +2,7 @@
  * The room's floor, in floor units (cqw of the poster box; 1 unit = 5 cm). The poster, 100 by 78,
  * is the front-left part of it; in creative mode the paper grows out to the whole room.
  */
-export const FLOOR = { w: 130, h: 100 };
+export const FLOOR = { w: 150, h: 100 };
 export const POSTER = { w: 100, h: 78 };
 /** The room the view's scale is fitted to: the original one, so drawings keep today's size. */
 const REF = POSTER;

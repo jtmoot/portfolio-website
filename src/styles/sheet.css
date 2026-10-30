@@ -1290,6 +1290,19 @@ html.has-cursor * {
   opacity: 1;
 }
 
+.cursor.area::after {
+  width: 40px;
+  height: 40px;
+  opacity: 0.55;
+  border-color: var(--ink);
+  border-width: 1px;
+}
+
+.cursor.area.press::after {
+  width: 30px;
+  height: 30px;
+}
+
 .cursor.press::before {
   width: 4px;
   height: 4px;

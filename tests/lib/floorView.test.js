@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { VIEW, floorToScreen, screenToFloor, padTransform, fitView, FLOOR, POSTER, sceneBounds } from "../../src/lib/floorView.js";
 
 describe("floorView", () => {
-  it("the room is 130 by 100 on a 100 by 78 poster, and the default view is 0.62 scale, 54.7 deg tilt, 6 cqw drop", () => {
-    expect(FLOOR).toEqual({ w: 130, h: 100 });
+  it("the room is 150 by 100 on a 100 by 78 poster, and the default view is 0.62 scale, 54.7 deg tilt, 6 cqw drop", () => {
+    expect(FLOOR).toEqual({ w: 150, h: 100 });
     expect(POSTER).toEqual({ w: 100, h: 78 });
     expect(VIEW).toEqual({ scale: 0.62, tilt: 54.7, spin: -45, drop: 6 });
   });
@@ -53,13 +53,13 @@ describe("floorView", () => {
 describe("sceneBounds", () => {
   it("holds every floor corner and the tops of both back walls", () => {
     const b = sceneBounds(VIEW);
-    for (const [x, y] of [[0, 0], [130, 0], [130, 100], [0, 100]]) {
+    for (const [x, y] of [[0, 0], [150, 0], [150, 100], [0, 100]]) {
       const p = floorToScreen({ x, y }, VIEW);
       expect(p.left).toBeGreaterThanOrEqual(b.left - 1e-6);
       expect(p.left).toBeLessThanOrEqual(b.right + 1e-6);
       expect(p.top).toBeLessThanOrEqual(b.bottom + 1e-6);
     }
-    const corner = floorToScreen({ x: 130, y: 0 }, VIEW);
+    const corner = floorToScreen({ x: 150, y: 0 }, VIEW);
     expect(b.top).toBeLessThan(corner.top - 46 * 0.8165 * VIEW.scale + 1e-6);
   });
 });

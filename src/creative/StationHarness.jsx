@@ -36,7 +36,10 @@ export default function StationHarness() {
     const width = Number(params.get("w") || 2400);
     return (
       <div className="harness" style={{ width: width + 48 }}>
-        <div style={{ width }}>{s ? <s.Component /> : null}</div>
+        <div style={{ width, position: "relative" }}>
+          {s ? <s.Component /> : null}
+          {s?.Front ? <div style={{ position: "absolute", inset: 0 }}><s.Front /></div> : null}
+        </div>
         <style>{`.harness{padding:24px;background:#f4f3ee}.station-art svg{display:block;width:100%;height:auto}`}</style>
       </div>
     );

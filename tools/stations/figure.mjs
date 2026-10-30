@@ -320,11 +320,11 @@ const can = (hand, tilt, pour = 0) => (h) => {
   }
   return items;
 };
-/** A mug of tea in his hand, rim up. */
+/** A mug of coffee in his hand, rim up. */
 const mug = (hand) => (h) => {
   const q = h.ptv([hand[0], hand[1], hand[2] - 4]);
   const ring = k.circleRing(q[0], q[1], 3.2, 20).map(([x, y]) => h.at([x, y, q[2] + 7.6]));
-  return [{ at: G.add3(q, [0, 0, 4]), svg: `<g class="fm-mug">${h.c.cyl(q[0], q[1], 3.8, q[2], q[2] + 8.2, { steps: 20, tone: "hi", crease: "lo" })}</g><path class="fm-tea" d="${k.pathOf(ring, true)}"/>` }];
+  return [{ at: G.add3(q, [0, 0, 4]), svg: `<g class="fm-mug">${h.c.cyl(q[0], q[1], 3.8, q[2], q[2] + 8.2, { steps: 20, tone: "hi", crease: "lo" })}</g><path class="fm-coffee" d="${k.pathOf(ring, true)}"/>` }];
 };
 const POSES = {
   type1: { arms: { L: { elbow: [8, 18, 117], hand: [27, 9, 105] }, R: { elbow: [8, -18, 117], hand: [27, -10, 103.5] } } },
@@ -351,7 +351,7 @@ const POSES = {
   water1: { arms: { L: hang(1), R: { elbow: [8, -21, 116], hand: [19, -17, 106] } }, extras: can([19, -18, 108], 0) },
   water2: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 1) },
   water3: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 2) },
-  // Reading in the chair: the book open on his lap, turning a page, a sip of tea.
+  // Reading in the chair: the book open on his lap, turning a page, a sip of coffee.
   // Held high enough to show over the club chair's back from behind.
   sit1: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [12, -19, 88], hand: [24, -9, 98] } }, extras: book([27, 0, 100]) },
   sit2: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [13, -17, 92], hand: [24, -3, 108] } }, extras: book([27, 0, 100], 1) },

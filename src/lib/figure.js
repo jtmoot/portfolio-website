@@ -9,10 +9,10 @@ export const BODY = 2.4;
 
 /**
  * Station footprints grown by his body, so his shoes stop at desk legs and pots instead of on them.
- * @param {{ footprint: { x: number, y: number, w: number, h: number } }[]} stations
+ * @param {{ footprint: { x: number, y: number, w: number, h: number }, blocks?: object[] }[]} stations
  */
 export const bodyFootprints = (stations) =>
-  stations.map(({ footprint: f }) => ({ x: f.x - BODY, y: f.y - BODY, w: f.w + 2 * BODY, h: f.h + 2 * BODY }));
+  stations.flatMap((s) => [s.footprint, ...(s.blocks || [])]).map((f) => ({ x: f.x - BODY, y: f.y - BODY, w: f.w + 2 * BODY, h: f.h + 2 * BODY }));
 export const PAUSE_MS = 4000;
 export const TILE_FADE_MS = 4000;
 export const RESPAWN_MS = 1000;
@@ -71,7 +71,7 @@ export function poseAt(id, t) {
   return a.frames.at(-1)[0];
 }
 const ARRIVE = 0.02;
-const RESPAWN_FALLBACK = { x: 54, y: 26 };
+const RESPAWN_FALLBACK = { x: 74, y: 26 };
 
 const S = Math.SQRT1_2;
 const KEYS = {

@@ -9,7 +9,7 @@ export const CARD_TEXT = {
   kitchen: { line: "Short ribs, low and slow.", cta: null },
   gym: { line: "Barbell, kettlebells, sprints, a weighted vest.", cta: "See my runs" },
   chess: { line: "Rapid, as breakfast_enjoyer.", cta: "Open chess.com" },
-  reading: { line: "The good chair, a lamp, and a cup of tea.", cta: "See the shelf" },
+  reading: { line: "The good chair, a lamp, and a cup of coffee.", cta: "See the shelf" },
   corkboard: { line: "Pinned up: the podcasts on in the background.", cta: null },
   anatomy: { line: "The brain, in sagittal section.", cta: null },
 };

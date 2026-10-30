@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "../../src/creative/stations/art");
-const IDS = ["desk", "library", "plants", "kitchen", "gym", "chess", "reading", "corkboard", "anatomy", "walls", "figure"];
+const IDS = ["desk", "library", "plants", "kitchen", "gym", "chess", "reading", "reading-front", "corkboard", "anatomy", "walls", "figure"];
 
 mkdirSync(OUT, { recursive: true });
 const metaPath = join(OUT, "meta.json");

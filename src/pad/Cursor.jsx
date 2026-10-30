@@ -3,11 +3,14 @@ import { useEffect, useRef } from "react";
 const finePointer = () => typeof matchMedia === "function" && matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 /** What counts as clickable: real controls, plus elements that opt in with data-c="ring". */
-const CLICKABLE = 'a[href], button, summary, [role="button"], [role="slider"], [data-c="ring"], .floor-station, video';
+const CLICKABLE = 'a[href], button, summary, [role="button"], [role="slider"], [data-c="ring"], video';
+/** A station in the room: he walks there if you click, so it gets its own, quieter state. */
+const AREA = ".floor-station";
 
 /**
  * A small ink dot in place of the system cursor. Over anything clickable it shrinks to an orange
- * point while a thin orange ring springs open around it; holding the button tightens the ring.
+ * point while a thin orange ring springs open around it; over a station in the room the dot stays
+ * ink inside a wide, faint ring. Holding the button tightens the ring.
  */
 export default function Cursor() {
   const ref = useRef(null);
@@ -20,7 +23,9 @@ export default function Cursor() {
     const move = (e) => {
       dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
       dot.classList.add("on");
-      dot.classList.toggle("hot", Boolean(e.target.closest?.(CLICKABLE)));
+      const hot = Boolean(e.target.closest?.(CLICKABLE));
+      dot.classList.toggle("hot", hot);
+      dot.classList.toggle("area", !hot && Boolean(e.target.closest?.(AREA)));
     };
     const leave = () => dot.classList.remove("on", "press");
     const down = () => dot.classList.add("press");

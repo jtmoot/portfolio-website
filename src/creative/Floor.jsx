@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { STATIONS } from "./stations/index.js";
+import { STATIONS, paintBoxes } from "./stations/index.js";
 import Walls from "./stations/Walls.jsx";
 import StationLabel from "./StationLabel.jsx";
 import StationCard from "./StationCard.jsx";
@@ -31,7 +31,8 @@ const at = (p, view, meta) => {
 
 /** z-index for each id in a paint order (stations and "figure"), from back to front. */
 const zMap = (order) => new Map(order.map((id, i) => [id, 100 + i * 10]));
-const START_Z = zMap(paintOrder(STATIONS, FIGURE_START));
+const PAINT = paintBoxes(STATIONS);
+const START_Z = zMap(paintOrder(PAINT, FIGURE_START));
 /** Stations with a label and a card (the anatomy chart is just a picture on the wall). */
 const LABELLED = STATIONS.filter((s) => s.label);
 /** How far inside the screen edge an off-screen station's arrow sits, in cqw. */
@@ -111,7 +112,7 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
         el.style.top = `${p.top}cqw`;
         el.style.width = `${(FIGURE_META.width / 5) * v.scale}cqw`;
         // Re-sort him against every station each frame: one fixed z cannot be right beside all of them.
-        const ids = paintOrder(STATIONS, s.pos);
+        const ids = paintOrder(PAINT, s.pos);
         const key = ids.join();
         if (key !== order.current) {
           order.current = key;
@@ -211,6 +212,15 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
             >
               <st.Component active={active === st.id} />
             </div>
+            {st.Front && (
+              <div
+                ref={(node) => (items.current[`${st.id}-front`] = node)}
+                className="floor-item"
+                style={{ ...at(st.pos, view, st.Front.meta), zIndex: START_Z.get(`${st.id}-front`), "--d": `${delay}s` }}
+              >
+                <st.Front active={active === st.id} />
+              </div>
+            )}
             {st.label && (
               <StationLabel
                 text={st.label}

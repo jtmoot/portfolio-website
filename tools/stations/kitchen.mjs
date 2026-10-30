@@ -12,7 +12,7 @@ const POT = { x: 22, y: 44, r: 13, h: 11 };
 
 export default station("kitchen", {
   label: "Joshua's kitchen: a range with braised short ribs in a Dutch oven on the front burner, a hood, a subway-tile backsplash, a spice shelf, and a cutting board with ribs ready to go in.",
-  bounds: [[X0, 0, 0], [X1, 0, 0], [X0, DEP + 4, 0], [X1, DEP + 4, 0], [X0, 0, 232], [X1, 0, 232], [X1, DEP + 4, TOP], [POT.x, POT.y, TOP + 40]],
+  bounds: [[X0 - 52, 0, 110], [X0, 0, 0], [X1, 0, 0], [X0, DEP + 4, 0], [X1, DEP + 4, 0], [X0, 0, 232], [X1, 0, 232], [X1, DEP + 4, TOP], [POT.x, POT.y, TOP + 40]],
   draw(c) {
     const { box, cyl, S, L, D, at, path3, halo, P, frame, planeY } = c;
     const out = [];
@@ -40,26 +40,27 @@ export default station("kitchen", {
     out.push(L(k.pathOf([at([HX0 + 4, 50, 160]), at([HX1 - 4, 50, 160])]), { tone: "lo" }));
     out.push(D([at([HX0 + 10, 50, 162]), at([HX1 - 10, 50, 162])], { size: 0.5, tone: "hi" }));
 
-    // --- Spice shelf left of the hood, on two steel brackets screwed to the wall -----------------------
-    const SX0 = X0 + 2, SX1 = HX0 - 6;
+    // --- Spice shelf on the bare wall left of the run, clear of the hood, on two steel brackets ----
+    const SX0 = X0 - 50, SX1 = SX0 + 43, SZ = 128;
     for (const bx of [SX0 + 6, SX1 - 6]) {
       // Wall plate, the arm under the plank, and a diagonal brace between them.
-      out.push(`<g class="m-steel-dark">${box(bx - 0.9, 0, 146, bx + 0.9, 0.8, 162, { r: 0.2, steps: 1, tone: "hi", crease: "lo" })}` +
-        box(bx - 0.9, 0, 160.4, bx + 0.9, 16, 162, { r: 0.2, steps: 1, tone: "hi", crease: "lo" }) + `</g>`);
-      out.push(`<g class="m-bracket">${c.tube([[bx, 0.8, 148.5], [bx, 13.5, 160.6]], 0.55, { tone: "hi", spacing: 2 })}</g>`);
-      out.push(D([at([bx, 0.85, 150]), at([bx, 0.85, 157])], { size: 0.35, tone: "hi" }));
+      out.push(`<g class="m-steel-dark">${box(bx - 0.9, 0, SZ - 16, bx + 0.9, 0.8, SZ, { r: 0.2, steps: 1, tone: "hi", crease: "lo" })}` +
+        box(bx - 0.9, 0, SZ - 1.6, bx + 0.9, 16, SZ, { r: 0.2, steps: 1, tone: "hi", crease: "lo" }) + `</g>`);
+      out.push(`<g class="m-bracket">${c.tube([[bx, 0.8, SZ - 13.5], [bx, 13.5, SZ - 1.4]], 0.55, { tone: "hi", spacing: 2 })}</g>`);
+      out.push(D([at([bx, 0.85, SZ - 12]), at([bx, 0.85, SZ - 5])], { size: 0.35, tone: "hi" }));
     }
-    out.push(`<g class="m-wood">${box(SX0, 0, 162, SX1, 18, 165, { r: 0.4, steps: 2, bevel: 0.3, tone: "hi", crease: "lo" })}</g>`);
+    out.push(`<g class="m-wood">${box(SX0, 0, SZ, SX1, 18, SZ + 3, { r: 0.4, steps: 2, bevel: 0.3, tone: "hi", crease: "lo" })}</g>`);
     // A back rail against the wall and a low front lip keep the jars on.
-    out.push(`<g class="m-wood">${box(SX0, 0, 165, SX1, 1.6, 171, { r: 0.3, steps: 2, tone: "hi", crease: "lo" })}</g>`);
+    out.push(`<g class="m-wood">${box(SX0, 0, SZ + 3, SX1, 1.6, SZ + 9, { r: 0.3, steps: 2, tone: "hi", crease: "lo" })}</g>`);
     for (let i = 0; i < 7; i++) {
-      const x = X0 + 7 + i * 6.2;
+      const x = SX0 + 5 + i * 6.2;
       const h = i === 3 ? 13 : 9;
-      out.push(cyl(x, 9, 2.4, 165, 165 + h, { steps: 20, tone: "hi", crease: "lo", className: "m-jar" }));
-      out.push(cyl(x, 9, 2.5, 165 + h, 165 + h + 1.6, { steps: 20, tone: "hi", crease: "lo", className: i % 2 ? "m-dark" : "m-wood" }));
-      out.push(`<path class="m-spice-${i % 4}" d="${k.pathOf([at([x - 2.3, 11.35, 166]), at([x + 2.3, 11.35, 166]), at([x + 2.3, 11.35, 165 + h * 0.6]), at([x - 2.3, 11.35, 165 + h * 0.6])], true)}"/>`);
+      const J = SZ + 3;
+      out.push(cyl(x, 9, 2.4, J, J + h, { steps: 20, tone: "hi", crease: "lo", className: "m-jar" }));
+      out.push(cyl(x, 9, 2.5, J + h, J + h + 1.6, { steps: 20, tone: "hi", crease: "lo", className: i % 2 ? "m-dark" : "m-wood" }));
+      out.push(`<path class="m-spice-${i % 4}" d="${k.pathOf([at([x - 2.3, 11.35, J + 1]), at([x + 2.3, 11.35, J + 1]), at([x + 2.3, 11.35, J + h * 0.6]), at([x - 2.3, 11.35, J + h * 0.6])], true)}"/>`);
     }
-    out.push(`<g class="m-wood">${box(SX0, 16.6, 165, SX1, 18, 167.4, { r: 0.3, steps: 2, tone: "hi", crease: "lo" })}</g>`);
+    out.push(`<g class="m-wood">${box(SX0, 16.6, SZ + 3, SX1, 18, SZ + 5.4, { r: 0.3, steps: 2, tone: "hi", crease: "lo" })}</g>`);
 
     // --- Cabinets either side of the range ---------------------------------------------------------
     const cabinet = (xa, xb, kind) => {

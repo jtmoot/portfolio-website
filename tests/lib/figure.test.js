@@ -51,8 +51,8 @@ describe("stepFigure", () => {
   });
 
   it("cannot walk through the back walls", () => {
-    const s1 = run(initialFigure({ x: 129, y: 30 }), { dir: { dx: 1, dy: 0 } }, 1);
-    expect(s1.pos.x).toBeLessThanOrEqual(130);
+    const s1 = run(initialFigure({ x: 149, y: 30 }), { dir: { dx: 1, dy: 0 } }, 1);
+    expect(s1.pos.x).toBeLessThanOrEqual(150);
     const s2 = run(initialFigure({ x: 70, y: 20 }), { dir: { dx: 0, dy: -1 } }, 3);
     expect(s2.pos.y).toBeGreaterThanOrEqual(0);
   });

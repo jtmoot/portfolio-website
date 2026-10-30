@@ -64,11 +64,11 @@
     ]
   },
   "walls": {
-    "width": 831.31,
-    "height": 461.24,
+    "width": 902.03,
+    "height": 502.06,
     "anchor": [
       9.07,
-      463.32
+      504.14
     ]
   },
   "figure": {
@@ -80,6 +80,14 @@
     ]
   },
   "reading": {
+    "width": 219.89,
+    "height": 220.21,
+    "anchor": [
+      99.34,
+      154.6
+    ]
+  },
+  "reading-front": {
     "width": 219.89,
     "height": 220.21,
     "anchor": [

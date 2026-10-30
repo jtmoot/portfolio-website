@@ -36,6 +36,6 @@ describe("TRAVELERS", () => {
 
   it("the polaroid's target is the figure's start in front of the desk", () => {
     const p = TRAVELERS.find((t) => t.id === "polaroid");
-    expect(travelerTarget(p, STATIONS)).toEqual({ x: 54, y: 26 });
+    expect(travelerTarget(p, STATIONS)).toEqual({ x: 74, y: 26 });
   });
 });

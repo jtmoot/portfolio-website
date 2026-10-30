@@ -1,7 +1,7 @@
 /* Creative mode: the poster (first screen) tips into an isometric floor in one 1.5 s motion. */
 .stage {
   position: relative;
-  /* The room (130 cqw wide) and the panned poster run past the sheet: never let them scroll the page. */
+  /* The room (150 cqw wide) and the panned poster run past the sheet: never let them scroll the page. */
   overflow-x: clip;
 }
 
@@ -66,10 +66,10 @@
   transform: var(--pad-transform);
 }
 
-/* Once tipped, the paper grows out to the whole 130 by 100 room. */
+/* Once tipped, the paper grows out to the whole 150 by 100 room. */
 .stage[data-mode="creative"] .poster::before {
   opacity: 1;
-  right: -30cqw;
+  right: -50cqw;
   bottom: -22cqw;
   transition: opacity 0.5s ease, right 1.1s cubic-bezier(0.32, 0.72, 0, 1) 0.5s, bottom 1.1s cubic-bezier(0.32, 0.72, 0, 1) 0.5s;
 }
@@ -151,7 +151,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 130cqw;
+  width: 150cqw;
   height: 100cqw;
   z-index: 2;
   pointer-events: none;
@@ -302,9 +302,9 @@ html[data-theme="night"] .figure{--hair-0:#5b4430;--hair-1:#664d37;--hair-2:#715
 .fm-iron .tb-body{fill:#2f3033}.fm-iron .tb-shine{fill:#4a4b4f}.fm-iron .tb-shade{fill:#1f2022}
 .fm-can{--anatomy-paper:#a9b0b3;--anatomy-face:#a9b0b3;--anatomy-top:#c9cfd1;--anatomy-shade-0:#8a9194;--anatomy-shade-1:#959c9f;--anatomy-shade-2:#a0a7aa;--anatomy-shade-3:#aab1b4}
 .fm-can .tb-body{fill:#a9b0b3}.fm-can .tb-shine{fill:#cdd3d5}.fm-can .tb-shade{fill:#868d90}
-.fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;--anatomy-top:#fbf9f4;--anatomy-shade-0:#dcd8ce;--anatomy-shade-1:#e3dfd6;--anatomy-shade-2:#e9e6de;--anatomy-shade-3:#efece5}.fm-tea{fill:#9a6a3a;stroke:none}
+.fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;--anatomy-top:#fbf9f4;--anatomy-shade-0:#dcd8ce;--anatomy-shade-1:#e3dfd6;--anatomy-shade-2:#e9e6de;--anatomy-shade-3:#efece5}.fm-coffee{fill:#3d2413;stroke:none}
 .fm-pepper{fill:#2f2924;opacity:.85}.fm-salt{fill:#f1ece0;opacity:.9}
-html[data-theme="night"] .fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;--anatomy-top:#fbf9f4;--anatomy-shade-0:#dcd8ce;--anatomy-shade-1:#e3dfd6;--anatomy-shade-2:#e9e6de;--anatomy-shade-3:#efece5}.fm-tea{fill:#9a6a3a;stroke:none}
+html[data-theme="night"] .fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;--anatomy-top:#fbf9f4;--anatomy-shade-0:#dcd8ce;--anatomy-shade-1:#e3dfd6;--anatomy-shade-2:#e9e6de;--anatomy-shade-3:#efece5}.fm-coffee{fill:#3d2413;stroke:none}
 .fm-pepper{fill:#14110f}
 .fm-drop{--anatomy-hi:#5f9cc2;--anatomy-lo:#5f9cc2;--anatomy-paper:#7fb6d9;--anatomy-face:#7fb6d9;--anatomy-top:#b9dbef;--anatomy-shade-0:#5f9cc2;--anatomy-shade-1:#69a5ca;--anatomy-shade-2:#73aed2;--anatomy-shade-3:#7bb3d6}
 .fm-silver{--anatomy-paper:#d9d9d4;--anatomy-face:#d9d9d4;--anatomy-top:#f1f1ec;--anatomy-shade-0:#b7b7b2;--anatomy-shade-1:#c3c3be;--anatomy-shade-2:#cdcdc8;--anatomy-shade-3:#d5d5d0}
@@ -402,7 +402,7 @@ html[data-theme="night"] .fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;
 }
 
 .phone-stage[data-on] .phone-poster::before {
-  right: -30cqw;
+  right: -50cqw;
   bottom: -22cqw;
 }
 

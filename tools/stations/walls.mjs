@@ -1,9 +1,9 @@
 // The two back walls of Joshua's room, cut away at 230 cm: the back wall along pad y = 0 and the
-// right wall along pad x = 130 (a 6.5 by 5 m room), with skirting boards, outlets and a light switch.
+// right wall along pad x = 150 (a 7.5 by 5 m room), with skirting boards, outlets and a light switch.
 // Local world = room world: kit x = pad y * 5, kit y = -pad x * 5, origin at the back-left corner.
 import { station, k } from "./lib.mjs";
 
-const HGT = 230, T = 10, XR = 500, YR = -650;
+const HGT = 230, T = 10, XR = 500, YR = -750;
 
 export default station("walls", {
   label: "The back and right walls of the room.",
@@ -23,9 +23,9 @@ export default station("walls", {
     // Outlets on the back wall (x = 0 face) and a switch on the right wall (y = YR face).
     const plateX = (y, z) => `<g class="m-paint">${box(0, y - 4, z - 6, 0.6, y + 4, z + 6, { r: 0.4, steps: 2, tone: "hi", crease: "lo" })}</g>` +
       D([at([0.6, y - 1.2, z + 2]), at([0.6, y + 1.2, z + 2]), at([0.6, y - 1.2, z - 2]), at([0.6, y + 1.2, z - 2])], { size: 0.35, tone: "hi" });
-    out.push(plateX(-155, 30) + plateX(-395, 30) + plateX(-585, 30));
-    out.push(`<g class="m-paint">${box(96, YR, 104, 104, YR + 0.6, 116, { r: 0.4, steps: 2, tone: "hi", crease: "lo" })}</g>`);
-    out.push(L(k.pathOf([at([100, YR + 0.6, 108]), at([100, YR + 0.6, 112])]), { tone: "mid" }));
+    out.push(plateX(-255, 30) + plateX(-495, 30) + plateX(-685, 30));
+    out.push(`<g class="m-paint">${box(56, YR, 104, 64, YR + 0.6, 116, { r: 0.4, steps: 2, tone: "hi", crease: "lo" })}</g>`);
+    out.push(L(k.pathOf([at([60, YR + 0.6, 108]), at([60, YR + 0.6, 112])]), { tone: "mid" }));
     return out.join("");
   },
 });
