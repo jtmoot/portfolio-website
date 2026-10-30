@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect, useState, useSyncExternalStore } from "react";
 import Nav from "./pad/Nav.jsx";
 import Hero from "./pad/Hero.jsx";
-import Margins from "./pad/Margins.jsx";
 import Experience from "./pad/Experience.jsx";
 import Work from "./pad/Work.jsx";
 import Contact from "./pad/Contact.jsx";
@@ -124,7 +123,6 @@ export default function App() {
           <main className="sheet">
             <Nav theme={theme} onToggleTheme={onToggleTheme} mode={mode} onToggleMode={onToggleMode} />
             <section className="poster" inert={flipped || undefined}>
-              <Margins />
               <Hero />
             </section>
             {roomLoaded && !phone && (

@@ -40,7 +40,6 @@ export default function Hero() {
   return (
     <>
       <figure className="polaroid" data-traveler="polaroid" style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y }}>
-        <span className="tape" aria-hidden="true" />
         <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" />
       </figure>
       <div className="hero">

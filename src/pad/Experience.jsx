@@ -2,7 +2,7 @@ import { useState } from "react";
 import { EXPERIENCE } from "../content/data.js";
 
 /**
- * Experience, Garvit style: one taped card of rows (logo, place and kind, role, dates and where);
+ * Experience: one card of rows (logo, place and kind, role, dates and where);
  * tapping a row unfolds its write-up and chips. Hovering a row still shows its photo in the preview card.
  */
 export default function Experience() {
@@ -11,7 +11,6 @@ export default function Experience() {
     <section id="experience" aria-labelledby="experience-h">
       <h2 id="experience-h">Experience</h2>
       <div className="xp-card">
-        <span className="tape card-tape" aria-hidden="true" />
         <ol className="xp">
           {EXPERIENCE.map((x) => {
             const isOpen = open === x.id;

@@ -27,9 +27,9 @@ const ARROW = (
  * kind line with a badge, the name and a handwritten subtitle, the write-up, chips, and a footer
  * that leads with "launch live" and keeps the code link on the right. The clip plays while at
  * least half of it is in view.
- * @param {{ project: object, n?: number, wide?: boolean, tape?: number }} props
+ * @param {{ project: object, n?: number, wide?: boolean }} props
  */
-export default function ProjectCard({ project, n = 1, wide = false, tape = 0 }) {
+export default function ProjectCard({ project, n = 1, wide = false }) {
   const ref = useRef(null);
   const [paused, setPaused] = useState(false);
   const { title, tagline, video, poster, links, kind, badge, url, body, stack = [] } = project;
@@ -64,7 +64,6 @@ export default function ProjectCard({ project, n = 1, wide = false, tape = 0 }) 
 
   return (
     <article className="card" data-wide={wide || undefined}>
-      <span className={`tape card-tape t${tape}`} aria-hidden="true" />
       <div className="win">
         <div className="win-bar">
           <i />

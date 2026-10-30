@@ -11,7 +11,7 @@ export default function Work() {
       <h2 id="work-h">Things I&apos;ve built &amp; shipped</h2>
       <div className="cards">
         {PROJECTS.map((p, i) => (
-          <ProjectCard key={p.id} project={p} n={i + 1} wide={isWide(i)} tape={i % 4} />
+          <ProjectCard key={p.id} project={p} n={i + 1} wide={isWide(i)} />
         ))}
       </div>
     </section>

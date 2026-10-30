@@ -320,14 +320,6 @@ button[aria-pressed="true"] .toggle-pill::after {
   --ink: #2a2a28;
 }
 
-.polaroid .tape {
-  position: absolute;
-  left: 34%;
-  top: -0.55cqw;
-  width: 32%;
-  height: 0.95cqw;
-}
-
 .portrait-dots,
 .portrait-img {
   display: block;
@@ -518,11 +510,6 @@ button[aria-pressed="true"] .toggle-pill::after {
     margin: 16px 0 0 8px;
   }
 
-  .polaroid .tape {
-    top: -8px;
-    height: 14px;
-  }
-
   .scribble {
     bottom: -8px;
     height: 14px;
@@ -582,35 +569,13 @@ button[aria-pressed="true"] .toggle-pill::after {
   margin: 0 0.6cqw 1.1cqw 0;
 }
 
-/* Shared paper cards with a strip of washi tape. */
+/* Shared paper cards. */
 .xp-card,
 .card {
   position: relative;
   background: var(--sheet-card);
   border: 1px solid var(--card-line);
   box-shadow: 0 0.3cqw 1.4cqw rgba(35, 35, 32, 0.06);
-}
-
-.card-tape {
-  position: absolute;
-  top: -0.5cqw;
-  right: 14%;
-  width: 4.2cqw;
-  height: 1cqw;
-  rotate: 2deg;
-}
-
-.card-tape.t1 {
-  background: rgba(200, 180, 240, 0.62);
-}
-
-.card-tape.t2 {
-  background: rgba(160, 205, 240, 0.62);
-  rotate: -2deg;
-}
-
-.card-tape.t3 {
-  background: rgba(232, 180, 140, 0.6);
 }
 
 /* Experience */
@@ -1058,12 +1023,6 @@ img.logo {
   .sec-hint {
     font-size: 12px;
     margin-bottom: 14px;
-  }
-
-  .card-tape {
-    top: -7px;
-    width: 56px;
-    height: 14px;
   }
 
   .xp-card {
