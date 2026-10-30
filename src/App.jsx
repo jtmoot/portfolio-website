@@ -3,6 +3,7 @@ import Nav from "./pad/Nav.jsx";
 import Hero from "./pad/Hero.jsx";
 import Experience from "./pad/Experience.jsx";
 import Work from "./pad/Work.jsx";
+import Leadership from "./pad/Leadership.jsx";
 import Contact from "./pad/Contact.jsx";
 import HoverPreview from "./pad/HoverPreview.jsx";
 import Cursor from "./pad/Cursor.jsx";
@@ -133,6 +134,7 @@ export default function App() {
             <div className="body" inert={flipped || undefined}>
               <Experience />
               <Work />
+              <Leadership />
               <Contact />
             </div>
           </main>

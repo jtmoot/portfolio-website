@@ -153,3 +153,36 @@ export const EXPERIENCE = [
 
 
 export const CHESS = { handle: "breakfast_enjoyer", href: "https://www.chess.com/member/breakfast_enjoyer" };
+
+/** Leadership, from the resume. Add { label, href } entries to `posts` to link LinkedIn posts. */
+export const LEADERSHIP = [
+  {
+    id: "spe-advisor",
+    company: "Sigma Phi Epsilon, PA-Eta",
+    kind: "Advisor",
+    role: "Chapter Advisor · Carnegie Mellon University",
+    dates: "Jan 2026 — Present",
+    place: "Pittsburgh, PA",
+    now: true,
+    initials: "ΣΦΕ",
+    color: null,
+    logo: null,
+    blurb: "Advise the executive board of CMU's largest fraternity (100+ members) on organizational strategy and leadership development.",
+    stack: [],
+    posts: [],
+  },
+  {
+    id: "spe-president",
+    company: "Sigma Phi Epsilon, SC-Alpha",
+    kind: "President",
+    role: "Chapter President · University of South Carolina",
+    dates: "Nov 2023 — Nov 2024",
+    place: "Columbia, SC",
+    initials: "ΣΦΕ",
+    color: null,
+    logo: null,
+    blurb: "Led a chapter of 200+ members. Received the national Frank J. Ruck Leadership Award and was inducted into the USC Greek Hall of Fame.",
+    stack: [],
+    posts: [],
+  },
+];

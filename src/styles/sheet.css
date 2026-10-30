@@ -714,6 +714,16 @@ img.logo {
   margin-bottom: 1.2cqw;
 }
 
+.xp-more > div > p:last-child {
+  margin-bottom: 1.2cqw;
+}
+
+.xp-posts {
+  display: flex;
+  gap: 1cqw;
+  margin-top: 0.6cqw !important;
+}
+
 .now {
   display: inline-block;
   width: 0.5cqw;
