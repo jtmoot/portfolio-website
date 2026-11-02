@@ -467,6 +467,12 @@ button[aria-pressed="true"] .toggle-pill::after {
   animation: open-fade 0.45s ease var(--t-socials, 0s) backwards;
 }
 
+/* Tabbing in before the fade is done shows what has focus at once. */
+.hero .role:focus-within,
+.hero .socials:focus-within {
+  animation: none;
+}
+
 @keyframes open-fade {
   from {
     opacity: 0;
@@ -497,9 +503,12 @@ button[aria-pressed="true"] .toggle-pill::after {
   animation: settle 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) 0.05s backwards;
 }
 
-.stage[data-mode="pad"] .polaroid:hover {
-  transform: translateY(-2px) rotate(1deg);
-  box-shadow: 0 0.6cqw 1.6cqw rgba(35, 35, 32, 0.13);
+/* Only for a real pointer: on a phone a tap would leave it lifted. */
+@media (hover: hover) {
+  .stage[data-mode="pad"] .polaroid:hover {
+    transform: translateY(-2px) rotate(1deg);
+    box-shadow: 0 0.6cqw 1.6cqw rgba(35, 35, 32, 0.13);
+  }
 }
 
 @keyframes settle {
@@ -540,8 +549,9 @@ button[aria-pressed="true"] .toggle-pill::after {
     animation: none !important;
   }
 
-  .stage[data-mode="pad"] .polaroid:hover {
-    transform: none;
+
+  .stage[data-mode="pad"] .polaroid {
+    transform: none !important;
   }
 }
 
@@ -1720,6 +1730,18 @@ html.has-cursor textarea {
 
 .rec-wide {
   grid-column: 1 / -1;
+}
+
+/* How long the in-browser search took: top right of the Book field, in the mono of the page's data. */
+.rec-speed {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-family: var(--font-mono);
+  font-size: max(0.7cqw, 11px);
+  font-variant-numeric: tabular-nums;
+  color: var(--live);
+  opacity: 0.85;
 }
 
 .rec-field label {

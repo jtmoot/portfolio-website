@@ -100,6 +100,29 @@ describe("apiMiddleware", () => {
   });
 });
 
+describe("apiMiddleware only answers this machine's own pages", () => {
+  const load = vi.fn(async () => ({ POST: () => Response.json({ ok: true }, { status: 201 }), GET: () => Response.json({}) }));
+
+  it("refuses another website's page posting to it (an Origin that isn't the dev server)", async () => {
+    const { out } = await run(apiMiddleware({ load }), req("/api/recommend", { method: "POST", headers: { origin: "https://evil.example" }, body: "{}" }));
+    expect(out.status).toBe(403);
+  });
+
+  it("refuses a Host that isn't localhost (DNS rebinding, or another machine on the network)", async () => {
+    for (const host of ["evil.example:5199", "192.168.1.20:5199"]) {
+      const { out } = await run(apiMiddleware({ load }), req("/api/hello", { headers: { host } }));
+      expect(out.status).toBe(403);
+    }
+  });
+
+  it("answers its own pages, on any loopback name", async () => {
+    for (const host of ["localhost:5199", "127.0.0.1:5199", "[::1]:5199"]) {
+      const { out } = await run(apiMiddleware({ load }), req("/api/recommend", { method: "POST", headers: { host, origin: `http://${host}` }, body: "{}" }));
+      expect(out.status).toBe(201);
+    }
+  });
+});
+
 describe("devApi", () => {
   it("is a dev-server-only Vite plugin", () => {
     const plugin = devApi();

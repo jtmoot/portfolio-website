@@ -24,8 +24,9 @@ const TIMES = {
  * The first screen's centre: the polaroid, the name, the intro and the ways to reach Joshua.
  * The opening runs in garvitsingla.in's order: the name types, the role fades in, the intro rises
  * whole, its highlights draw one after another, and the links come last. Browsers keep the page
- * silent until a gesture, so the first click or key press retypes the name with the sound and
- * redraws the highlights (the paragraph and links stay, so a first click on a link still lands).
+ * silent until a gesture, so the first click or key press after the opening retypes the name with
+ * the sound and redraws the highlights (the paragraph and links stay, so a first click on a link
+ * still lands); one during the opening only turns the sound on.
  * The creative-mode toggle only unlocks sound: it plays its own page flip.
  */
 export default function Hero() {
@@ -42,10 +43,13 @@ export default function Hero() {
 
   useEffect(() => {
     name.current?.run();
+    const started = Date.now();
     const first = (e) => {
       window.removeEventListener("pointerdown", first);
       window.removeEventListener("keydown", first);
       unlock();
+      // While the opening is still running, a replay would knock it out of order: sound only.
+      if (Date.now() - started < T.socials) return;
       // The replay and mute icons do their own thing, and the toggle turns the page instead.
       if (e.target instanceof Element && e.target.closest('.intro-tools, [data-sound="flip"]')) return;
       replay();

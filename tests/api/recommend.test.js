@@ -14,6 +14,15 @@ const NOW = new Date("2026-11-02T18:00:00Z");
 const deps = (db) => ({ db, salt: "pepper", now: () => NOW });
 
 describe("api/recommend", () => {
+  it("takes only JSON, so another site's plain form post needs a CORS preflight it won't get", async () => {
+    const db = fakeDb();
+    const plain = new Request("https://x.test/api/recommend", { method: "POST", headers: { "content-type": "text/plain" }, body: '{"title":"x"}' });
+    const res = await handle(plain, deps(db));
+    expect(res.status).toBe(415);
+    expect(db.insert).not.toHaveBeenCalled();
+    expect((await handle(send({ title: "x" }), deps(db))).status).toBe(201);
+  });
+
   it("stores a valid recommendation with a salted hash of the IP, never the IP", async () => {
     const db = fakeDb();
     const res = await handle(send({ title: "Stoner", author: "John Williams", note: "Quiet." }), deps(db));

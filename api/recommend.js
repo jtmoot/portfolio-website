@@ -22,6 +22,8 @@ const UNREACHABLE = "Couldn't reach the list. Try again later.";
  * @returns {Promise<Response>}
  */
 export async function handle(request, { db, salt, now = () => new Date() }) {
+  // JSON only: another site can't send that without a CORS preflight, which this never grants.
+  if (!(request.headers.get("content-type") ?? "").startsWith("application/json")) return reply(415, { error: "Send the form as JSON." });
   const raw = await request.text();
   if (raw.length > MAX_BYTES) return reply(413, { error: "That's too long to send." });
   let body;

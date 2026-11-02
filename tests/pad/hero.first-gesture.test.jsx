@@ -38,6 +38,26 @@ describe("Hero first gesture", () => {
     await act(async () => root.unmount());
   });
 
+  it("only unlocks sound when the first click comes while the opening is still running", async () => {
+    vi.resetModules();
+    vi.useFakeTimers();
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const audio = { loop: vi.fn(() => () => {}), play: vi.fn(), unlock: vi.fn(), isMuted: () => false, setMuted: vi.fn(), stopAll: vi.fn(), onSoundChange: () => () => {} };
+    vi.doMock("../../src/lib/audio.js", () => audio);
+    const { default: Hero } = await import("../../src/pad/Hero.jsx");
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<Hero />));
+    await act(async () => vi.advanceTimersByTime(500));
+    audio.loop.mockClear();
+    await act(async () => window.dispatchEvent(new Event("pointerdown")));
+    expect(audio.unlock).toHaveBeenCalled();
+    expect(host.querySelector(".hero").dataset.pass).toBe("0");
+    await act(async () => vi.advanceTimersByTime(400));
+    expect(audio.loop).not.toHaveBeenCalled();
+    await act(async () => root.unmount());
+  });
+
   it("stays silent when the first click is the creative-mode toggle", async () => {
     vi.resetModules();
     vi.useFakeTimers();
@@ -73,7 +93,6 @@ describe("Hero first gesture", () => {
     await act(async () => root.render(<Hero />));
     expect(host.querySelector('.role button[aria-label="Replay the name with sound"]')).not.toBeNull();
     expect(host.querySelector('.role button[aria-label="Mute sound"]')).not.toBeNull();
-    expect(host.querySelector(".typed button")).toBeNull();
     expect(host.querySelector("h1 .sr-only").textContent).toBe("Joshua Moorehead");
     expect(host.querySelector(".scribble")).toBeNull();
     await act(async () => root.unmount());

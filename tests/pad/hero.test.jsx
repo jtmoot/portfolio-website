@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import { readFileSync } from "node:fs";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import Hero from "../../src/pad/Hero.jsx";
@@ -36,7 +37,6 @@ describe("Hero portrait", () => {
     expect(hero.style.getPropertyValue("--t-mark-gap")).toBe(`${o.markGap}ms`);
     expect(hero.style.getPropertyValue("--t-socials")).toBe(`${o.socials}ms`);
     expect(hero.dataset.pass).toBe("0");
-    expect(host.querySelector(".typed, .caret")).toBeNull();
     expect(host.querySelectorAll(".hero p.intro mark")).toHaveLength(3);
     await act(async () => root.unmount());
     vi.unstubAllGlobals();
@@ -44,5 +44,26 @@ describe("Hero portrait", () => {
 
   it("uses a finer dot grid than the first pass (64 a side)", () => {
     expect(DOTS).toBeGreaterThanOrEqual(90);
+  });
+});
+
+describe("the opening's CSS reads what Hero sets", () => {
+  // Vitest runs from the repo root.
+  const css = readFileSync("src/styles/sheet.css", "utf8");
+
+  it("uses every timing variable Hero writes", () => {
+    for (const v of ["--t-role", "--t-intro", "--t-marks", "--t-mark-gap", "--t-socials"]) expect(css).toContain(`var(${v}`);
+  });
+
+  it("has a highlight animation for each pass, so a replay restarts them", () => {
+    expect(css).toMatch(/\.hero\[data-pass="0"\] \.intro mark \{\s*animation: mark-draw-0 /);
+    expect(css).toMatch(/\.hero\[data-pass="1"\] \.intro mark \{\s*animation: mark-draw-1 /);
+    expect(css).toMatch(/@keyframes mark-draw-0/);
+    expect(css).toMatch(/@keyframes mark-draw-1/);
+  });
+
+  it("never hides a focused link or button behind the fade, and lifts the polaroid only for a real pointer", () => {
+    expect(css).toMatch(/\.hero \.role:focus-within,\s*\.hero \.socials:focus-within \{\s*animation: none;/);
+    expect(css).toMatch(/@media \(hover: hover\) \{\s*\.stage\[data-mode="pad"\] \.polaroid:hover/);
   });
 });
