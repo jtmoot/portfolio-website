@@ -44,6 +44,8 @@ rooms, with a walkable drawn figure. Never a three.js or game-engine look.
 ```bash
 npm test           # Vitest unit tests
 npm run dev        # Vite dev server at http://localhost:5173
+                   # also serves api/*.js (DEV_CITY sets the greeting's city);
+                   # `doppler run -- npm run dev` gives /api/recommend the dev database
 npm run build      # Production build to dist/
 npm run preview    # Preview production build locally
 ```
