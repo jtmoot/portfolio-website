@@ -95,6 +95,14 @@ only at 1280 px and wider, and the phone layout is untouched.
 
 Built Nov 2, approved: `?sides=rail` and `?sides=float` (commit 85d86ca).
 
+**Picked Nov 2: the rail's left index, always on (no flag).**
+- The index is bigger (about 14 px), with the tick on the left, and rides at the middle of the
+  viewport rather than the top.
+- The Now card goes. In its place on the right: a small line drawing of three books, one leaning,
+  at 45% opacity. It links to /shelf; on hover it darkens, the leaning book stands up and "The shelf"
+  appears beside it.
+- The float variant and the `?sides=` switch go.
+
 ## 7. Book suggestions, fast for the sake of it
 - Now: about 2.7 s per keystroke search, because every search is a round trip to Open Library.
 - Target: under 5 ms from keystroke to list for the books people actually recommend, with a live

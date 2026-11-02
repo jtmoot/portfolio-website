@@ -124,8 +124,12 @@ describe("Recommend", () => {
   });
 
   it("shows the server's reason, or that the list is unreachable", async () => {
-    const replies = [json(429, { error: "Too many sends from here today. Try again tomorrow." }), Promise.reject(new TypeError("offline"))];
-    const fetcher = fakeFetch(() => replies.shift());
+    // Each reply is made when it's asked for, so the failure isn't a rejection nobody is waiting on yet.
+    const replies = [
+      () => json(429, { error: "Too many sends from here today. Try again tomorrow." }),
+      () => Promise.reject(new TypeError("offline")),
+    ];
+    const fetcher = fakeFetch(() => replies.shift()());
     const { $, type, submit, done } = await mount(fetcher);
     await type($("#rec-title"), "Ab");
     await submit();
