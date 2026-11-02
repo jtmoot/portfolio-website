@@ -26,7 +26,7 @@ const ARROW = (
  * A project card, Garvit style: the demo in a browser window (with play and pause), a numbered
  * kind line with a badge, the name and a subtitle, the write-up, chips, and a footer
  * that leads with "launch live" and keeps the code link on the right. The clip plays while at
- * least half of it is in view.
+ * least half of it is in view; a project with no recording yet shows its `note` in the window.
  * @param {{ project: object, n?: number, wide?: boolean }} props
  */
 export default function ProjectCard({ project, n = 1, wide = false }) {
@@ -77,8 +77,10 @@ export default function ProjectCard({ project, n = 1, wide = false }) {
               <source src={`${video}.webm`} type="video/webm" />
               <source src={`${video}.mp4`} type="video/mp4" />
             </video>
-          ) : (
+          ) : poster ? (
             <img src={poster} alt={`${title}, screenshot`} loading="lazy" />
+          ) : (
+            <p className="win-note">{project.note}</p>
           )}
           {video && (
             <button type="button" className="vid-btn" onClick={toggle} aria-label={paused ? "Play video" : "Pause video"} data-c="ring">

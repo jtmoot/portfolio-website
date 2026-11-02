@@ -834,6 +834,18 @@ img.logo {
   background: #16181c;
 }
 
+/* A project with no recording yet: the same dark screen, with a line where the demo will go. */
+.win-note {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  margin: 0;
+  background: #16181c;
+  color: #9a9ea6;
+  font-family: var(--font-mono);
+  font-size: max(0.8cqw, 11px);
+}
+
 .vid-btn {
   position: absolute;
   right: 0.7cqw;
@@ -905,6 +917,7 @@ img.logo {
   font-size: 1.55cqw;
   font-weight: 700;
   letter-spacing: -0.01em;
+  line-height: 1.15;
 }
 
 .card-line {

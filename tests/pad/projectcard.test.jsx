@@ -27,6 +27,14 @@ describe("ProjectCard", () => {
     expect(el.querySelector("img").getAttribute("src")).toBe("/media/x-poster.jpg");
   });
 
+  it("shows a quiet note in the window when there is no recording yet", async () => {
+    const el = await render(<ProjectCard project={{ ...BASE, video: null, poster: null, note: "In progress, Fall 2026" }} />);
+    expect(el.querySelector("img")).toBeNull();
+    expect(el.querySelector("video")).toBeNull();
+    expect(el.querySelector(".win-note").textContent).toBe("In progress, Fall 2026");
+    expect(el.querySelector(".card-foot").children).toHaveLength(0);
+  });
+
   it("renders a muted looping video with the poster when there is one", async () => {
     const el = await render(<ProjectCard project={{ ...BASE, video: "/media/x" }} />);
     const v = el.querySelector("video");
