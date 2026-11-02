@@ -1924,3 +1924,184 @@ html[data-theme="night"] .bk-fronts {
     margin-top: 6px;
   }
 }
+
+/* The side margins, while Joshua compares ?sides=rail and ?sides=float. Wide screens only. */
+.sides {
+  display: none;
+}
+
+.card {
+  scroll-margin-top: 6cqw;
+}
+
+@media (min-width: 1280px) {
+  .sides {
+    display: block;
+  }
+
+  /* Rail: a zero-height dock that stays in view beside the body column. */
+  .sides[data-variant="rail"] {
+    position: sticky;
+    top: 7cqw;
+    height: 0;
+    z-index: 3;
+  }
+
+  .side-index {
+    position: absolute;
+    top: 0;
+    right: calc(100% + 5cqw);
+    display: grid;
+    gap: 0.55cqw;
+    justify-items: end;
+    font-size: 0.82cqw;
+  }
+
+  .side-index a {
+    display: flex;
+    align-items: center;
+    gap: 0.6cqw;
+    color: color-mix(in srgb, var(--text) 50%, transparent);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .side-index a::after {
+    content: "";
+    width: 0.8cqw;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.25s ease;
+  }
+
+  .side-index a[aria-current="true"] {
+    color: var(--text);
+  }
+
+  .side-index a[aria-current="true"]::after {
+    width: 1.8cqw;
+  }
+
+  .side-now {
+    position: absolute;
+    top: 0;
+    left: calc(100% + 3cqw);
+    width: 13cqw;
+    padding: 1.1cqw 1.2cqw 1.2cqw;
+    border: 1px solid var(--card-line);
+    border-radius: 0.9cqw;
+    background: var(--sheet-card);
+    font-size: 0.8cqw;
+  }
+
+  .sheet .side-now h2 {
+    margin: 0 0 0.7cqw;
+    font-size: 1.05cqw;
+  }
+
+  .side-now dl {
+    display: grid;
+    gap: 0.25cqw;
+    margin: 0;
+  }
+
+  .side-now dt {
+    margin-top: 0.5cqw;
+    font-family: var(--font-mono);
+    font-size: 0.68cqw;
+    color: color-mix(in srgb, var(--text) 55%, transparent);
+  }
+
+  .side-now dd {
+    margin: 0;
+  }
+
+  .side-now a {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: var(--card-line);
+    text-underline-offset: 0.2em;
+  }
+
+  .side-reading {
+    display: grid;
+    grid-template-columns: 2.2cqw 1fr;
+    gap: 0.7cqw;
+    align-items: center;
+  }
+
+  .side-reading .cover {
+    width: 2.2cqw;
+    height: auto;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Float: each project's poster pinned in the margins, drifting a few pixels on its own clock. */
+  .sides[data-variant="float"] {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .side-pin {
+    position: absolute;
+    top: var(--top);
+    width: 11cqw;
+    padding: 0.45cqw 0.45cqw 0.6cqw;
+    background: #fbfaf6;
+    box-shadow: 0 0.3cqw 1cqw rgba(35, 35, 32, 0.14);
+    color: #2a2a28;
+    text-decoration: none;
+    pointer-events: auto;
+    rotate: var(--rot);
+    animation: side-drift var(--dur) ease-in-out var(--delay) infinite;
+    transition:
+      box-shadow 0.25s ease,
+      scale 0.25s ease;
+  }
+
+  .side-pin[data-side="left"] {
+    right: calc(100% + 4cqw);
+  }
+
+  .side-pin[data-side="right"] {
+    left: calc(100% + 4cqw);
+  }
+
+  .side-pin:hover {
+    scale: 1.04;
+    box-shadow: 0 0.6cqw 1.6cqw rgba(35, 35, 32, 0.2);
+  }
+
+  .side-pin img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top left;
+  }
+
+  .side-pin span {
+    display: block;
+    margin-top: 0.45cqw;
+    font-family: var(--font-mono);
+    font-size: 0.68cqw;
+  }
+
+  @keyframes side-drift {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0.25cqw -0.45cqw;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .side-pin {
+      animation: none;
+    }
+  }
+}

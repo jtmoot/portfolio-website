@@ -191,6 +191,8 @@ export const EXPERIENCE = [
 
 export const CHESS = { handle: "breakfast_enjoyer", href: "https://www.chess.com/member/breakfast_enjoyer" };
 
+export const RUNS = { href: "https://www.strava.com/athletes/121070736" };
+
 /** Leadership, from the resume. Add { label, href } entries to `posts` to link LinkedIn posts. */
 export const LEADERSHIP = [
   {

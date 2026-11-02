@@ -63,7 +63,7 @@ export default function ProjectCard({ project, n = 1, wide = false }) {
   };
 
   return (
-    <article className="card" data-wide={wide || undefined}>
+    <article className="card" id={`project-${project.id}`} data-wide={wide || undefined}>
       <div className="win">
         <div className="win-bar">
           <i />

@@ -12,6 +12,8 @@ import Shelf from "./pad/Shelf.jsx";
 import { pageOf } from "./lib/route.js";
 import { soundFor } from "./lib/clickSound.js";
 import { startAmbient } from "./lib/ambient.js";
+import { chooseSides } from "./lib/sides.js";
+import Sides from "./pad/Sides.jsx";
 
 const Floor = lazy(() => import("./creative/Floor.jsx"));
 const StationHarness = lazy(() => import("./creative/StationHarness.jsx"));
@@ -22,6 +24,7 @@ import { createModeController, createModeStore } from "./lib/mode.js";
 
 const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
 const PAGE = typeof window !== "undefined" ? pageOf(window.location.pathname) : "pad";
+const SIDES = typeof window !== "undefined" ? chooseSides(window.location.search) : null;
 const modeStore = createModeStore(params.get("mode") === "creative" ? "creative" : "pad");
 const PHONE = "(max-width: 819px)";
 /** The room's code: the floor overlay (which pulls in every drawing), plus the phone stage on phones. */
@@ -137,6 +140,7 @@ export default function App() {
               </Suspense>
             )}
             <div className="body" inert={flipped || undefined}>
+              <Sides variant={SIDES} />
               <Experience />
               <Work />
               <Leadership />

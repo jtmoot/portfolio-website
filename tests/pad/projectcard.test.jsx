@@ -27,6 +27,11 @@ describe("ProjectCard", () => {
     expect(el.querySelector("img").getAttribute("src")).toBe("/media/x-poster.jpg");
   });
 
+  it("can be jumped to by its project id", async () => {
+    const el = await render(<ProjectCard project={{ ...BASE, video: null }} />);
+    expect(el.querySelector("article").id).toBe("project-x");
+  });
+
   it("shows a quiet note in the window when there is no recording yet", async () => {
     const el = await render(<ProjectCard project={{ ...BASE, video: null, poster: null, note: "In progress, Fall 2026" }} />);
     expect(el.querySelector("img")).toBeNull();
