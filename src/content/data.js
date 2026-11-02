@@ -158,7 +158,7 @@ export const CHESS = { handle: "breakfast_enjoyer", href: "https://www.chess.com
 export const LEADERSHIP = [
   {
     id: "spe-advisor",
-    company: "Sigma Phi Epsilon, PA-Eta",
+    company: "Sigma Phi Epsilon, PA-Theta",
     kind: "Advisor",
     role: "Chapter Advisor · Carnegie Mellon University",
     dates: "Jan 2026 — Present",
@@ -166,7 +166,7 @@ export const LEADERSHIP = [
     now: true,
     initials: "ΣΦΕ",
     color: null,
-    logo: null,
+    logo: "/logos/sigep-pa.png",
     blurb: "Advise the executive board of CMU's largest fraternity (100+ members) on organizational strategy and leadership development.",
     stack: [],
     posts: [],
@@ -180,8 +180,8 @@ export const LEADERSHIP = [
     place: "Columbia, SC",
     initials: "ΣΦΕ",
     color: null,
-    logo: null,
-    blurb: "Led a chapter of 200+ members. Received the national Frank J. Ruck Leadership Award and was inducted into the USC Greek Hall of Fame.",
+    logo: "/logos/sigep-sc.png",
+    blurb: "Led a 200-member chapter with the #1 GPA of 24 fraternities. Received the national Frank J. Ruck Leadership Award and was inducted into the USC Greek Hall of Fame.",
     stack: [],
     posts: [],
   },
