@@ -93,5 +93,39 @@ only at 1280 px and wider, and the phone layout is untouched.
   - Hovering one shows its preview; clicking scrolls to its card.
 - Without the flag, nothing changes until you pick one.
 
+Built Nov 2, approved: `?sides=rail` and `?sides=float` (commit 85d86ca).
+
+## 7. Book suggestions, fast for the sake of it
+- Now: about 2.7 s per keystroke search, because every search is a round trip to Open Library.
+- Target: under 5 ms from keystroke to list for the books people actually recommend, with a live
+  readout of the time beside the field ("1.8 ms") to show it off.
+- **Build-time index** (data-pipeline work, which is the point):
+  - Pull Open Library's monthly works and ratings dumps.
+  - Keep the 50,000 most-read works (by ratings count and edition count), with title, first author,
+    work key and cover id.
+  - Write a compact prefix index: normalised tokens (lowercase, no accents or punctuation) in a sorted
+    array with offsets into the book table, packed into one binary file. Expected around 1 to 1.5 MB
+    with brotli.
+  - A Node script, `tools/books/build-index.mjs`, with tests for ranking and normalisation.
+- **In the browser:**
+  - The index loads in a Web Worker when the Book field is focused, so nothing loads until then.
+  - Each keystroke is a binary search over the token array plus a prefix intersection across words,
+    ranked by popularity: well under 1 ms.
+  - No debounce for local results.
+- **The long tail:** a title not in the index falls back to Open Library through an edge-cached
+  `/api/books?q=` (cached for a day at the edge), after a 250 ms pause, with results merged in.
+- Tests:
+  - Normalisation, so "Café" matches "cafe".
+  - Ranking, so "dune" ranks Herbert first.
+  - The worker protocol.
+  - A benchmark test that asserts p99 is under 5 ms over 1,000 sample queries on the built index.
+
+## 8. The API locally
+- "Hello, {city}!" still exists. It only shows on Vercel, because the city comes from a header Vercel
+  adds; local dev has no `/api`, so it says "Hello there!".
+- Fix: a small Vite dev plugin that serves `api/*.js` from the dev server. Locally, `/api/hello`
+  reports `DEV_CITY` (default "Pittsburgh"), and `/api/recommend` runs against Doppler's dev database
+  when started with `doppler run -- npm run dev`.
+
 ## Order
 1, 2 and 3 (the opening, together), then 4 and 5, then 6. One commit each.
