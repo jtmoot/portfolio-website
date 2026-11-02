@@ -38,6 +38,54 @@ export const PLACED = ROWS.flatMap((ids, r) => {
   return row.reverse();
 });
 
+/** Geist at weight 500, the spines' face: advance widths per em, measured in the browser. */
+const ADVANCE = {
+  a: 0.565, b: 0.608, c: 0.563, d: 0.608, e: 0.576, f: 0.412, g: 0.607, h: 0.591, i: 0.256, j: 0.284, k: 0.609, l: 0.282, m: 0.885,
+  n: 0.591, o: 0.588, p: 0.608, q: 0.608, r: 0.394, s: 0.537, t: 0.41, u: 0.586, v: 0.56, w: 0.829, x: 0.607, y: 0.553, z: 0.552,
+  A: 0.689, B: 0.688, C: 0.713, D: 0.701, E: 0.609, F: 0.595, G: 0.713, H: 0.716, I: 0.28, J: 0.607, K: 0.656, L: 0.583, M: 0.89,
+  N: 0.745, O: 0.751, P: 0.657, Q: 0.745, R: 0.68, S: 0.654, T: 0.568, U: 0.694, V: 0.688, W: 0.968, X: 0.633, Y: 0.594, Z: 0.561,
+  0: 0.673, 1: 0.406, 2: 0.63, 3: 0.625, 4: 0.629, 5: 0.641, 6: 0.604, 7: 0.531, 8: 0.624, 9: 0.606,
+  " ": 0.243, ",": 0.213, ".": 0.213, ":": 0.302, ";": 0.302, "'": 0.186, "’": 0.186, "!": 0.228, "?": 0.57, "&": 0.649,
+  "-": 0.418, "–": 0.6, "—": 0.9, "(": 0.29, ")": 0.29,
+};
+/** Vertical metrics per em: cap height, the tallest ascender and the deepest descender. */
+export const SPINE_FONT = { cap: 0.71, ascent: 0.76, descent: 0.22 };
+
+/** A line's width at `size`, from Geist's advances (anything unlisted counts as 0.6 em). */
+export const textWidth = (text, size) => [...text].reduce((w, ch) => w + (ADVANCE[ch] ?? 0.6), 0) * size;
+
+export const shortTitle = (title) => title.split(":")[0];
+export const surname = (author) => author.split(/ & |, /)[0].split(" ").pop();
+
+/** One line down a spine: shrunk to fit `room` if it must, its cap height centred on `mid`. */
+function spineLine(text, size, start, room, mid) {
+  let length = textWidth(text, size);
+  if (length > room) {
+    size *= room / length;
+    length = room;
+  }
+  return { text, size, start, length, baseline: mid + (SPINE_FONT.cap * size) / 2 };
+}
+
+/**
+ * Where a book's title and surname sit on its spine, in world units: each runs down the spine (-z)
+ * from `start` for `length`, with its baseline at y = `baseline`. The title stops 1.2 above the surname.
+ * @param {object} placed one entry of PLACED
+ */
+export function spineType({ book, y0, y1, z0, z1 }) {
+  const [mid, thick, h] = [(y0 + y1) / 2, y1 - y0, z1 - z0];
+  return {
+    title: spineLine(shortTitle(book.title), Math.min(thick * 0.5, 1.95), z1 - 1.5, 0.8 * h - 2.4, mid),
+    author: spineLine(surname(book.author), Math.min(thick * 0.34, 1.05), z0 + 0.2 * h - 0.3, 0.2 * h - 0.9, mid),
+  };
+}
+
+/** A shelf's label card: the text size and the card's width, padded `pad` at each end. */
+export function plateType(text) {
+  const [size, pad] = [3.2, 1.4];
+  return { text, size, pad, w: textWidth(text, size) + 2 * pad };
+}
+
 /** The projection used for the drawing, given the origin its build wrote to meta.json. */
 export function projector(origin) {
   const a = (CAMERA.azimuth * Math.PI) / 180;

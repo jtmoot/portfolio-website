@@ -3,14 +3,12 @@
 // Local world: wall plane x = 0, spines facing +x, row along y. Centimetres.
 import { readFileSync } from "node:fs";
 import { station, k } from "./lib.mjs";
-import { CASE, CAMERA, PLACED } from "../../src/lib/bookcase.js";
+import { CASE, CAMERA, PLACED, SPINE_FONT, spineType, plateType } from "../../src/lib/bookcase.js";
 
 const { y0: Y0, y1: Y1, depth: D, height: H, side: T, board: B, spine: X, shelves: SHELVES } = CASE;
 const SPINES = JSON.parse(readFileSync(new URL("./spines.json", import.meta.url), "utf8"));
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-const shortTitle = (t) => t.split(":")[0];
-const surname = (a) => a.split(/ & |, /)[0].split(" ").pop();
 const luminance = (hex) => {
   const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
@@ -43,19 +41,28 @@ export default station("bookcase", {
     // Plinth, set back as a toe-kick.
     out.push(wood(box(2, Y0 + T, 0, D - 2.4, Y1 - T, SHELVES[0] - B, { r: 0.2, steps: 2, ...solid })));
 
-    const boardAt = (z, plate) => {
+    const boardAt = (z, label) => {
       const parts = [wood(box(2, Y0 + T, z - B, D, Y1 - T, z, { r: 0.25, steps: 2, bevel: 0.3, ...solid }))];
-      // A beaded edge and a brass label holder on the board's front.
+      // A beaded edge, and a clip-on brass label holder hanging below the board's front, as library
+      // shelves carry them: a frame screwed to the edge, the card inside it.
       parts.push(wood(line([D, Y0 + T + 0.4, z - 0.7], [D, Y1 - T - 0.4, z - 0.7], "lo")));
-      const [py1, py0] = [plate.w / 2, -plate.w / 2]; // centred on the board, as a card holder is
-      const pz0 = z - B + 0.2;
-      const pz1 = z - 0.9;
-      parts.push(`<path class="bk-plate" d="${path3([[D, py0, pz0], [D, py1, pz0], [D, py1, pz1], [D, py0, pz1]], true)}"/>`);
-      const m = at([D, py1 - 0.5, pz0 + 0.42]);
-      const [o, u, v] = [at([D, 0, 0]), at([D, -1, 0]), at([D, 0, -1])];
+      const plate = plateType(label);
+      const face = (x, y0, y1, z0, z1) => path3([[x, y0, z0], [x, y1, z0], [x, y1, z1], [x, y0, z1]], true);
+      const [fx, cx] = [D + 0.15, D + 0.3];
+      const [fy, fz0, fz1] = [plate.w / 2 + 0.9, z - B - 2.4, z - 0.3];
+      const [cy, cz0, cz1] = [plate.w / 2, fz0 + 0.35, fz1 - 0.35];
+      parts.push(`<path class="bk-holder" d="${face(fx, -fy, fy, fz0, fz1)}"/>`);
+      parts.push(`<path class="bk-plate" d="${face(cx, -cy, cy, cz0, cz1)}"/>`);
+      parts.push(brass(dots([at([fx, -fy + 0.45, z - 1.4]), at([fx, fy - 0.45, z - 1.4])], { tone: "lo", r: 0.24 })));
+      // Text runs toward -y; centred on the card, its cap height centred between the card's edges.
+      const base = (cz0 + cz1) / 2 - (SPINE_FONT.cap * plate.size) / 2;
+      const m = at([cx, 0, base]);
+      const [o, u, v] = [at([cx, 0, 0]), at([cx, -1, 0]), at([cx, 0, -1])];
       const matrix = [u[0] - o[0], u[1] - o[1], v[0] - o[0], v[1] - o[1], m[0], m[1]].map((n) => n.toFixed(3)).join(" ");
-      parts.push(`<text class="bk-plate-text" transform="matrix(${matrix})" font-size="1.28">${esc(plate.text)}</text>`);
-      parts.push(wood(dots([at([D, py0 - 0.5, (pz0 + pz1) / 2]), at([D, py1 + 0.5, (pz0 + pz1) / 2])], { tone: "lo", r: 0.26 })));
+      parts.push(
+        `<text class="bk-plate-text" transform="matrix(${matrix})" font-size="${plate.size}" text-anchor="middle" ` +
+          `textLength="${(plate.w - 2 * plate.pad).toFixed(3)}" lengthAdjust="spacingAndGlyphs">${esc(label)}</text>`,
+      );
       return parts.join("");
     };
 
@@ -93,7 +100,6 @@ export default station("bookcase", {
       const { x0, x1, y0, y1, z0, z1, book: b } = p;
       const colour = SPINES[b.id] || "#6e5843";
       const ink = luminance(colour) > 0.5 ? "#201f1b" : "#f0ebdd";
-      const mid = (y0 + y1) / 2;
       const thick = y1 - y0;
       const h = z1 - z0;
       const seed = b.id.length + b.title.length;
@@ -106,19 +112,20 @@ export default station("bookcase", {
       else spine.push(`<path class="bk-label" d="${path3([[x1, y0 + 0.25, z0 + h * 0.2], [x1, y1 - 0.25, z0 + h * 0.2], [x1, y1 - 0.25, z1 - 1.2], [x1, y0 + 0.25, z1 - 1.2]], true)}"/>`);
       const onLabel = seed % 3 === 2;
       const textInk = onLabel ? "#201f1b" : ink;
-      // Title down the spine, surname at the foot.
+      // Title down the spine, surname at the foot, each centred across it and stated at its exact
+      // length so any font lands where the layout says.
       const [o, u, v] = [at([x1, 0, 0]), at([x1, 0, -1]), at([x1, 1, 0])];
-      const text = (z, size, str, cls, fill) => {
-        const m = at([x1, mid - size * 0.34, z]);
+      const text = (line, cls, fill) => {
+        const m = at([x1, line.baseline, line.start]);
         const matrix = [u[0] - o[0], u[1] - o[1], v[0] - o[0], v[1] - o[1], m[0], m[1]].map((n) => n.toFixed(3)).join(" ");
-        return `<text class="${cls}" fill="${fill}" transform="matrix(${matrix})" font-size="${size.toFixed(2)}">${esc(str)}</text>`;
+        return (
+          `<text class="${cls}" fill="${fill}" transform="matrix(${matrix})" font-size="${line.size.toFixed(3)}" ` +
+          `textLength="${line.length.toFixed(3)}" lengthAdjust="spacingAndGlyphs">${esc(line.text)}</text>`
+        );
       };
-      const title = shortTitle(b.title);
-      const room = h * 0.68;
-      const size = Math.min(thick * 0.5, 1.95, room / (title.length * 0.5));
-      spine.push(text(z1 - 1.5, size, title, "bk-title", textInk));
-      const who = surname(b.author);
-      spine.push(text(z0 + h * 0.2 - 0.3, Math.min(thick * 0.34, 1.05, (h * 0.17) / (who.length * 0.5)), who, "bk-author", ink));
+      const type = spineType(p);
+      spine.push(text(type.title, "bk-title", textInk));
+      spine.push(text(type.author, "bk-author", ink));
       spine.push(`<path class="bk-edge" d="${path3([[x1, y0, z0], [x1, y1, z0], [x1, y1, z1], [x1, y0, z1]], true)}"/>`);
 
       const cover = [
@@ -146,7 +153,7 @@ export default station("bookcase", {
     };
 
     const row = (z) => PLACED.filter((p) => p.z0 === z);
-    const plates = { [SHELVES[2]]: { text: "Reading, textbooks", w: 15.5 }, [SHELVES[1]]: { text: "Up next", w: 7.5 }, [SHELVES[0]]: { text: "Read", w: 5 } };
+    const plates = { [SHELVES[2]]: "Reading, textbooks", [SHELVES[1]]: "Up next", [SHELVES[0]]: "Read" };
     SHELVES.forEach((z) => {
       out.push(boardAt(z, plates[z]));
       const books = row(z);

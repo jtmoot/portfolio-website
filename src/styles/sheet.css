@@ -1733,10 +1733,16 @@ html.has-cursor * {
   font-weight: 500;
 }
 
+.bk-holder {
+  fill: #b08c44;
+  stroke: #6e5426;
+  stroke-width: 0.25;
+}
+
 .bk-plate {
-  fill: #e8e0c8;
-  stroke: #b08c44;
-  stroke-width: 0.3;
+  fill: #ede6d0;
+  stroke: #8a6c32;
+  stroke-width: 0.2;
 }
 
 .bk-plate-text {
@@ -1744,6 +1750,9 @@ html.has-cursor * {
 }
 
 html[data-theme="night"] .bookcase-art [data-book],
+html[data-theme="night"] .bookcase-art .bk-holder,
+html[data-theme="night"] .bookcase-art .bk-plate,
+html[data-theme="night"] .bookcase-art .bk-plate-text,
 html[data-theme="night"] .bk-fronts {
   filter: brightness(0.78);
 }
