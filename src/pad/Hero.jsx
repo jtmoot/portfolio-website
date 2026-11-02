@@ -4,6 +4,7 @@ import HandName from "./HandName.jsx";
 import IntroTools from "./IntroTools.jsx";
 import TypedIntro from "./TypedIntro.jsx";
 import { unlock } from "../lib/audio.js";
+import { trackHeroEnd } from "../lib/heroEnd.js";
 import { INTRO, ROLE, SOCIALS } from "../content/data.js";
 import { FIGURE_START } from "../lib/travelers.js";
 
@@ -16,10 +17,13 @@ import { FIGURE_START } from "../lib/travelers.js";
 export default function Hero() {
   const name = useRef(null);
   const intro = useRef(null);
+  const hero = useRef(null);
   const replay = () => {
     name.current?.run();
     intro.current?.run(150);
   };
+
+  useEffect(() => trackHeroEnd(hero.current), []);
 
   useEffect(() => {
     name.current?.run();
@@ -44,7 +48,7 @@ export default function Hero() {
       <figure className="polaroid" data-traveler="polaroid" style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y }}>
         <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" />
       </figure>
-      <div className="hero">
+      <div className="hero" ref={hero}>
         <HandName ref={name} text="Joshua Moorehead" />
         <p className="role">
           {ROLE}
