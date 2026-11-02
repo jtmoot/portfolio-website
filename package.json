@@ -9,9 +9,11 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "stations": "node tools/stations/build.mjs"
+    "stations": "node tools/stations/build.mjs",
+    "recs": "doppler run -- node tools/recs/recs.mjs"
   },
   "dependencies": {
+    "postgres": "^3.4.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

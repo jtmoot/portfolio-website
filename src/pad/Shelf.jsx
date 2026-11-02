@@ -2,6 +2,7 @@ import Nav from "./Nav.jsx";
 import Contact from "./Contact.jsx";
 import Bookcase from "./Bookcase.jsx";
 import Cover from "./Cover.jsx";
+import Recommend from "./Recommend.jsx";
 import { SHELF, goodreads } from "../content/shelf.js";
 
 const ARROW = (
@@ -93,11 +94,7 @@ export default function Shelf({ theme = "day", onToggleTheme = () => {} }) {
             </section>
           ),
         )}
-        <section className="recommend" aria-label="Recommend a book">
-          <a href="mailto:josh.moorehead@outlook.com?subject=A%20book%20recommendation" data-c="ring">
-            Recommend a book{ARROW}
-          </a>
-        </section>
+        <Recommend />
         <Contact />
       </div>
     </main>

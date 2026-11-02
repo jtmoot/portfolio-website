@@ -1242,6 +1242,15 @@ html.has-cursor * {
   cursor: none !important;
 }
 
+html.has-cursor input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.has-cursor textarea {
+  cursor: text !important;
+}
+
+.cursor.text {
+  opacity: 0 !important;
+}
+
 .cursor {
   position: fixed;
   left: 0;
@@ -1577,15 +1586,11 @@ html.has-cursor * {
   }
 }
 
-/* Recommend a book: a quiet card at the end of the lists. */
+/* Recommend a book: a quiet form card at the end of the lists. */
 .recommend {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2cqw;
   margin: 1cqw 0 3cqw;
-  padding: 1.6cqw 2.2cqw;
-  border: 1px dashed var(--card-line);
+  padding: 1.8cqw 2.2cqw 2cqw;
+  border: 1px solid var(--card-line);
   border-radius: 1.2cqw;
   background: var(--sheet-card);
 }
@@ -1595,30 +1600,139 @@ html.has-cursor * {
   font-size: 1.4cqw;
 }
 
-.recommend a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35cqw;
-  padding: 0.5cqw 1cqw;
-  border-radius: 0.4cqw;
-  background: var(--ink);
-  color: var(--paper);
-  font-size: 0.82cqw;
-  text-decoration: none;
+.rec-lede {
+  margin: 0.3cqw 0 1.4cqw;
+  color: color-mix(in srgb, var(--text) 70%, transparent);
+  font-size: max(0.9cqw, 13px);
 }
 
-.recommend svg {
-  width: 0.9em;
-  height: 0.9em;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
+.rec-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1cqw 1.4cqw;
+}
+
+.rec-field {
+  position: relative;
+  display: grid;
+  gap: 0.35cqw;
+}
+
+.rec-wide {
+  grid-column: 1 / -1;
+}
+
+.rec-field label {
+  font-size: max(0.78cqw, 12px);
+  color: color-mix(in srgb, var(--text) 75%, transparent);
+}
+
+.rec-field input,
+.rec-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55em 0.7em;
+  border: 1px solid var(--card-line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--text);
+  font: inherit;
+  font-size: max(0.92cqw, 14px);
+}
+
+.rec-field textarea {
+  resize: vertical;
+}
+
+.rec-field input:focus-visible,
+.rec-field textarea:focus-visible {
+  outline: 2px solid var(--live);
+  outline-offset: 1px;
+}
+
+.rec-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  margin: 4px 0 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--card-line);
+  border-radius: 8px;
+  background: var(--sheet-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.rec-options li {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  column-gap: 10px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: max(0.86cqw, 13px);
+}
+
+.rec-options li[aria-selected="true"],
+.rec-options li:hover {
+  background: var(--card);
+}
+
+.rec-options img,
+.rec-nocover {
+  grid-row: 1 / span 2;
+  width: 24px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 2px;
+  background: var(--card);
+}
+
+.rec-opt-author {
+  grid-column: 2;
+  color: color-mix(in srgb, var(--text) 65%, transparent);
+  font-size: 0.9em;
+}
+
+.rec-trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.rec-send {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+}
+
+.rec-send button {
+  padding: 0.6em 1.5em;
+  border: 0;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-size: max(0.86cqw, 13px);
+}
+
+.rec-send button:disabled {
+  opacity: 0.6;
+}
+
+.rec-status {
+  margin: 0;
+  font-size: max(0.86cqw, 13px);
 }
 
 @media (max-width: 819px) {
   .recommend {
-    flex-direction: column;
-    align-items: flex-start;
     padding: 16px;
     border-radius: 14px;
     margin-bottom: 28px;
@@ -1628,10 +1742,17 @@ html.has-cursor * {
     font-size: 20px;
   }
 
-  .recommend a {
-    font-size: 13px;
-    padding: 8px 14px;
-    border-radius: 6px;
+  .rec-lede {
+    margin: 4px 0 14px;
+  }
+
+  .rec-form {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .rec-field {
+    gap: 4px;
   }
 }
 

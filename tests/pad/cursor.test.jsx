@@ -9,7 +9,7 @@ afterEach(() => vi.unstubAllGlobals());
 
 const mount = async () => {
   vi.stubGlobal("matchMedia", () => ({ matches: true }));
-  document.body.innerHTML = '<button id="b">go</button><canvas id="art"></canvas><p id="t">text</p>';
+  document.body.innerHTML = '<button id="b">go</button><canvas id="art"></canvas><p id="t">text</p><input id="i"><textarea id="ta"></textarea>';
   const host = document.createElement("div");
   document.body.appendChild(host);
   const root = createRoot(host);
@@ -28,6 +28,17 @@ describe("Cursor", () => {
     expect(dot.classList.contains("hot")).toBe(false);
     await act(async () => over("t"));
     expect(dot.classList.contains("hot")).toBe(false);
+    await act(async () => root.unmount());
+  });
+
+  it("steps aside over a text field, so the system's text cursor shows instead", async () => {
+    const { dot, over, root } = await mount();
+    await act(async () => over("i"));
+    expect(dot.classList.contains("text")).toBe(true);
+    await act(async () => over("ta"));
+    expect(dot.classList.contains("text")).toBe(true);
+    await act(async () => over("b"));
+    expect(dot.classList.contains("text")).toBe(false);
     await act(async () => root.unmount());
   });
 

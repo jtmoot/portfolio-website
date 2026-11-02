@@ -43,11 +43,12 @@ describe("Shelf extras", () => {
     return { host, root };
   };
 
-  it("ends with a Recommend a book link that emails Joshua with a subject filled in", async () => {
+  it("ends with the Recommend a book form, which never opens email", async () => {
     const { host, root } = await mount();
-    const a = host.querySelector(".recommend a");
-    expect(a.textContent).toContain("Recommend a book");
-    expect(a.getAttribute("href")).toBe("mailto:josh.moorehead@outlook.com?subject=A%20book%20recommendation");
+    const section = host.querySelector(".recommend");
+    expect(section.querySelector("h2").textContent).toBe("Recommend a book");
+    expect(section.querySelector("form")).not.toBeNull();
+    expect(section.querySelector('a[href^="mailto:"]')).toBeNull();
     await act(async () => root.unmount());
     vi.unstubAllGlobals();
   });
