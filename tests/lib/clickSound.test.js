@@ -8,10 +8,9 @@ const el = (html) => {
 };
 
 describe("soundFor", () => {
-  it("clicks for buttons, links and stickers, even from an icon inside them", () => {
+  it("clicks for buttons and links, even from an icon inside them", () => {
     expect(soundFor(el('<button><svg data-hit></svg></button>'))).toBe("click");
     expect(soundFor(el('<a href="/shelf"><span data-hit>shelf</span></a>'))).toBe("click");
-    expect(soundFor(el('<figure class="obj-sticker"><canvas data-hit></canvas></figure>'))).toBe("click");
   });
 
   it("lets a control ask for its own sound, or none", () => {

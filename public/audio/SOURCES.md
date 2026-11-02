@@ -8,5 +8,3 @@ level-matched with ffmpeg. Neither licence needs credit; it is given here anyway
 | `typing.mp3` | [soft fast typing on a laptop keyboard](https://freesound.org/people/fredclose/sounds/755218/) (0.3 s to 3.3 s, the Freesound preview, at its own level, played at 0.5) | fredclose | CC0 1.0 |
 | `flip.mp3` | [page flipping](https://freesound.org/people/carlerichudon10/sounds/466375/) | carlerichudon10 | CC0 1.0 |
 | `click.mp3` | [menu or UI click](https://freesound.org/people/avaol/sounds/862451/) | avaol | CC0 1.0 |
-
-`pencil.mp3`, `pencil.wav` and `tick.wav` are earlier clips, no longer used.

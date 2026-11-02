@@ -1,5 +1,5 @@
-/** What counts as a press worth a click: real controls and the margin stickers. */
-const PRESSABLE = 'button, a[href], [role="button"], summary, .obj-sticker';
+/** What counts as a press worth a click: real controls. */
+const PRESSABLE = 'button, a[href], [role="button"], summary';
 
 /**
  * The sound a click on `target` should make: "click" for controls, the control's own
