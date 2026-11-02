@@ -99,7 +99,6 @@
 }
 
 /* Travelers slide along the tipping paper to their station, then fade as the drawing rises. */
-.obj,
 .polaroid {
   transition:
     left 1.5s cubic-bezier(0.6, 0, 0.25, 1),
@@ -107,25 +106,6 @@
     width 1.5s cubic-bezier(0.6, 0, 0.25, 1),
     rotate 1.5s cubic-bezier(0.6, 0, 0.25, 1),
     opacity 0.45s ease;
-}
-
-.obj .flat,
-.obj .obj-label {
-  transition: opacity 0.4s ease;
-}
-
-.stage[data-mode="creative"] .obj {
-  left: calc(var(--to-x) * 1cqw - 2cqw);
-  top: calc(var(--to-y) * 1cqw);
-  width: 4cqw;
-  rotate: 0deg;
-  animation: none;
-}
-
-.stage[data-mode="creative"] .obj .flat,
-.stage[data-mode="creative"] .obj .obj-label {
-  opacity: 0;
-  transition-delay: 0.5s;
 }
 
 .stage[data-mode="creative"] .polaroid {
@@ -138,10 +118,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .poster,
-  .obj,
-  .polaroid,
-  .obj .flat,
-  .obj .obj-label {
+  .polaroid {
     transition: opacity 0.3s ease;
   }
 }
@@ -698,7 +675,6 @@ html[data-theme="night"] .fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;
       opacity 0.5s ease 1.5s;
   }
 
-  .stage[data-mode="pad"] .obj,
   .stage[data-mode="pad"] .polaroid {
     transition:
       left 1.5s cubic-bezier(0.75, 0, 0.4, 1) 0.5s,
@@ -706,11 +682,6 @@ html[data-theme="night"] .fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;
       width 1.5s cubic-bezier(0.75, 0, 0.4, 1) 0.5s,
       rotate 1.5s cubic-bezier(0.75, 0, 0.4, 1) 0.5s,
       opacity 0.45s ease 0.95s;
-  }
-
-  .stage[data-mode="pad"] .obj .flat,
-  .stage[data-mode="pad"] .obj .obj-label {
-    transition: opacity 0.4s ease 1.1s;
   }
 
   .stage[data-mode="pad"] .hero {
