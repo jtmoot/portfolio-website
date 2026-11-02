@@ -23,8 +23,11 @@ describe("Hero first gesture", () => {
     await act(async () => root.render(<Hero />));
     await act(async () => vi.advanceTimersByTime(8000));
     audio.loop.mockClear();
+    expect(host.querySelector(".hero").dataset.pass).toBe("0");
     await act(async () => window.dispatchEvent(new Event("pointerdown")));
     expect(audio.unlock).toHaveBeenCalled();
+    // The highlights draw again with the name; the paragraph and links stay put under the click.
+    expect(host.querySelector(".hero").dataset.pass).toBe("1");
     await act(async () => vi.advanceTimersByTime(400));
     expect(audio.loop).toHaveBeenCalledWith("typing");
     audio.loop.mockClear();

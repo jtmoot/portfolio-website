@@ -409,50 +409,103 @@ button[aria-pressed="true"] .toggle-pill::after {
   stroke-linejoin: round;
 }
 
-.typed {
-  display: grid;
+.intro {
   margin: 0 0 1.2cqw;
 }
 
-/* Live copy and finished ghost share one grid cell, so the paragraph is always its full height. */
-.typed-live,
-.typed-ghost {
-  grid-area: 1 / 1;
-}
-
-.typed-ghost {
-  visibility: hidden;
-}
-
-.typed-ghost-tools {
-  display: inline-block;
-  width: 3.8em;
-}
-
-.typed mark {
-  background: none;
+/* The highlights: a low band under the words that draws left to right. */
+.intro mark {
+  background: linear-gradient(#8a4a2a, #8a4a2a) no-repeat 0 100% / 100% 0.18em;
+  -webkit-box-decoration-break: slice;
+  box-decoration-break: slice;
   color: inherit;
   padding: 0 2px;
-  box-shadow: inset 0 -0.18em #8a4a2a;
 }
 
-.caret {
+/* The name's caret: a thin bar right after the last letter, solid while typing, then blinking. */
+.name-caret {
   display: inline-block;
-  width: 0.55em;
-  height: 1.05em;
-  vertical-align: -0.15em;
+  width: 0.06em;
+  min-width: 2px;
+  height: 0.82em;
+  margin-left: 0.06em;
+  vertical-align: -0.04em;
   background: currentColor;
-  margin-left: 1px;
-  animation: blink 1s steps(1) infinite;
+  animation: caret-blink 1.06s steps(1) infinite;
 }
 
-.caret.idle {
-  opacity: 0.6;
+.hand-name[data-writing] .name-caret {
+  animation: none;
 }
 
-@keyframes blink {
+@keyframes caret-blink {
   50% {
     opacity: 0;
+  }
+}
+
+/* The opening (times from opening.js, set on .hero): the role fades in as the name finishes, the
+   intro rises 4px, each highlight draws in turn, the links come last. A replay flips data-pass,
+   which swaps in an identical keyframe and so redraws the highlights only. */
+.hero .role {
+  animation: open-fade 0.4s ease var(--t-role, 0s) backwards;
+}
+
+.hero .intro {
+  animation: open-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) var(--t-intro, 0s) backwards;
+}
+
+.hero[data-pass="0"] .intro mark {
+  animation: mark-draw-0 0.45s cubic-bezier(0.5, 0, 0.2, 1) calc(var(--t-marks, 0s) + var(--i, 0) * var(--t-mark-gap, 0s)) backwards;
+}
+
+.hero[data-pass="1"] .intro mark {
+  animation: mark-draw-1 0.45s cubic-bezier(0.5, 0, 0.2, 1) calc(var(--t-marks, 0s) + var(--i, 0) * var(--t-mark-gap, 0s)) backwards;
+}
+
+.hero .socials {
+  animation: open-fade 0.45s ease var(--t-socials, 0s) backwards;
+}
+
+@keyframes open-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes open-rise {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+
+@keyframes mark-draw-0 {
+  from {
+    background-size: 0% 0.18em;
+  }
+}
+
+@keyframes mark-draw-1 {
+  from {
+    background-size: 0% 0.18em;
+  }
+}
+
+/* The polaroid drops 6px into place with one small overshoot, and lifts a little under the pointer. */
+.polaroid {
+  animation: settle 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) 0.05s backwards;
+}
+
+.stage[data-mode="pad"] .polaroid:hover {
+  transform: translateY(-2px) rotate(1deg);
+  box-shadow: 0 0.6cqw 1.6cqw rgba(35, 35, 32, 0.13);
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
   }
 }
 
@@ -478,8 +531,17 @@ button[aria-pressed="true"] .toggle-pill::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .caret {
-    animation: none;
+  .name-caret,
+  .hero .role,
+  .hero .intro,
+  .hero .intro mark,
+  .hero .socials,
+  .polaroid {
+    animation: none !important;
+  }
+
+  .stage[data-mode="pad"] .polaroid:hover {
+    transform: none;
   }
 }
 
@@ -502,8 +564,7 @@ button[aria-pressed="true"] .toggle-pill::after {
     margin: 12px 0;
   }
 
-  .typed {
-    min-height: 120px;
+  .intro {
     margin-bottom: 16px;
   }
 

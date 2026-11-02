@@ -25,8 +25,11 @@ What Garvit's site does, checked on Nov 2:
 4. The three highlights draw in one after another, 150 ms apart.
 5. The social links fade in last.
 
-The whole opening takes about 2.2 s. The first-click replay reruns the same sequence, so the
-letter-by-letter typing of the intro is removed.
+The whole opening takes about 2.2 s, and the letter-by-letter typing of the intro is removed.
+
+Ruling while building: the first-click replay retypes the name and redraws the highlights, but
+doesn't hide and re-fade the paragraph or the links. A first click on LinkedIn would otherwise land
+on a link that had just vanished.
 
 ## 3. The portrait: settle, don't bounce
 - My recommendation is against a continuous bounce, which reads as a toy. On a page meant to be
