@@ -4,3 +4,10 @@ dist
 .DS_Store
 .claude/worktrees/
 .superpowers/
+
+# Doppler / secrets (managed by doppler-init)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
