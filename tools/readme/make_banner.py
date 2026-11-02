@@ -32,7 +32,7 @@ MONO_FONT = ROOT / "public/fonts/GeistMono-Variable.woff2"
 LOWERCASE = True
 GREETING = "hello, i'm"
 NAME = "joshua moorehead"
-ROLE = "ml systems engineer"
+ROLE = "ml systems and ai engineer"
 INTRO = [
     "i build ml systems and the data plumbing under them.",
     "ms in ece at carnegie mellon. barbells, sprints,",
