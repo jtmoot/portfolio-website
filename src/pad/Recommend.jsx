@@ -1,54 +1,66 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { LIMITS, validate } from "../lib/recommend.js";
+import { openBookSearch } from "../lib/bookSearch.js";
 
-const SEARCH = "https://openlibrary.org/search.json";
-const DEBOUNCE_MS = 300;
+/** Shown at most; fewer than this from the index and Open Library is asked too. */
+const SHOWN = 5;
+/** The pause before asking Open Library (through /api/books) for the long tail. */
+const REMOTE_MS = 250;
 const EMPTY = { title: "", author: "", note: "", name: "", website: "" };
 const UNREACHABLE = "Couldn't reach the list. Try again later.";
 
 /**
- * Up to five Open Library matches for what has been typed, each with an author and listed once,
- * or none if the search fails.
+ * Open Library's matches for what has been typed, through the site's edge-cached /api/books, or
+ * none if that fails.
  * @param {string} q
  * @param {typeof fetch} fetcher
  * @param {AbortSignal} signal
  */
-async function suggest(q, fetcher, signal) {
-  const params = new URLSearchParams({ q, fields: "key,title,author_name,cover_i", limit: "12" });
+async function remote(q, fetcher, signal) {
   try {
-    const res = await fetcher(`${SEARCH}?${params}`, { signal });
+    const res = await fetcher(`/api/books?q=${encodeURIComponent(q)}`, { signal });
     if (!res.ok) return [];
-    const { docs = [] } = await res.json();
-    // Open Library lists stray editions too: keep books with an author, once each.
-    const seen = new Set();
-    return docs
-      .filter((d) => d.author_name?.length)
-      .map((d) => ({ olKey: d.key, title: d.title, author: d.author_name[0], coverId: d.cover_i ?? null }))
-      .filter((o) => {
-        const k = `${o.title}|${o.author}`.toLowerCase();
-        return !seen.has(k) && seen.add(k);
-      })
-      .slice(0, 5);
+    const { books = [] } = await res.json();
+    return books;
   } catch {
     return [];
   }
 }
 
+/** The index's books first, then Open Library's that aren't already listed. */
+function merge(local, more) {
+  const key = (b) => `${b.title}|${b.author}`.toLowerCase();
+  const seen = new Set(local.flatMap((b) => [b.olKey, key(b)]));
+  return [...local, ...more.filter((b) => !seen.has(b.olKey) && !seen.has(key(b)))].slice(0, SHOWN);
+}
+
+/** "0.42 ms", "3.1 ms", "12 ms". */
+const formatMs = (ms) => `${ms < 1 ? ms.toFixed(2) : ms < 10 ? ms.toFixed(1) : Math.round(ms)} ms`;
+
 /**
- * The end of /shelf: recommend a book. The title field suggests books from Open Library as you type;
- * picking one fills the author and keeps its Open Library key. It posts to /api/recommend, which
- * stores it for Joshua; nothing opens email.
- * @param {{ fetcher?: typeof fetch }} props
+ * The end of /shelf: recommend a book. Focusing the title field starts a worker with an index of the
+ * 50,000 most-read books, which answers every keystroke in well under a millisecond (the time is
+ * shown beside the label); for anything rarer, Open Library is asked through /api/books after a
+ * short pause. Picking a book fills the author and keeps its Open Library key. It posts to
+ * /api/recommend, which stores it for Joshua; nothing opens email.
+ * @param {{ fetcher?: typeof fetch, openBooks?: typeof openBookSearch }} props
  */
-export default function Recommend({ fetcher = globalThis.fetch }) {
+export default function Recommend({ fetcher = globalThis.fetch, openBooks = openBookSearch }) {
   const [form, setForm] = useState(EMPTY);
   const [pick, setPick] = useState(null);
   const [options, setOptions] = useState([]);
   const [active, setActive] = useState(-1);
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState("");
+  const [speed, setSpeed] = useState(null);
   const picked = useRef(false);
+  const books = useRef(null);
   const list = useId();
+
+  const startBooks = () => {
+    books.current ??= openBooks();
+  };
+  useEffect(() => () => books.current?.close(), []);
 
   useEffect(() => {
     // A pick sets the title itself; that change should not search again.
@@ -57,18 +69,25 @@ export default function Recommend({ fetcher = globalThis.fetch }) {
       return undefined;
     }
     const q = form.title.trim();
-    if (q.length < 3) {
+    if (q.length < 2) {
       setOptions([]);
       return undefined;
     }
     const abort = new AbortController();
-    const t = setTimeout(async () => {
-      const found = await suggest(q, fetcher, abort.signal);
-      if (!abort.signal.aborted) {
-        setOptions(found);
-        setActive(-1);
-      }
-    }, DEBOUNCE_MS);
+    let t = 0;
+    (async () => {
+      const found = (await books.current?.search(q, 8)) ?? null;
+      if (abort.signal.aborted) return;
+      const local = found ? found.books.slice(0, SHOWN) : [];
+      setSpeed(found ? { ms: found.ms, size: found.size } : null);
+      setOptions(local);
+      setActive(-1);
+      if (local.length >= SHOWN) return;
+      t = setTimeout(async () => {
+        const more = await remote(q, fetcher, abort.signal);
+        if (!abort.signal.aborted && more.length) setOptions(merge(local, more));
+      }, REMOTE_MS);
+    })();
     return () => {
       clearTimeout(t);
       abort.abort();
@@ -142,6 +161,9 @@ export default function Recommend({ fetcher = globalThis.fetch }) {
       <form className="rec-form" onSubmit={onSubmit} noValidate>
         <div className="rec-field rec-book">
           <label htmlFor="rec-title">Book</label>
+          <span className="rec-speed" aria-hidden="true" title={speed ? `Searched ${speed.size.toLocaleString("en-US")} books in your browser` : undefined}>
+            {speed ? formatMs(speed.ms) : ""}
+          </span>
           <input
             id="rec-title"
             role="combobox"
@@ -153,6 +175,7 @@ export default function Recommend({ fetcher = globalThis.fetch }) {
             maxLength={LIMITS.title}
             placeholder="Start typing a title"
             onKeyDown={onKeyDown}
+            onFocus={startBooks}
             onBlur={() => setOptions([])}
             {...field("title")}
           />

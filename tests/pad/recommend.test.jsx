@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import Recommend from "../../src/pad/Recommend.jsx";
+import { fromOpenLibrary } from "../../src/lib/recommend.js";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -18,15 +19,26 @@ const OL = {
   ],
 };
 
-/** A fetch that answers Open Library searches with OL and sends with `post`. */
+/** A fetch that answers /api/books (Open Library, through the site) and sends with `post`. */
 const fakeFetch = (post = () => json(201, { ok: true })) =>
-  vi.fn(async (url, init) => (String(url).startsWith("https://openlibrary.org/") ? json(200, OL) : post(url, init)));
+  vi.fn(async (url, init) => (String(url).startsWith("/api/books?") ? json(200, { books: fromOpenLibrary(OL.docs) }) : post(url, init)));
 
-const mount = async (fetcher) => {
+/** The in-browser index: what it finds for each query, or null when there is no index. */
+const LOCAL = [
+  { olKey: "/works/OL82586W", title: "Stoner", author: "John Williams", coverId: 8231856 },
+  { olKey: "/works/OL1W", title: "Stoner and Spider", author: "Ann Lee", coverId: null },
+];
+const fakeBooks = (find = () => LOCAL) => {
+  const searcher = { search: vi.fn(async (q) => { const books = find(q); return books && { books, ms: 0.42, size: 50000 }; }), close: vi.fn() };
+  return { open: vi.fn(() => searcher), searcher };
+};
+
+const mount = async (fetcher, books = fakeBooks()) => {
   const host = document.createElement("div");
   document.body.append(host);
   const root = createRoot(host);
-  await act(async () => root.render(<Recommend fetcher={fetcher} />));
+  await act(async () => root.render(<Recommend fetcher={fetcher} openBooks={books.open} />));
+  await act(async () => host.querySelector("#rec-title").focus());
   const $ = (s) => host.querySelector(s);
   const type = async (el, value) => {
     const set = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), "value").set;
@@ -58,19 +70,30 @@ describe("Recommend", () => {
     await done();
   });
 
-  it("suggests books from Open Library and sends the one picked", async () => {
+  it("starts the in-browser index when the Book field is focused, once, and closes it on the way out", async () => {
+    const books = fakeBooks();
+    const { $, done } = await mount(fakeFetch(), books);
+    await act(async () => $("#rec-author").focus());
+    await act(async () => $("#rec-title").focus());
+    expect(books.open).toHaveBeenCalledTimes(1);
+    await done();
+    expect(books.searcher.close).toHaveBeenCalled();
+  });
+
+  it("suggests books from the in-browser index on every keystroke, with no wait, and sends the one picked", async () => {
     vi.useFakeTimers();
     const fetcher = fakeFetch();
-    const { host, $, type, submit, done } = await mount(fetcher);
+    const books = fakeBooks();
+    const { host, $, type, submit, done } = await mount(fetcher, books);
     await type($("#rec-title"), "ston");
-    expect(fetcher).not.toHaveBeenCalled();
-    await act(async () => vi.advanceTimersByTime(300));
-    const search = String(fetcher.mock.calls[0][0]);
-    expect(search).toContain("https://openlibrary.org/search.json?");
-    expect(search).toContain("q=ston");
+    expect(books.searcher.search).toHaveBeenCalledWith("ston", 8);
     const options = host.querySelectorAll('[role="option"]');
-    // Stray editions without an author, and repeats, are left out.
     expect([...options].map((o) => o.textContent)).toEqual(["StonerJohn Williams", "Stoner and SpiderAnn Lee"]);
+    // How long the search took, from keystroke to answer.
+    expect($(".rec-speed").textContent).toBe("0.42 ms");
+    expect($(".rec-speed").getAttribute("title")).toBe("Searched 50,000 books in your browser");
+    expect($(".rec-speed").getAttribute("aria-hidden")).toBe("true");
+    expect($('label[for="rec-title"]').textContent).toBe("Book");
     await act(async () => options[0].dispatchEvent(new MouseEvent("mousedown", { bubbles: true })));
     expect($("#rec-title").value).toBe("Stoner");
     expect($("#rec-author").value).toBe("John Williams");
@@ -91,7 +114,6 @@ describe("Recommend", () => {
     const { host, $, type, done } = await mount(fakeFetch());
     const input = $("#rec-title");
     await type(input, "ston");
-    await act(async () => vi.advanceTimersByTime(300));
     const key = (k) => act(async () => input.dispatchEvent(new KeyboardEvent("keydown", { key: k, bubbles: true })));
     await key("ArrowDown");
     await key("ArrowDown");
@@ -106,7 +128,6 @@ describe("Recommend", () => {
     const fetcher = fakeFetch();
     const { host, $, type, submit, done } = await mount(fetcher);
     await type($("#rec-title"), "ston");
-    await act(async () => vi.advanceTimersByTime(300));
     await act(async () => host.querySelector('[role="option"]').dispatchEvent(new MouseEvent("mousedown", { bubbles: true })));
     await type($("#rec-title"), "Stoner, again");
     await submit();
@@ -140,12 +161,50 @@ describe("Recommend", () => {
     await done();
   });
 
-  it("carries on without suggestions when Open Library fails", async () => {
+  it("asks Open Library, through /api/books, for the long tail the index doesn't have, after a 250 ms pause", async () => {
+    vi.useFakeTimers();
+    const fetcher = fakeFetch();
+    const books = fakeBooks((q) => (q === "ston" ? [LOCAL[1]] : []));
+    const { host, $, type, done } = await mount(fetcher, books);
+    await type($("#rec-title"), "ston");
+    expect([...host.querySelectorAll('[role="option"]')].map((o) => o.textContent)).toEqual(["Stoner and SpiderAnn Lee"]);
+    await act(async () => vi.advanceTimersByTime(249));
+    expect(fetcher).not.toHaveBeenCalled();
+    await act(async () => vi.advanceTimersByTime(1));
+    expect(fetcher).toHaveBeenCalledWith("/api/books?q=ston", expect.objectContaining({ signal: expect.any(AbortSignal) }));
+    // Local results stay first; Open Library's are added after, without repeats.
+    expect([...host.querySelectorAll('[role="option"]')].map((o) => o.textContent)).toEqual(["Stoner and SpiderAnn Lee", "StonerJohn Williams"]);
+    await done();
+  });
+
+  it("doesn't ask Open Library when the index already has plenty", async () => {
+    vi.useFakeTimers();
+    const fetcher = fakeFetch();
+    const five = Array.from({ length: 5 }, (_, i) => ({ olKey: `/works/OL${i + 10}W`, title: `Stone ${i}`, author: "A", coverId: null }));
+    const { $, type, done } = await mount(fetcher, fakeBooks(() => five));
+    await type($("#rec-title"), "stone");
+    await act(async () => vi.advanceTimersByTime(1000));
+    expect(fetcher).not.toHaveBeenCalled();
+    await done();
+  });
+
+  it("uses Open Library alone when there is no index (no Worker, or it failed to load)", async () => {
+    vi.useFakeTimers();
+    const fetcher = fakeFetch();
+    const { host, $, type, done } = await mount(fetcher, fakeBooks(() => null));
+    await type($("#rec-title"), "ston");
+    await act(async () => vi.advanceTimersByTime(250));
+    expect([...host.querySelectorAll('[role="option"]')].map((o) => o.textContent)).toEqual(["StonerJohn Williams", "Stoner and SpiderAnn Lee"]);
+    expect($(".rec-speed").textContent).toBe("");
+    await done();
+  });
+
+  it("carries on without suggestions when there is no index and Open Library fails", async () => {
     vi.useFakeTimers();
     const fetcher = vi.fn(async () => {
       throw new TypeError("offline");
     });
-    const { host, $, type, done } = await mount(fetcher);
+    const { host, $, type, done } = await mount(fetcher, fakeBooks(() => null));
     await type($("#rec-title"), "ston");
     await act(async () => vi.advanceTimersByTime(300));
     expect(host.querySelector('[role="listbox"]')).toBeNull();

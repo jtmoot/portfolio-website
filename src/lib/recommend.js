@@ -28,3 +28,22 @@ export function validate(input) {
   }
   return { ok: true, value, spam: Boolean(text(body.website)) };
 }
+
+/**
+ * Open Library search results as the form's suggestions: books with an author, each listed once
+ * (Open Library lists stray editions and repeats too).
+ * @param {{ key: string, title: string, author_name?: string[], cover_i?: number }[]} docs
+ * @param {number} [n]
+ * @returns {{ olKey: string, title: string, author: string, coverId: number | null }[]}
+ */
+export function fromOpenLibrary(docs, n = 8) {
+  const seen = new Set();
+  return docs
+    .filter((d) => d.title && d.author_name?.length)
+    .map((d) => ({ olKey: d.key, title: d.title, author: d.author_name[0], coverId: d.cover_i ?? null }))
+    .filter((o) => {
+      const k = `${o.title}|${o.author}`.toLowerCase();
+      return !seen.has(k) && seen.add(k);
+    })
+    .slice(0, n);
+}

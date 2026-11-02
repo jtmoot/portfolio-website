@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "stations": "node tools/stations/build.mjs",
-    "recs": "doppler run -- node tools/recs/recs.mjs"
+    "recs": "doppler run -- node tools/recs/recs.mjs",
+    "books": "node tools/books/build-index.mjs"
   },
   "dependencies": {
     "postgres": "^3.4.7",

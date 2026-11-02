@@ -131,6 +131,23 @@ Built Nov 2, approved: `?sides=rail` and `?sides=float` (commit 85d86ca).
   - The worker protocol.
   - A benchmark test that asserts p99 is under 5 ms over 1,000 sample queries on the built index.
 
+Rulings while building:
+- **Popularity from the dumps, details from the API.** archive.org serves the dumps at about
+  0.5 MB/s, so the 4 GB works dump would take two hours. The ratings and reading-log dumps (135 MB)
+  give each work's reader count. The top 60,000 works then get their title, first author and cover
+  from Open Library's search API: 100 works per request, three requests at a time (about 0.6 a
+  second), cached in ~/.cache/ol-dumps so a rerun only asks for what's new.
+- **Stored gzipped and unzipped in the worker** (DecompressionStream), because Vercel doesn't compress
+  binary files. The loader checks the first two bytes, so it also works if a server unzips it first.
+- **Ranked by readers alone.** Putting titles that begin with the query first made "tolkien" show
+  Carpenter's biography above The Hobbit, so it went. A short hand-checked alias list covers titles
+  people type differently: "1984" finds Nineteen Eighty-Four.
+- **Result, Nov 2:** 50,000 books in 2.16 MB. Over 1,000 typed queries: p50 0.028 ms and p99 0.27 ms
+  in Node. In the browser it takes about 0.5 ms from keystroke to answer, worker round trip included.
+- **Postings are u16**, because 50,000 books fit; the format switches to u32 above 65,535.
+- **The readout sits beside the label, hidden from screen readers**, so the field is still announced
+  as "Book".
+
 ## 8. The API locally
 - "Hello, {city}!" still exists. It only shows on Vercel, because the city comes from a header Vercel
   adds; local dev has no `/api`, so it says "Hello there!".
