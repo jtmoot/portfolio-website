@@ -13,7 +13,7 @@ export const ROLE = "ML systems engineer";
 
 export const SOCIALS = [
   { label: "GitHub", href: "https://github.com/jtmoot", prev: "/previews/github.jpg", cap: "GitHub, jtmoot" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/joshua-moorehead", ph: "LinkedIn screenshot goes here", cap: "LinkedIn" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/joshua-moorehead", prev: "/previews/linkedin.jpg", cap: "LinkedIn, joshua-moorehead" },
   { label: "Email", href: "mailto:josh.moorehead@outlook.com", ph: "josh.moorehead@outlook.com", cap: "Email" },
 ];
 

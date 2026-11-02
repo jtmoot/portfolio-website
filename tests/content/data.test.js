@@ -1,9 +1,19 @@
 import { existsSync } from "node:fs";
 import { describe, it, expect } from "vitest";
-import { LEADERSHIP } from "../../src/content/data.js";
+import { LEADERSHIP, SOCIALS } from "../../src/content/data.js";
 
 // Vitest runs from the repo root.
 const inPublic = (url) => existsSync(`public${url}`);
+
+describe("socials", () => {
+  it("previews LinkedIn with the profile screenshot, not a placeholder", () => {
+    const linkedin = SOCIALS.find((s) => s.label === "LinkedIn");
+    expect(linkedin.href).toBe("https://www.linkedin.com/in/joshua-moorehead");
+    expect(linkedin.prev).toBe("/previews/linkedin.jpg");
+    expect(linkedin.ph).toBeUndefined();
+    expect(inPublic(linkedin.prev)).toBe(true);
+  });
+});
 
 describe("leadership content", () => {
   it("names the CMU chapter PA-Theta and gives both chapters their logos", () => {
