@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { isMuted, setMuted } from "../lib/audio.js";
+import { useSyncExternalStore } from "react";
+import { isMuted, onSoundChange, setMuted } from "../lib/audio.js";
 
 /**
  * Two small icon buttons on the role line, as on garvitsingla.in: retype the name, and a
@@ -7,7 +7,7 @@ import { isMuted, setMuted } from "../lib/audio.js";
  * @param {{ onReplay: () => void }} props
  */
 export default function IntroTools({ onReplay }) {
-  const [muted, setMutedState] = useState(isMuted);
+  const muted = useSyncExternalStore(onSoundChange, isMuted);
   return (
     <span className="intro-tools">
       <button type="button" className="icon-btn" aria-label="Replay the name with sound" title="Replay" data-c="ring" onClick={onReplay}>
@@ -23,10 +23,7 @@ export default function IntroTools({ onReplay }) {
         aria-pressed={muted}
         title={muted ? "Sound off" : "Sound on"}
         data-c="ring"
-        onClick={() => {
-          setMuted(!muted);
-          setMutedState(!muted);
-        }}
+        onClick={() => setMuted(!muted)}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z" />

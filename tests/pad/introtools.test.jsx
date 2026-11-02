@@ -11,7 +11,18 @@ afterEach(() => {
 
 const mount = async () => {
   let muted = false;
-  const audio = { isMuted: () => muted, setMuted: vi.fn((v) => (muted = v)) };
+  const listeners = new Set();
+  const audio = {
+    isMuted: () => muted,
+    setMuted: vi.fn((v) => {
+      muted = v;
+      listeners.forEach((fn) => fn());
+    }),
+    onSoundChange: (fn) => {
+      listeners.add(fn);
+      return () => listeners.delete(fn);
+    },
+  };
   vi.doMock("../../src/lib/audio.js", () => audio);
   const { default: IntroTools } = await import("../../src/pad/IntroTools.jsx");
   const onReplay = vi.fn();

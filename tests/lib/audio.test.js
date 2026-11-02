@@ -176,3 +176,66 @@ describe("audio, the typing sound", () => {
     vi.useRealTimers();
   });
 });
+
+describe("audio, the creative-mode music", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.unstubAllGlobals();
+    localStorage.clear();
+    vi.useFakeTimers();
+  });
+
+  const live = async ({ unlock = true } = {}) => {
+    const clips = [];
+    vi.stubGlobal("Audio", vi.fn(function Fake(src) {
+      const clip = { src, play: vi.fn(() => Promise.resolve()), pause: vi.fn(), currentTime: 0, loop: false, volume: 1 };
+      clips.push(clip);
+      return clip;
+    }));
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const audio = await import("../../src/lib/audio.js");
+    if (unlock) audio.unlock();
+    return { audio, clips };
+  };
+
+  it("serves the music quietly from its own file, fading in from silence", async () => {
+    const { audio, clips } = await live();
+    audio.loop("ambient", { fadeIn: 2000 });
+    expect(clips[0].src).toBe("/audio/ambient.mp3");
+    expect(clips[0].loop).toBe(true);
+    expect(clips[0].volume).toBe(0);
+    vi.advanceTimersByTime(1000);
+    expect(clips[0].volume).toBeGreaterThan(0.03);
+    expect(clips[0].volume).toBeLessThan(0.12);
+    vi.advanceTimersByTime(1100);
+    expect(clips[0].volume).toBeCloseTo(0.14, 5);
+    vi.useRealTimers();
+  });
+
+  it("fades out over its own fadeOut when stopped, stopAll included", async () => {
+    const { audio, clips } = await live();
+    audio.loop("ambient", { fadeOut: 1000 });
+    audio.stopAll();
+    vi.advanceTimersByTime(500);
+    expect(clips[0].pause).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(600);
+    expect(clips[0].pause).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it("tells listeners when sound unlocks or the mute changes, and says whether it can play", async () => {
+    const { audio } = await live({ unlock: false });
+    const heard = vi.fn();
+    const off = audio.onSoundChange(heard);
+    expect(audio.canPlay()).toBe(false);
+    audio.unlock();
+    expect(audio.canPlay()).toBe(true);
+    audio.setMuted(true);
+    expect(audio.canPlay()).toBe(false);
+    expect(heard).toHaveBeenCalledTimes(2);
+    off();
+    audio.setMuted(false);
+    expect(heard).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
+  });
+});

@@ -11,6 +11,7 @@ import Stage from "./creative/Stage.jsx";
 import Shelf from "./pad/Shelf.jsx";
 import { pageOf } from "./lib/route.js";
 import { soundFor } from "./lib/clickSound.js";
+import { startAmbient } from "./lib/ambient.js";
 
 const Floor = lazy(() => import("./creative/Floor.jsx"));
 const StationHarness = lazy(() => import("./creative/StationHarness.jsx"));
@@ -62,16 +63,20 @@ export default function App() {
       if (name) play(name);
     };
     document.addEventListener("click", onClick, true);
-    // Leaving the page (another tab, back, a link) silences the pencil too.
+    // Leaving the page (another tab, back, a link) silences the typing too.
     const away = () => stopAll();
+    const hidden = () => document.hidden && stopAll();
     window.addEventListener("pagehide", away);
-    document.addEventListener("visibilitychange", away);
+    document.addEventListener("visibilitychange", hidden);
     return () => {
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("pagehide", away);
-      document.removeEventListener("visibilitychange", away);
+      document.removeEventListener("visibilitychange", hidden);
     };
   }, []);
+
+  // Quiet music while the room is open (the pad only: /shelf has no creative mode).
+  useEffect(() => (PAGE === "pad" ? startAmbient(modeStore) : undefined), []);
 
   useEffect(() => {
     const first = () => unlock();

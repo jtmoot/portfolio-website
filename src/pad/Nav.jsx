@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { isMuted, onSoundChange, setMuted } from "../lib/audio.js";
 
 const LINKS = [
   ["Experience", "#experience"],
@@ -22,12 +23,14 @@ function pittsburghTime() {
 /**
  * Top navigation: section links on the left; the local clock, theme and creative-mode toggles on the right.
  * It sits in a zero-height sticky dock; once the page scrolls it compacts into a frosted pill.
+ * In creative mode a sound switch joins them, since the hero's mute icon is faded out there.
  * On /shelf it links back into the pad (`base` "/") and has no creative-mode toggle.
  * @param {{ theme: "day" | "night", onToggleTheme: () => void, mode?: "pad" | "creative", onToggleMode?: () => void, base?: string }} props
  */
 export default function Nav({ theme, onToggleTheme, mode = "pad", onToggleMode, base = "" }) {
   const [clock, setClock] = useState(pittsburghTime);
   const [compact, setCompact] = useState(false);
+  const muted = useSyncExternalStore(onSoundChange, isMuted);
 
   useEffect(() => {
     const onScroll = () => setCompact(window.scrollY > COMPACT_AT);
@@ -56,6 +59,11 @@ export default function Nav({ theme, onToggleTheme, mode = "pad", onToggleMode, 
           <button type="button" onClick={onToggleTheme} aria-pressed={theme === "night"} data-c="ring">
             {theme === "night" ? "Night" : "Day"}
           </button>
+          {mode === "creative" && (
+            <button type="button" onClick={() => setMuted(!muted)} aria-pressed={!muted} data-c="ring">
+              {muted ? "Sound off" : "Sound on"}
+            </button>
+          )}
           {onToggleMode && (
             <button
               type="button"

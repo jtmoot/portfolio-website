@@ -26,6 +26,25 @@ describe("Nav", () => {
     await act(async () => root.unmount());
   });
 
+  it("offers a sound switch in creative mode only, sharing the page's mute", async () => {
+    const { isMuted, setMuted } = await import("../../src/lib/audio.js");
+    setMuted(false);
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    const sound = () => [...host.querySelectorAll("button")].find((b) => /^Sound/.test(b.textContent));
+    await act(async () => root.render(<Nav theme="day" onToggleTheme={() => {}} mode="pad" onToggleMode={() => {}} />));
+    expect(sound()).toBeUndefined();
+    await act(async () => root.render(<Nav theme="day" onToggleTheme={() => {}} mode="creative" onToggleMode={() => {}} />));
+    expect(sound().textContent).toBe("Sound on");
+    expect(sound().getAttribute("aria-pressed")).toBe("true");
+    await act(async () => sound().click());
+    expect(isMuted()).toBe(true);
+    expect(sound().textContent).toBe("Sound off");
+    await act(async () => setMuted(false));
+    expect(sound().textContent).toBe("Sound on");
+    await act(async () => root.unmount());
+  });
+
   it("sits in a sticky dock so it can follow the scroll", async () => {
     const host = document.createElement("div");
     const root = createRoot(host);

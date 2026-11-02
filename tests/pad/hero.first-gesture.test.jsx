@@ -15,7 +15,7 @@ describe("Hero first gesture", () => {
     vi.resetModules();
     vi.useFakeTimers();
     vi.stubGlobal("matchMedia", () => ({ matches: false }));
-    const audio = { loop: vi.fn(() => () => {}), play: vi.fn(), unlock: vi.fn(), isMuted: () => false, setMuted: vi.fn(), stopAll: vi.fn() };
+    const audio = { loop: vi.fn(() => () => {}), play: vi.fn(), unlock: vi.fn(), isMuted: () => false, setMuted: vi.fn(), stopAll: vi.fn(), onSoundChange: () => () => {} };
     vi.doMock("../../src/lib/audio.js", () => audio);
     const { default: Hero } = await import("../../src/pad/Hero.jsx");
     const host = document.createElement("div");
@@ -39,7 +39,7 @@ describe("Hero first gesture", () => {
     vi.resetModules();
     vi.useFakeTimers();
     vi.stubGlobal("matchMedia", () => ({ matches: false }));
-    const audio = { loop: vi.fn(() => () => {}), play: vi.fn(), unlock: vi.fn(), isMuted: () => false, setMuted: vi.fn(), stopAll: vi.fn() };
+    const audio = { loop: vi.fn(() => () => {}), play: vi.fn(), unlock: vi.fn(), isMuted: () => false, setMuted: vi.fn(), stopAll: vi.fn(), onSoundChange: () => () => {} };
     vi.doMock("../../src/lib/audio.js", () => audio);
     const { default: Hero } = await import("../../src/pad/Hero.jsx");
     const host = document.createElement("div");
