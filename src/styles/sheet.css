@@ -613,9 +613,13 @@ button[aria-pressed="true"] .toggle-pill::after {
   box-shadow: 0 0.3cqw 1.4cqw rgba(35, 35, 32, 0.06);
 }
 
-/* Experience */
+/* Experience and Leadership: printed with a fine dot grid (garvitsingla.in's card texture), so they
+   read differently from the plain project cards. */
 .xp-card {
   border-radius: 1.2cqw;
+  background-image: radial-gradient(circle, var(--card-dots) 0.75px, transparent 1.1px);
+  background-size: 6px 6px;
+  background-position: 3px 3px;
 }
 
 .xp {
@@ -772,11 +776,41 @@ img.logo {
   opacity: 0.85;
 }
 
+/* Short bullets, each led by a small dash in the margin. */
+.xp-points {
+  display: grid;
+  gap: 0.35cqw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-sans);
+  font-size: 0.88cqw;
+  line-height: 1.5;
+}
+
+.xp-points li {
+  position: relative;
+  padding-left: 1.1em;
+  opacity: 0.85;
+}
+
+.xp-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.75em;
+  width: 0.55em;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
 .xp-more .chips {
   margin-bottom: 1.2cqw;
 }
 
-.xp-more > div > p:last-child {
+.xp-more > div > p:last-child,
+.xp-more > div > .xp-points:last-child {
   margin-bottom: 1.2cqw;
 }
 
@@ -1145,8 +1179,13 @@ img.logo {
   }
 
   .xp-more p,
+  .xp-points,
   .card-text {
     font-size: 13px;
+  }
+
+  .xp-points {
+    gap: 4px;
   }
 
   .xp-more .chips,

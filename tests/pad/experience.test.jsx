@@ -25,7 +25,7 @@ describe("Experience", () => {
     await act(async () => root.unmount());
   });
 
-  it("unfolds a row to its write-up and chips, and folds it again", async () => {
+  it("unfolds a row to its bullets and chips, and folds it again", async () => {
     const { host, root } = await mount();
     const toggle = host.querySelectorAll(".xrow-head")[1];
     const panel = () => host.querySelector(`#${toggle.getAttribute("aria-controls")}`);
@@ -34,7 +34,7 @@ describe("Experience", () => {
     await act(async () => toggle.click());
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
     expect(panel().hasAttribute("data-open")).toBe(true);
-    expect(panel().textContent).toContain(EXPERIENCE[1].blurb);
+    expect([...panel().querySelectorAll("ul.xp-points li")].map((li) => li.textContent)).toEqual(EXPERIENCE[1].points);
     expect(panel().querySelectorAll(".chip")).toHaveLength(EXPERIENCE[1].stack.length);
     await act(async () => toggle.click());
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
@@ -43,7 +43,7 @@ describe("Experience", () => {
 
   it("every entry carries the fields the card needs", () => {
     for (const x of EXPERIENCE) {
-      for (const k of ["id", "company", "kind", "role", "dates", "place", "blurb"]) expect(typeof x[k]).toBe("string");
+      for (const k of ["id", "company", "kind", "role", "dates", "place"]) expect(typeof x[k]).toBe("string");
       expect(Array.isArray(x.stack)).toBe(true);
     }
   });

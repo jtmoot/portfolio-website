@@ -14,7 +14,7 @@ describe("Leadership", () => {
     expect(host.querySelector("#leadership h2").textContent).toBe("Leadership");
     expect(host.querySelectorAll(".xrow")).toHaveLength(LEADERSHIP.length);
     await act(async () => host.querySelector(".xrow-head").click());
-    expect(host.querySelector(".xp-more[data-open]").textContent).toContain(LEADERSHIP[0].blurb);
+    expect(host.querySelector(".xp-more[data-open] .xp-points").textContent).toContain(LEADERSHIP[0].points[0]);
     await act(async () => root.unmount());
   });
 

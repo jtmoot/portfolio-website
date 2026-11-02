@@ -25,7 +25,7 @@ describe("leadership content", () => {
   });
 
   it("carries the president row's GPA standing from the resume", () => {
-    expect(LEADERSHIP[1].blurb).toContain("#1 GPA of 24 fraternities");
+    expect(LEADERSHIP[1].points.join(" ")).toContain("#1 GPA of 24 fraternities");
   });
 });
 
@@ -45,7 +45,7 @@ describe("content from the Nov 2 resumes", () => {
     const core = EXPERIENCE[0];
     expect(core).toMatchObject({ id: "core", company: "Core Natural Resources", kind: "Internship", role: "Cloud & Data Engineering Intern", dates: "May 2026 — Present", place: "Canonsburg, PA", now: true, logo: "/logos/core.png" });
     expect(inPublic(core.logo)).toBe(true);
-    for (const s of ["3,100", "payout engine", "Bedrock", "purchase requisitions"]) expect(core.blurb).toContain(s);
+    for (const s of ["3,100", "payout engine", "Bedrock", "requisitions"]) expect(core.points.join(" ")).toContain(s);
     expect(core.stack).toEqual(["Lambda", "AppSync GraphQL", "Aurora PostgreSQL", "Step Functions", "Terraform", "Glue/Spark", "DMS", "Amazon Bedrock"]);
   });
 
@@ -62,9 +62,9 @@ describe("content from the Nov 2 resumes", () => {
   it("claims nothing the resumes no longer do", () => {
     const all = text({ EXPERIENCE, PROJECTS });
     for (const s of ["anomaly detection", "feature-ready", "improved accuracy by 20%", "100K", "production-grade", "zero dropped requests"]) expect(all).not.toContain(s);
-    expect(row("baron").blurb).toContain("QuickBooks-to-Sage migration");
+    expect(row("baron").points.join(" ")).toContain("QuickBooks-to-Sage migration");
     expect(row("usc-reu").dates).toBe("May 2024 — Jun 2025");
-    expect(row("usc-reu").blurb).toContain("DARTS");
+    expect(row("usc-reu").points.join(" ")).toContain("DARTS");
   });
 
   it("adds the LoRA project fourth (a two-up slot, since the third card is wide and led by its video), in progress and without media, and the real details to Forge and LOTL", () => {
@@ -76,5 +76,25 @@ describe("content from the Nov 2 resumes", () => {
     expect(PROJECTS[1].body).toContain("Claude Code Action");
     expect(PROJECTS[1].stack).toContain("Playwright");
     expect(PROJECTS.find((p) => p.id === "distsys").tagline).toBe("A replicated service that fails over automatically when replicas crash");
+  });
+});
+
+describe("experience and leadership as short, strong bullets", () => {
+  const rows = [...EXPERIENCE, ...LEADERSHIP];
+
+  it("gives every row 1 to 4 bullets in place of a paragraph", () => {
+    for (const x of rows) {
+      expect(x.blurb).toBeUndefined();
+      expect(x.points.length).toBeGreaterThanOrEqual(1);
+      expect(x.points.length).toBeLessThanOrEqual(4);
+    }
+  });
+
+  it("keeps each bullet to about 12 words, verb or fact first, ending in a full stop", () => {
+    for (const p of rows.flatMap((x) => x.points)) {
+      expect(p.split(/\s+/).length).toBeLessThanOrEqual(12);
+      expect(p).toMatch(/^[A-Z#0-9]/);
+      expect(p).toMatch(/\.$/);
+    }
   });
 });

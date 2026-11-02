@@ -2,7 +2,7 @@ import { useState } from "react";
 
 /**
  * One card of rows (logo, place and kind, role, dates and where); tapping a row unfolds its
- * write-up, chips and any links. Hovering a row still shows its photo in the preview card.
+ * bullets, chips and any links. Hovering a row still shows its photo in the preview card.
  * @param {{ items: object[] }} props
  */
 export default function Rows({ items }) {
@@ -56,7 +56,11 @@ export default function Rows({ items }) {
             </button>
             <div id={panel} className="xp-more" data-open={isOpen || undefined} inert={!isOpen || undefined} role="region" aria-label={`${x.company}, details`}>
               <div>
-                <p>{x.blurb}</p>
+                <ul className="xp-points">
+                  {x.points.map((p) => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
                 {x.stack?.length > 0 && (
                   <ul className="chips">
                     {x.stack.map((s) => (

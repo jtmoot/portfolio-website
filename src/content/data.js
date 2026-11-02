@@ -116,7 +116,7 @@ export const PROJECTS = [
   },
 ];
 
-/** Experience rows, from the Nov 2026 resumes. Logos live in public/logos. */
+/** Experience rows, from the Nov 2026 resumes: 2 to 4 short bullets each. Logos live in public/logos. */
 export const EXPERIENCE = [
   {
     id: "core",
@@ -129,7 +129,12 @@ export const EXPERIENCE = [
     initials: "CORE",
     color: null,
     logo: "/logos/core.png",
-    blurb: "Co-built, with one other engineer, a serverless AWS platform that automates shift-incentive payroll for about 3,100 employees across nine underground mines and six prep plants. I own the payout engine, with idempotent reruns and source-to-payout lineage. Also built a research tool with cited Bedrock answers over SEC filings and earnings calls, and I'm now building an LLM agent that drafts Oracle purchase requisitions from plain-English requests, with confidence-gated abstention and human approval.",
+    points: [
+      "Co-built a serverless AWS payroll platform for 3,100 miners.",
+      "Own the payout engine: idempotent reruns, source-to-payout lineage.",
+      "Built cited Bedrock Q&A over SEC filings and earnings calls.",
+      "Building an LLM agent that drafts Oracle requisitions for human approval.",
+    ],
     stack: ["Lambda", "AppSync GraphQL", "Aurora PostgreSQL", "Step Functions", "Terraform", "Glue/Spark", "DMS", "Amazon Bedrock"],
     preview: null,
     ph: "A photo from Core goes here",
@@ -145,7 +150,11 @@ export const EXPERIENCE = [
     initials: "CMU",
     color: "#c41230",
     logo: "/logos/cmu.png",
-    blurb: "Master's in ECE with an AI/ML systems concentration: deep learning systems, reliable distributed systems, systems and toolchains for AI, machine learning and computer systems.",
+    points: [
+      "MS ECE, AI/ML systems concentration, graduating Dec 2027.",
+      "Building LoRA serving in Needle, a from-scratch DL framework.",
+      "Built a fault-tolerant replicated service with automatic failover.",
+    ],
     stack: [
       "10-714 Deep Learning Systems",
       "18-749 Building Reliable Distributed Systems",
@@ -166,7 +175,11 @@ export const EXPERIENCE = [
     initials: "BF",
     color: null,
     logo: "/logos/baron.png",
-    blurb: "Built Python and SQL ETL pipelines that pull Sage Intacct ERP data into customer, supplier and sales datasets (10K+ records) in S3, after a QuickBooks-to-Sage migration had left the business with no reporting, and delivered its first operational dashboard, with supplier lead-time tracking and demand forecasting.",
+    points: [
+      "Built Python/SQL ETL from Sage Intacct into S3 (10K+ records).",
+      "Restored reporting after a QuickBooks-to-Sage migration.",
+      "Shipped the company's first operational dashboard.",
+    ],
     stack: ["Python", "SQL", "AWS S3", "Sage Intacct", "Metabase"],
     preview: null,
     ph: "A photo from Baron goes here",
@@ -181,7 +194,10 @@ export const EXPERIENCE = [
     initials: "USC",
     color: "#73000a",
     logo: "/logos/usc.png",
-    blurb: "A PyTorch convolutional autoencoder for simulated scanning-tunnelling-microscope images, reaching 0.93 SSIM on cubic lattices, compared against a shared-encoder, dual-decoder model tuned by DARTS architecture search on an HPC cluster.",
+    points: [
+      "Trained a PyTorch autoencoder on simulated STM images: 0.93 SSIM.",
+      "Benchmarked a dual-decoder model tuned by DARTS on an HPC cluster.",
+    ],
     stack: ["PyTorch", "Autoencoders", "Computer vision", "Simulation"],
     preview: "/media/stm-reconstruction.jpg",
     ph: null,
@@ -206,7 +222,9 @@ export const LEADERSHIP = [
     initials: "ΣΦΕ",
     color: null,
     logo: "/logos/sigep-pa.png",
-    blurb: "Advise the executive board of CMU's largest fraternity (100+ members) on organizational strategy and leadership development.",
+    points: [
+      "Advise the executive board of CMU's largest fraternity (100+ members).",
+    ],
     stack: [],
     posts: [],
   },
@@ -220,7 +238,10 @@ export const LEADERSHIP = [
     initials: "ΣΦΕ",
     color: null,
     logo: "/logos/sigep-sc.png",
-    blurb: "Led a 200-member chapter with the #1 GPA of 24 fraternities. Received the national Frank J. Ruck Leadership Award and was inducted into the USC Greek Hall of Fame.",
+    points: [
+      "Led a 200-member chapter to the #1 GPA of 24 fraternities.",
+      "National Frank J. Ruck Leadership Award; USC Greek Hall of Fame.",
+    ],
     stack: [],
     posts: [],
   },
