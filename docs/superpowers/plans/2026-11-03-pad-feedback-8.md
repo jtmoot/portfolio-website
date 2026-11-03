@@ -52,9 +52,10 @@ Settled after several drafts: it leads with the direction (serving and productio
 within the resumes. Highlights in **bold**:
 
 > I enjoy building the **systems around models**: inference that runs faster and cheaper, and
-> **agents** that hold up in production. I'm finishing an MS in Electrical and Computer Engineering
-> at **Carnegie Mellon** and interning at Core Natural Resources. Outside of work, I lift, run,
-> cook, read history and play chess.
+> **agents** that hold up in production. I come to both from a strong foundation in data
+> engineering, and I'm finishing an MS in Electrical and Computer Engineering at **Carnegie Mellon**
+> while interning at Core Natural Resources. Outside of work, I lift, run, cook, read history and
+> play chess.
 
 - The role line stays "ML systems and AI engineer".
 - "3,100 miners" stays in the Core bullets; the intro tests change to match.
