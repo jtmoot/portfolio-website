@@ -2066,7 +2066,7 @@ html[data-theme="night"] .bk-fronts {
   }
 }
 
-/* The side margins on wide screens: a section index on the left, a small book on the right. */
+/* The side margins on wide screens: a section index on the left, ending with the shelf. */
 .sides {
   display: none;
 }
@@ -2126,66 +2126,45 @@ html[data-theme="night"] .bk-fronts {
     width: 2.2cqw;
   }
 
-  /* The way into the shelf: three spines, one leaning, that stands up when you reach for it. */
-  .side-book {
-    position: absolute;
-    top: 0;
-    left: calc(100% + 3.6cqw);
-    translate: 0 -50%;
-    display: flex;
-    align-items: center;
-    gap: 0.6cqw;
-    color: var(--text);
-    opacity: 0.45;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
+  /* The index ends with the shelf, under a short rule: a book drawing at text size takes the
+     tick's place, and the leaning book stands up when you reach for it. */
+  .side-rule {
+    width: 3.2cqw;
+    margin: 0.2cqw 0;
+    border: 0;
+    border-top: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
   }
 
-  .side-book svg {
-    width: max(2.5cqw, 34px);
+  .side-index .side-shelf::before {
+    content: none;
+  }
+
+  /* Wider than the ticks, so it hangs left into the margin and "Shelf" lines up with the labels. */
+  .side-shelf svg {
+    width: 1.9em;
     height: auto;
+    margin-left: calc(1cqw - 1.9em);
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.2;
+    stroke-width: 1.4;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
-  .side-book .lean {
+  .side-shelf .lean {
     transform-box: fill-box;
     transform-origin: 0% 100%;
     rotate: -6deg;
     transition: rotate 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
   }
 
-  .side-book span {
-    font-size: max(0.85cqw, 12px);
-    opacity: 0;
-    translate: -0.3cqw 0;
-    transition:
-      opacity 0.2s ease,
-      translate 0.2s ease;
-  }
-
-  .side-book:hover,
-  .side-book:focus-visible {
-    opacity: 1;
-  }
-
-  .side-book:hover .lean,
-  .side-book:focus-visible .lean {
+  .side-shelf:hover .lean,
+  .side-shelf:focus-visible .lean {
     rotate: 0deg;
   }
 
-  .side-book:hover span,
-  .side-book:focus-visible span {
-    opacity: 1;
-    translate: 0 0;
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .side-book .lean,
-    .side-book span {
+    .side-shelf .lean {
       transition: none;
     }
   }

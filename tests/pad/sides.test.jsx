@@ -25,7 +25,7 @@ describe("Sides", () => {
   it("a section index on the left", async () => {
     const el = await render();
     const index = el.querySelector('nav.side-index[aria-label="On this page"]');
-    expect([...index.querySelectorAll("a")].map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
+    expect([...index.querySelectorAll('a[href^="#"]')].map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
       ["Experience", "#experience"],
       ["Projects", "#work"],
       ["Leadership", "#leadership"],
@@ -33,13 +33,17 @@ describe("Sides", () => {
     ]);
   });
 
-  it("a small book on the right that opens the shelf, instead of a Now card", async () => {
+  it("ends the index with the shelf, under a rule, with a small book drawing; nothing on the right", async () => {
     const el = await render();
-    expect(el.querySelector(".side-now")).toBeNull();
-    const book = el.querySelector("a.side-book");
-    expect(book.getAttribute("href")).toBe("/shelf");
-    expect(book.getAttribute("aria-label")).toBe(`The bookshelf, now reading ${SHELF[0].books[0].title}`);
-    expect(book.querySelector("svg").getAttribute("aria-hidden")).toBe("true");
+    const index = el.querySelector("nav.side-index");
+    const shelf = index.lastElementChild;
+    expect(shelf.matches("a.side-shelf")).toBe(true);
+    expect(shelf.getAttribute("href")).toBe("/shelf");
+    expect(shelf.textContent).toBe("Shelf");
+    expect(shelf.getAttribute("aria-label")).toBe(`The bookshelf, now reading ${SHELF[0].books[0].title}`);
+    expect(shelf.querySelector("svg").getAttribute("aria-hidden")).toBe("true");
+    expect(shelf.previousElementSibling.matches("hr.side-rule")).toBe(true);
+    expect(el.querySelector(".side-book, .side-now")).toBeNull();
   });
 
   it("no longer pins project posters in the margins", async () => {

@@ -37,7 +37,7 @@ function useCurrentSection() {
   return current;
 }
 
-/** Three spines on a shelf, one leaning: the way into /shelf. */
+/** Three spines on a shelf, one leaning: the index's way into /shelf. */
 function BookMark() {
   return (
     <svg viewBox="0 0 28 28" aria-hidden="true">
@@ -56,7 +56,7 @@ function BookMark() {
 
 /**
  * What fills the side margins on wide screens: a section index on the left that marks where you
- * are, and a small book on the right that opens the shelf.
+ * are, ending, under a rule, with the way into the shelf.
  */
 export default function Sides() {
   const current = useCurrentSection();
@@ -69,11 +69,12 @@ export default function Sides() {
             {label}
           </a>
         ))}
+        <hr className="side-rule" />
+        <a className="side-shelf" href="/shelf" aria-label={`The bookshelf, now reading ${reading.title}`} data-c="ring">
+          <BookMark />
+          Shelf
+        </a>
       </nav>
-      <a className="side-book" href="/shelf" aria-label={`The bookshelf, now reading ${reading.title}`} data-c="ring">
-        <BookMark />
-        <span>The shelf</span>
-      </a>
     </div>
   );
 }
