@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { SHELF } from "../content/shelf.js";
+import { currentSection } from "../lib/sideIndex.js";
 
 const SECTIONS = [
   ["Experience", "#experience"],
@@ -8,23 +9,30 @@ const SECTIONS = [
   ["Contact", "#contact"],
 ];
 
-/** The section under the top of the viewport, for the index's mark. */
+/** The section the reader is in, for the index's mark (see currentSection for the rule). */
 function useCurrentSection() {
   const [current, setCurrent] = useState(SECTIONS[0][1]);
   useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") return undefined;
-    const io = new IntersectionObserver(
-      (entries) => {
-        const seen = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (seen[0]) setCurrent(`#${seen[0].target.id}`);
-      },
-      { rootMargin: "-20% 0px -70% 0px" },
-    );
-    for (const [, href] of SECTIONS) {
-      const el = document.querySelector(href);
-      if (el) io.observe(el);
-    }
-    return () => io.disconnect();
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const els = SECTIONS.map(([, href]) => document.querySelector(href));
+      if (els.some((el) => !el)) return;
+      const tops = els.map((el) => el.getBoundingClientRect().top + window.scrollY);
+      const i = currentSection(tops, { scrollY: window.scrollY, viewH: window.innerHeight, pageH: document.documentElement.scrollHeight });
+      setCurrent(SECTIONS[i][1]);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
   return current;
 }

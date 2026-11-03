@@ -47,3 +47,37 @@ describe("Sides", () => {
     expect(el.querySelector(".side-pin")).toBeNull();
   });
 });
+
+describe("Sides marks where you are", () => {
+  it("follows the scroll all the way to Contact, which can't reach the top of the window", async () => {
+    // A fake page measured like the real one at 1440 x 900.
+    const TOPS = { experience: 461, work: 856, leadership: 3032, contact: 3276 };
+    const sections = Object.entries(TOPS).map(([id, top]) => {
+      const el = document.createElement("section");
+      el.id = id;
+      el.getBoundingClientRect = () => ({ top: top - window.scrollY });
+      document.body.append(el);
+      return el;
+    });
+    Object.defineProperty(document.documentElement, "scrollHeight", { configurable: true, value: 3540 });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 900 });
+    const scrollTo = async (y) => {
+      Object.defineProperty(window, "scrollY", { configurable: true, value: y });
+      await act(async () => {
+        window.dispatchEvent(new Event("scroll"));
+        await new Promise((r) => requestAnimationFrame(r));
+      });
+    };
+    const el = await render();
+    const marked = () => el.querySelector('.side-index a[aria-current="true"]')?.textContent;
+    await scrollTo(0);
+    expect(marked()).toBe("Experience");
+    await scrollTo(900);
+    expect(marked()).toBe("Projects");
+    await scrollTo(2400);
+    expect(marked()).toBe("Leadership");
+    await scrollTo(2640);
+    expect(marked()).toBe("Contact");
+    sections.forEach((s) => s.remove());
+  });
+});
