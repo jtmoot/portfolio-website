@@ -29,14 +29,18 @@ function render(id, { label, bounds, pad = 6, draw, cam = CAM, role = "img" }) {
   const P = { ...P0, origin: [pad - minX, pad - minY] };
   const width = round(maxX - minX + pad * 2);
   const height = round(maxY - minY + pad * 2);
-  const body = draw(context(P, id));
+  const contacts = [];
+  const body = draw(context(P, id, contacts));
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" class="iso-svg st-${id}" viewBox="0 0 ${width} ${height}" role="${role}" aria-label="${label.replace(/"/g, "&quot;")}">${body}</svg>`;
-  return { svg, meta: { width, height, anchor: [round(P.origin[0]), round(P.origin[1])] } };
+  // Where things rest on the floor, in floor units (5 cm) from the station's anchor: the figure must
+  // not walk through these (tests/creative/stations.test.js checks they're blocked).
+  const floor = contacts.map(({ x, y, w, d }) => [x, y, w, d].map((n) => round(n / 5)));
+  return { svg, meta: { width, height, anchor: [round(P.origin[0]), round(P.origin[1])], floor } };
 }
 
 const round = (n) => Math.round(n * 100) / 100;
 
-export function context(P, id) {
+export function context(P, id, contacts = []) {
   let clipCount = 0;
   const at = (p) => k.iso(p, P);
   const S = (paths, style) => k.solidSvg(paths, style);
@@ -64,7 +68,14 @@ export function context(P, id) {
   /** Transform for drawing flat on the vertical plane y = Y (u runs along +x, v down). */
   const planeY = (Y) => k.sideMatrix([0, Y], 0, P, "left");
 
-  const halo = (plan, z = 0, h = 4) => `<path class="iso-halo" d="${k.haloOf(plan, z, h, P)}"/>`;
+  /**
+   * A contact shadow under something resting at height z. One near the floor records its plan as
+   * a floor contact, unless it's something he can walk on (a rug, the gym's tiles).
+   */
+  const halo = (plan, z = 0, h = 4, { walkable = false } = {}) => {
+    if (z <= 3 && !walkable) contacts.push(plan);
+    return `<path class="iso-halo" d="${k.haloOf(plan, z, h, P)}"/>`;
+  };
 
   /** A filled polygon through 3D points (glass, cloth, cork), with an optional outline tone. */
   const face = (points, cls, line = "lo") =>

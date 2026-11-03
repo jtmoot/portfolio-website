@@ -14,7 +14,7 @@ export default station("reading", {
 
     // --- Rug ---------------------------------------------------------------------------------------
     const RX0 = -66, RX1 = 80, RY0 = -72, RY1 = 52;
-    out.push(halo({ x: RX0 - 2, y: RY0 - 2, w: RX1 - RX0 + 4, d: RY1 - RY0 + 4, r: 8 }, 0, 2));
+    out.push(halo({ x: RX0 - 2, y: RY0 - 2, w: RX1 - RX0 + 4, d: RY1 - RY0 + 4, r: 8 }, 0, 2, { walkable: true }));
     out.push(`<g class="m-rug">${box(RX0, RY0, 0, RX1, RY1, 0.6, { r: 4, steps: 3, tone: "hi", crease: "lo" })}</g>`);
     const inset = (m) => path3([[RX0 + m, RY0 + m, 0.62], [RX1 - m, RY0 + m, 0.62], [RX1 - m, RY1 - m, 0.62], [RX0 + m, RY1 - m, 0.62]], true);
     out.push(L(inset(6) + inset(9), { tone: "faint" }));

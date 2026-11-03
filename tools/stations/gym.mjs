@@ -22,7 +22,7 @@ export default station("gym", {
     const out = [];
 
     // --- Rubber floor tiles -----------------------------------------------------------------------
-    out.push(halo({ x: -58, y: -112, w: 116, d: 224, r: 4 }, 0, 2));
+    out.push(halo({ x: -58, y: -112, w: 116, d: 224, r: 4 }, 0, 2, { walkable: true }));
     const tiles = [];
     for (let i = 0; i < 2; i++) for (let j = 0; j < 4; j++) tiles.push({ x: -55 + i * 55, y: -110 + j * 55 });
     out.push(

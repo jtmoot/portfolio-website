@@ -43,6 +43,9 @@ export const LAYOUT = {
     label: "Gym",
     pos: { x: 92, y: 69 },
     footprint: { x: 70, y: 58, w: 54, h: 25 },
+    // Behind the plyo box (x 110.4 to 122.4): it stands 75 cm tall, so walking close behind it hid
+    // his shins and he looked to be standing in it. This keeps him back.
+    blocks: [{ x: 122.4, y: 72.6, w: 5, h: 10 }],
     link: "https://www.strava.com/athletes/121070736",
     labelAt: { x: 104, y: 85, z: 0 },
     standAt: { x: 84, y: 86.2 },
@@ -62,8 +65,10 @@ export const LAYOUT = {
     label: "Reading chair",
     // Front left, beside the chess table, facing into the room. pos is the seat's centre.
     pos: { x: 15, y: 46 },
-    // The chair's back. The arms, lamp and side table are in `blocks`, so the seat stays open between them.
+    // The chair's back. The arms, lamp and side table are in `blocks`; the seat between the arms is
+    // a block too, except while he's on his way to sit in it or getting up from it.
     footprint: { x: 6.6, y: 36.8, w: 3.2, h: 18.4 },
+    seat: { x: 9.8, y: 40, w: 12.4, h: 12 },
     blocks: [
       { x: 9.8, y: 36.8, w: 12.4, h: 3.2 },
       { x: 9.8, y: 52, w: 12.4, h: 3.2 },

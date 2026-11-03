@@ -1,4 +1,4 @@
-import { onPad, tileKey, tilesAround, resolveCollision, FLOOR } from "./floor.js";
+import { collides, onPad, tileKey, tilesAround, resolveCollision, FLOOR } from "./floor.js";
 import { findPath } from "./path.js";
 
 /** Floor units per second at 1x on the speed wheel: round 1's 1.5x (0.68 m/s, an easy walk). */
@@ -12,7 +12,9 @@ export const BODY = 2.4;
  * @param {{ footprint: { x: number, y: number, w: number, h: number }, blocks?: object[] }[]} stations
  */
 export const bodyFootprints = (stations) =>
-  stations.flatMap((s) => [s.footprint, ...(s.blocks || [])]).map((f) => ({ x: f.x - BODY, y: f.y - BODY, w: f.w + 2 * BODY, h: f.h + 2 * BODY }));
+  stations
+    .flatMap((s) => [s.footprint, ...(s.blocks || []), ...(s.seat ? [{ ...s.seat, seat: s.id }] : [])])
+    .map((f) => ({ x: f.x - BODY, y: f.y - BODY, w: f.w + 2 * BODY, h: f.h + 2 * BODY, ...(f.seat ? { seat: f.seat } : {}) }));
 export const PAUSE_MS = 4000;
 export const TILE_FADE_MS = 4000;
 export const RESPAWN_MS = 1000;
@@ -133,6 +135,23 @@ export function standPoint(station) {
   return { x: f.x + f.w / 2, y: Math.min(FLOOR.h - 1, f.y + f.h + BODY + 0.8) };
 }
 
+/**
+ * What blocks him right now: every footprint, except a chair's seat while that chair is where he's
+ * going or while he's in it (so he can sit, and get up again), never on the way past.
+ * @param {{ stations: object[], footprints: object[] }} ctx
+ * @param {{ x: number, y: number }} pos
+ * @param {{ x: number, y: number } | null} dest
+ */
+export function blocksFor(ctx, pos, dest) {
+  const open = ctx.stations.find((st) => {
+    if (!st.seat) return false;
+    const seat = ctx.footprints.find((f) => f.seat === st.id);
+    const going = dest && Math.hypot(standPoint(st).x - dest.x, standPoint(st).y - dest.y) < 0.5;
+    return going || (seat && collides(pos, seat));
+  });
+  return open ? ctx.footprints.filter((f) => f.seat !== open.id) : ctx.footprints;
+}
+
 /** Back walls block: no walking past y = 0 or x = FLOOR.w. The open front edges do not. */
 const clampWalls = (p) => ({ x: Math.min(p.x, FLOOR.w), y: Math.max(p.y, 0) });
 
@@ -198,7 +217,9 @@ export function stepFigure(state, input, ctx, dtArg) {
     return s;
   }
 
-  // Who is steering.
+  // Who is steering, and what's in his way (a seat is open only on the way to its chair).
+  const dest = () => s.target || (s.control === "idle" && ctx.stations.length ? standPoint(ctx.stations[s.idleIndex]) : null);
+  const blocks = () => blocksFor(ctx, s.pos, dest());
   let step = null;
   if (input.dir) {
     s.control = "user";
@@ -212,7 +233,7 @@ export function stepFigure(state, input, ctx, dtArg) {
       s.control = "user";
       s.sinceInput = 0;
       s.target = { ...input.tapTarget };
-      const route = findPath(s.pos, s.target, ctx.footprints, FLOOR);
+      const route = findPath(s.pos, s.target, blocks(), FLOOR);
       s.route = route && route.length > 1 ? route.slice(0, -1) : [];
     } else {
       s.sinceInput += ms;
@@ -244,7 +265,7 @@ export function stepFigure(state, input, ctx, dtArg) {
       // of heading straight at the station and only routing once he bumps into something.
       if (s.planned !== s.idleIndex) {
         s.planned = s.idleIndex;
-        const route = findPath(s.pos, goal, ctx.footprints, FLOOR);
+        const route = findPath(s.pos, goal, blocks(), FLOOR);
         if (route && route.length > 1) {
           s.route = route.slice(0, -1);
           goal = s.route[0];
@@ -280,19 +301,20 @@ export function stepFigure(state, input, ctx, dtArg) {
 
   if (step && (step.dx || step.dy)) {
     const next = clampWalls({ x: s.pos.x + step.dx, y: s.pos.y + step.dy });
-    let moved = resolveCollision(s.pos, next, ctx.footprints);
+    const here = blocks();
+    let moved = resolveCollision(s.pos, next, here);
     if (moved === s.pos && input.dir) {
       // Keyboard steering slides along the obstacle: try each axis on its own.
       const xOnly = clampWalls({ x: s.pos.x + step.dx, y: s.pos.y });
       const yOnly = clampWalls({ x: s.pos.x, y: s.pos.y + step.dy });
-      moved = resolveCollision(s.pos, xOnly, ctx.footprints);
-      if (moved === s.pos) moved = resolveCollision(s.pos, yOnly, ctx.footprints);
+      moved = resolveCollision(s.pos, xOnly, here);
+      if (moved === s.pos) moved = resolveCollision(s.pos, yOnly, here);
     }
     if (moved === s.pos && !input.dir) {
       if (!s.route.length) {
         // Walking to a goal and blocked: find a way round the furniture.
-        const end = s.target || (s.control === "idle" && ctx.stations.length ? standPoint(ctx.stations[s.idleIndex]) : null);
-        const route = end ? findPath(s.pos, end, ctx.footprints, FLOOR) : null;
+        const end = dest();
+        const route = end ? findPath(s.pos, end, here, FLOOR) : null;
         if (route) s.route = route;
         else if (s.target) s.target = null;
         else s.pauseLeft = PAUSE_MS;
