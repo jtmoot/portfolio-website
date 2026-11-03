@@ -1,4 +1,4 @@
-# Pad feedback, round 8 (plan, decisions settled Nov 3)
+# Pad feedback, round 8 (approved Nov 3)
 
 Branch: `rebuild/personal-pad`. Same rules: TDD, screenshots in day and night on desktop and phone,
 `npm test` and `npm run build` green before each commit. After this round the site goes live on
@@ -53,7 +53,7 @@ within the resumes. Highlights in **bold**:
 
 > I enjoy building the **systems around models**: inference that runs faster and cheaper, and
 > **agents** that hold up in production. I come to both from a strong foundation in data
-> engineering, and I'm finishing an MS in Electrical and Computer Engineering at **Carnegie Mellon**
+> engineering, and I'm working toward an MS in Electrical and Computer Engineering at **Carnegie Mellon**
 > while interning at Core Natural Resources. Outside of work, I lift, run, cook, read history and
 > play chess.
 
