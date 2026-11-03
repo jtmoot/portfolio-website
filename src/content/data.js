@@ -243,6 +243,8 @@ export const LEADERSHIP = [
       "National Frank J. Ruck Leadership Award; USC Greek Hall of Fame.",
     ],
     stack: [],
-    posts: [],
+    posts: [
+      { label: "The award and Hall of Fame, on LinkedIn", href: "https://www.linkedin.com/posts/joshua-moorehead_proud-to-say-ive-been-recognized-with-two-share-7307454972512616451-z_Sr/" },
+    ],
   },
 ];

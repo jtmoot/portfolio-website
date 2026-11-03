@@ -49,4 +49,13 @@ describe("corkboard drawing", () => {
     const svg = readFileSync("src/creative/stations/art/corkboard.svg", "utf8");
     for (const id of ["how-to-take-over-the-world", "founders", "maxinomics", "ai-daily-brief"]) expect(svg).toContain(`href="/podcasts/${id}.jpg"`);
   });
+
+  it("holds only the podcasts: no poster sheets", async () => {
+    const { readFileSync } = await import("node:fs");
+    const svg = readFileSync("src/creative/stations/art/corkboard.svg", "utf8");
+    expect(svg.match(/<image /g)).toHaveLength(4);
+    for (const cls of ["m-sheet\"", "m-sheet-fold", "m-bust", "m-candle"]) expect(svg).not.toContain(cls);
+    const label = /label: "([^"]+)"/.exec(readFileSync("tools/stations/corkboard.mjs", "utf8"))[1];
+    expect(label).not.toMatch(/sheet|poster|map|circuit|bust|chart/i);
+  });
 });

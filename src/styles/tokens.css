@@ -54,6 +54,49 @@
   font-display: swap;
 }
 
+/* Heading faces on trial with ?font= (src/lib/font.js). */
+@font-face {
+  font-family: "Brygada 1918";
+  src: url("/fonts/Brygada1918-Variable.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bona Nova";
+  src: url("/fonts/BonaNova-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Besley";
+  src: url("/fonts/Besley-Variable.woff2") format("woff2");
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gloock";
+  src: url("/fonts/Gloock-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Castoro";
+  src: url("/fonts/Castoro-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bodoni Moda";
+  src: url("/fonts/BodoniModa-Variable.woff2") format("woff2");
+  font-weight: 400 900;
+  font-display: swap;
+}
+
 :root {
   --paper: #f4f3ee;
   --dots: #c9c7bd;
@@ -105,4 +148,40 @@ html[data-font="plex"] {
   --head-tracking: -0.01em;
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+html[data-font="brygada"] {
+  --font-head: "Brygada 1918", Georgia, serif;
+  --head-weight: 500;
+  --head-tracking: -0.01em;
+}
+
+html[data-font="bona"] {
+  --font-head: "Bona Nova", Georgia, serif;
+  --head-weight: 400;
+  --head-tracking: -0.005em;
+}
+
+html[data-font="besley"] {
+  --font-head: "Besley", Georgia, serif;
+  --head-weight: 500;
+  --head-tracking: -0.018em;
+}
+
+html[data-font="gloock"] {
+  --font-head: "Gloock", Georgia, serif;
+  --head-weight: 400;
+  --head-tracking: -0.01em;
+}
+
+html[data-font="castoro"] {
+  --font-head: "Castoro", Georgia, serif;
+  --head-weight: 400;
+  --head-tracking: -0.01em;
+}
+
+html[data-font="bodoni"] {
+  --font-head: "Bodoni Moda", Georgia, serif;
+  --head-weight: 500;
+  --head-tracking: -0.015em;
 }

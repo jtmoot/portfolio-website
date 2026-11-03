@@ -24,6 +24,12 @@ describe("leadership content", () => {
     for (const row of LEADERSHIP) expect(inPublic(row.logo)).toBe(true);
   });
 
+  it("links the president row to the LinkedIn post on the Ruck award and Hall of Fame, without tracking", () => {
+    expect(LEADERSHIP[1].posts).toEqual([
+      { label: "The award and Hall of Fame, on LinkedIn", href: "https://www.linkedin.com/posts/joshua-moorehead_proud-to-say-ive-been-recognized-with-two-share-7307454972512616451-z_Sr/" },
+    ]);
+  });
+
   it("carries the president row's GPA standing from the resume", () => {
     expect(LEADERSHIP[1].points.join(" ")).toContain("#1 GPA of 24 fraternities");
   });

@@ -1,5 +1,9 @@
-/** The type pairings being compared; compare them with ?font=serif, ?font=sans or ?font=plex. */
-export const FONTS = ["serif", "sans", "plex"];
+/**
+ * The type pairings being compared with ?font=<name>: the first three from round 5, then six more
+ * formal heading faces (Brygada 1918, Bona Nova, Besley, Gloock, Castoro, Bodoni Moda), each over
+ * the same Geist body.
+ */
+export const FONTS = ["serif", "sans", "plex", "brygada", "bona", "besley", "gloock", "castoro", "bodoni"];
 const KEY = "pad.font";
 
 /**

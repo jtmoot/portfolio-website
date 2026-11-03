@@ -25,7 +25,7 @@ describe("Leadership", () => {
     const link = host.querySelector(".xp-more a");
     expect(link.getAttribute("href")).toBe("https://www.linkedin.com/posts/x");
     expect(link.target).toBe("_blank");
-    await act(async () => root.render(<Leadership />));
+    await act(async () => root.render(<Leadership items={[{ ...LEADERSHIP[0], posts: [] }]} />));
     expect(host.querySelector(".xp-more a")).toBeNull();
     await act(async () => root.unmount());
   });
