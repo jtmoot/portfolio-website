@@ -1,12 +1,12 @@
 /** The typed intro; marked tokens get the highlighter. */
 export const INTRO = [
-  { text: "I build " },
-  { text: "machine learning systems", mark: true },
-  { text: " and the data infrastructure beneath them. I'm completing an MS in Electrical and Computer Engineering at " },
+  { text: "I enjoy building the " },
+  { text: "systems around models", mark: true },
+  { text: ": inference that runs faster and cheaper, and " },
+  { text: "agents", mark: true },
+  { text: " that hold up in production. I come to both from a strong foundation in data engineering, and I'm working toward an MS in Electrical and Computer Engineering at " },
   { text: "Carnegie Mellon", mark: true },
-  { text: ", focused on AI/ML systems, and interning at " },
-  { text: "Core Natural Resources", mark: true },
-  { text: ", where I co-built the AWS platform that pays shift incentives to 3,100 miners. Outside of work, I lift, run, cook, read history and play chess." },
+  { text: " while interning at Core Natural Resources. Outside of work, I lift, run, cook, read history and play chess." },
 ];
 
 export const ROLE = "ML systems and AI engineer";

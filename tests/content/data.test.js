@@ -41,12 +41,12 @@ describe("content from the Nov 2 resumes", () => {
   const text = (items) => JSON.stringify(items);
   const row = (id) => EXPERIENCE.find((x) => x.id === id);
 
-  it("names both tracks in the role line and puts Core in the intro", () => {
+  it("keeps the role line and says, in the intro, what he enjoys building (the Nov 3 wording)", () => {
     expect(ROLE).toBe("ML systems and AI engineer");
-    const intro = INTRO.map((t) => t.text).join("");
-    expect(intro).toContain("Core Natural Resources");
-    expect(intro).toContain("3,100");
-    expect(INTRO.find((t) => t.text === "Core Natural Resources").mark).toBe(true);
+    expect(INTRO.map((t) => t.text).join("")).toBe(
+      "I enjoy building the systems around models: inference that runs faster and cheaper, and agents that hold up in production. I come to both from a strong foundation in data engineering, and I'm working toward an MS in Electrical and Computer Engineering at Carnegie Mellon while interning at Core Natural Resources. Outside of work, I lift, run, cook, read history and play chess.",
+    );
+    expect(INTRO.filter((t) => t.mark).map((t) => t.text)).toEqual(["systems around models", "agents", "Carnegie Mellon"]);
   });
 
   it("leads Experience with the Core internship, current, with its logo", () => {

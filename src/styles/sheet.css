@@ -420,7 +420,9 @@ button[aria-pressed="true"] .toggle-pill::after {
   -webkit-box-decoration-break: slice;
   box-decoration-break: slice;
   color: inherit;
+  /* The band reaches 2px past the words; the negative margin keeps the text where it would be. */
   padding: 0 2px;
+  margin: 0 -2px;
 }
 
 /* The name's caret: a thin bar right after the last letter, solid while typing, then blinking. */
