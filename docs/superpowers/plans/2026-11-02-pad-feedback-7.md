@@ -1,4 +1,4 @@
-# Pad feedback, round 7 (plan, awaiting approval)
+# Pad feedback, round 7 (built Nov 2)
 
 Branch: `rebuild/personal-pad`. Same rules: TDD, screenshots in day and night on desktop and phone,
 `npm test` and `npm run build` green before each commit, nothing pushed.
