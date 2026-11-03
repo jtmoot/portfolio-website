@@ -103,11 +103,12 @@ a {
   pointer-events: auto;
 }
 
-/* Body column starts 32cqw down the poster and runs on below it, or lower when the hero runs long
-   (a browser drawing the intro larger): never closer than max(5cqw, 56px) under the links. */
+/* Body column starts max(3cqw, 40px) under the social links (the hero measures itself into
+   --hero-end), and never higher than 26cqw down the poster before that measurement arrives. It
+   follows a hero that runs long, as when a browser draws the intro larger. */
 .body {
   position: relative;
-  margin-top: max(-46cqw, calc(var(--hero-end, 0px) + max(5cqw, 56px) - 78cqw));
+  margin-top: max(-52cqw, calc(var(--hero-end, 0px) + max(3cqw, 40px) - 78cqw));
   margin-left: 20.4cqw;
   width: 59.3cqw;
 }

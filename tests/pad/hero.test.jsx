@@ -67,3 +67,11 @@ describe("the opening's CSS reads what Hero sets", () => {
     expect(css).toMatch(/@media \(hover: hover\) \{\s*\.stage\[data-mode="pad"\] \.polaroid:hover/);
   });
 });
+
+describe("the space under the hero", () => {
+  it("keeps Experience max(3cqw, 40px) under the links: close, but never touching", async () => {
+    const { readFileSync } = await import("node:fs");
+    const css = readFileSync("src/styles/sheet.css", "utf8");
+    expect(css).toContain("margin-top: max(-52cqw, calc(var(--hero-end, 0px) + max(3cqw, 40px) - 78cqw));");
+  });
+});
