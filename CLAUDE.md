@@ -1,6 +1,6 @@
 # Portfolio Website — joshuamoorehead.dev
 
-> **Status: personal-pad rebuild.** The bento site is archived at tag `archive/bento-v1`;
+> **Status: personal-pad, live.** The bento site is archived at tag `archive/bento-v1`;
 > the r3f studio direction (Sept 2026) is dead and archived in `docs/archive/`.
 
 ## The Vision
@@ -26,8 +26,12 @@ rooms, with a walkable drawn figure. Never a three.js or game-engine look.
 
 ## Current Working State
 
-- Branch `rebuild/personal-pad` holds the build. `main` still points at the archived
-  bento site (keeps Vercel production stable until cutover).
+- **Live on `main` since Nov 3 2026** (tag `release/personal-pad-v1`). Work continues on
+  `rebuild/personal-pad` and reaches `main` by PR.
+- Layout: `src/pad` (the page and /shelf), `src/creative` (the room), `src/lib` (pure logic),
+  `src/content` (all copy), `api/` (Vercel functions: hello, recommend, books), `tools/` (station
+  drawings, the book index, the recommendations CLI). Plans per feedback round in
+  `docs/superpowers/plans/`.
 - Project media (mp4, webm, poster jpg) lives in `public/media/`; featured order is in
   `docs/project-rankings.md`.
 
