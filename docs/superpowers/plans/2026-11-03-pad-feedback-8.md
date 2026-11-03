@@ -1,4 +1,4 @@
-# Pad feedback, round 8 (plan, awaiting approval)
+# Pad feedback, round 8 (plan, decisions settled Nov 3)
 
 Branch: `rebuild/personal-pad`. Same rules: TDD, screenshots in day and night on desktop and phone,
 `npm test` and `npm run build` green before each commit. After this round the site goes live on
@@ -15,7 +15,7 @@ Measured on Nov 3 at 1440 x 900:
 ### 1. The shelf icon
 It's too small and sits on its own in the right margin. Three ways to show it:
 
-- **A. Join the index (recommended).** The shelf is navigation, like the index, so it sits at the
+- **A. Join the index (chosen).** The shelf is navigation, like the index, so it sits at the
   bottom of the left index under a hairline, in the same type, with the book drawing at text size:
 
   ```
@@ -47,25 +47,20 @@ This works for any page height and needs no special cases.
 Cut from max(5cqw, 56px) to max(3cqw, 40px). That's 43 px at 1440 and 40 px on smaller screens. It
 keeps the round 6 rule that it never closes up in a browser that draws the intro larger.
 
-### 4. The intro, about what you enjoy
-Three drafts. None of them goes beyond what the resumes claim. Highlights in **bold**:
+### 4. The intro
+Settled after several drafts. It leads with the direction (serving and production agents), gives
+the FDE signal as a real story rather than a claim, and stays within the resumes. Highlights in
+**bold**:
 
-- **A.** I work on **ML infrastructure** and **agentic systems**, and I'm most interested in the
-  frontier: what large language models can do next, and the hardware and software that make it
-  possible. I'm finishing an MS in Electrical and Computer Engineering at **Carnegie Mellon**,
-  focused on AI/ML systems. Outside of work, I lift, run, cook, read history and play chess.
-- **B. (recommended; keeps your current job in one clause).** I build **ML infrastructure** and
-  **agentic systems**. What I enjoy most is the frontier: what LLMs can newly do, and the hardware
-  and software underneath that make it possible. I'm finishing an MS in Electrical and Computer
-  Engineering at **Carnegie Mellon** and interning at Core Natural Resources. Outside of work, I
-  lift, run, cook, read history and play chess.
-- **C. (shortest).** I'm interested in **ML infrastructure**, **agentic engineering**, and the
-  hardware and software at the frontier of what LLMs can do. I'm finishing an MS in Electrical and
-  Computer Engineering at **Carnegie Mellon**. Outside of work, I lift, run, cook, read history and
-  play chess.
+> I enjoy building the **systems around models**: inference that runs faster and cheaper, and
+> **agents** that hold up in production. I do my best work alongside the people who'll use them. I
+> run the tech for a 300-member golf league, and its owner now changes her own site through an AI
+> pipeline I built. I'm finishing an MS in Electrical and Computer Engineering at **Carnegie
+> Mellon** and interning at Core Natural Resources. Outside of work, I lift, run, cook, read history
+> and play chess.
 
-The "3,100 miners" detail stays in the Core bullets in Experience, where it belongs. The tests that
-check the intro for "3,100" get updated.
+- The role line stays "ML systems and AI engineer".
+- "3,100 miners" stays in the Core bullets; the intro tests change to match.
 
 ## Creative mode
 
@@ -83,31 +78,34 @@ check the intro for "3,100" get updated.
 ### 2. A greeting that catches the eye
 - The wave starts only once the room has finished rising. Today part of it is spent during the
   1.5 s transition.
-- **The gesture:** a small hop to get your attention (6 px up and back, once), then the arm goes up
-  high and waves three times, larger than the current two-frame wave.
-- **The bubble:** "Hello, Pittsburgh!" pops in with a small scale-up and stays for 5 s, up from 3 s.
-  It then fades over 0.4 s rather than vanishing. It stays at least 2 s after he sets off walking,
-  following his head.
-- Reduced motion: no hop and no wave. The bubble shows for 5 s.
+- **The gesture (no hop):** the arm comes up high and holds for a beat, then gives a few broad,
+  unhurried waves. A new raised-arm frame joins the two wave frames.
+- **The bubble:** "Hello, Pittsburgh!" pops in with a small scale-up, stays for 5 s (up from 3 s),
+  then fades over 0.4 s. It follows his head if he sets off before it's gone.
+- Reduced motion: no wave; the bubble shows for 5 s.
 
-### 3. The station wording, plainer
-Current copy, then a proposed replacement. Edit freely; I'll use your words.
+### 3. The station wording (Joshua's lines)
 
-| Station | Now | Proposed |
-|---|---|---|
-| Desk | Where the work happens. | My desk: two monitors, one laptop for work and one for school. |
-| Library | The short library, mostly history. | A short bookcase, mostly history. |
-| Plants | Two monsteras, a corn plant and a hosta. All thriving. | Two monsteras, a corn plant and a hosta, by the window. |
-| Kitchen | Short ribs, low and slow. | Usually short ribs, braised in a Dutch oven. |
-| Gym | Barbell, kettlebells, sprints, a weighted vest. | Where I train: barbell, kettlebells and sprints. |
-| Chess | Rapid, as breakfast_enjoyer. | I play rapid on chess.com as breakfast_enjoyer. |
-| Reading chair | The good chair, a lamp, and a cup of coffee. | Where I read, with a lamp and a coffee. |
-| Corkboard | Pinned up: the podcasts on in the background. | The podcasts I listen to. |
-| Brain chart | The brain, in sagittal section. | A chart of the brain, in cross-section. |
+| Station | Line |
+|---|---|
+| Desk | Building, one day at a time. |
+| Library | A short bookcase, mostly contained within my Kindle now. |
+| Plants | All thriving: monsteras, a dracaena, a hosta and a money tree. |
+| Kitchen | Short ribs, braised in my Dutch oven. |
+| Gym | Functional fitness, always. |
+| Chess | A Caro-Kann type of guy. |
+| Reading chair | Coffee usually. Tea sometimes. Bone broth occasionally. |
+| Corkboard | Highly recommended! |
+| Brain chart | No card. |
 
 The buttons stay as they are: See experience, See the reading list, See my runs, Open chess.com,
 See the shelf.
 
+### 4. A money tree in the plants corner
+- A braided-trunk money tree (Pachira) in its own pot by the window, drawn in the plants station
+  with the same detail as the monsteras.
+- Its floor footprint is added to the plants' blocks, and the collision test from item 1 covers it.
+
 ## Order
-Main page 2 and 3 (bugs), then 4 and 1, then creative 1, 2 and 3. One commit each. Then the cutover
+Main page 2 and 3 (bugs), then 4 and 1, then creative 1, 2, 3 and 4. One commit each. Then the cutover
 to `main`, following the original plan's Task 15.
