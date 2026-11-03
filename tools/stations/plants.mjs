@@ -1,5 +1,6 @@
 // The window corner right of the desk: a four-pane window with a sill, two monsteras on moss poles,
-// a corn plant (Dracaena fragrans) on three canes, and a hosta, all in big pots with saucers.
+// a corn plant (Dracaena fragrans) on three canes, a hosta, and a money tree (Pachira aquatica) with
+// a braided trunk, all in big pots with saucers.
 // Local world: wall plane x = 0, room toward +x, centred on y = 0. Centimetres.
 import { station, k, G } from "./lib.mjs";
 
@@ -9,8 +10,8 @@ function rng(seed) {
 }
 
 export default station("plants", {
-  label: "Joshua's plants by the window: two big monsteras on moss poles, a corn plant on three canes, and a hosta, in large pots under a four-pane window.",
-  bounds: [[0, -58, 0], [0, 58, 0], [66, -58, 0], [66, 58, 0], [0, -46, 212], [0, 46, 212], [40, 58, 150], [60, -58, 120]],
+  label: "Joshua's plants by the window: two big monsteras on moss poles, a corn plant on three canes, a hosta and a money tree with a braided trunk, in large pots under a four-pane window.",
+  bounds: [[0, -58, 0], [0, 58, 0], [72, -58, 0], [72, 58, 0], [0, -46, 212], [0, 46, 212], [40, 58, 150], [60, -58, 120], [72, 52, 130]],
   draw(c) {
     const { box, cyl, S, L, D, at, path3, halo, P } = c;
     const out = [];
@@ -181,6 +182,40 @@ export default station("plants", {
       const yaw = (i / 14) * Math.PI * 2 + rand() * 0.3;
       const leaf = hostaLeaf([hx + Math.cos(yaw) * 3, hy + Math.sin(yaw) * 3, 26 + (i % 4) * 2.5], yaw, 0.55 - rand() * 0.6, 22 + rand() * 6, 15 + rand() * 4);
       put(leaf.mid, leaf.svg);
+    }
+
+    // Money tree, front left: five stems braided for a turn and a half, splaying into branches that
+    // each carry a couple of palm-shaped leaves (five or six leaflets on a long stalk).
+    const mx = 56, my = 30, MH = 24;
+    put([mx, my, 0], pot(mx, my, 11, MH, "m-ceramic"));
+    const STEMS = 5, BRAID = 52, rt = rng(17);
+    for (let i = 0; i < STEMS; i++) {
+      const a0 = (i / STEMS) * Math.PI * 2;
+      const pts = [];
+      for (let z = 0; z <= BRAID; z += 4) {
+        const a = a0 + (z / BRAID) * Math.PI * 3;
+        const r = 1.7 - (z / BRAID) * 0.5;
+        pts.push([mx + Math.cos(a) * r, my + Math.sin(a) * r, MH - 1 + z]);
+      }
+      // Out of the braid, each stem leans away on its own.
+      const aEnd = a0 + Math.PI * 3;
+      const top = MH - 1 + BRAID;
+      const lean = 9 + rt() * 7;
+      const tip = [mx + Math.cos(aEnd) * lean, my + Math.sin(aEnd) * lean, top + 22 + rt() * 16];
+      pts.push(G.lerp3(pts.at(-1), tip, 0.5), tip);
+      put([mx, my, MH + BRAID * 0.5 + i * 0.1], c.tube(pts, 0.9 - i * 0.04, { tone: "lo" }).replace(/class="tb"/g, 'class="tb m-trunk"'));
+      for (let j = 0; j < 2; j++) {
+        const yaw = aEnd + (j - 0.5) * 1.1 + (rt() - 0.5) * 0.4;
+        const stalk = 10 + rt() * 5;
+        const hub = [tip[0] + Math.cos(yaw) * stalk, tip[1] + Math.sin(yaw) * stalk, tip[2] + 4 + rt() * 4];
+        put(G.lerp3(tip, hub, 0.5), c.tube([tip, G.add3(G.lerp3(tip, hub, 0.5), [0, 0, 2]), hub], 0.4, { tone: "lo" }).replace(/class="tb"/g, 'class="tb m-stem"'));
+        const leaflets = 5 + (j % 2);
+        for (let l = 0; l < leaflets; l++) {
+          const spread = yaw + (l - (leaflets - 1) / 2) * 0.55;
+          const leaf = hostaLeaf(hub, spread, -0.15 - rt() * 0.35, 13 + rt() * 4, 4.6 + rt() * 1.2);
+          put(leaf.mid, leaf.svg);
+        }
+      }
     }
 
     out.push(...items.sort((a, b) => a.d - b.d).map((i) => i.svg));

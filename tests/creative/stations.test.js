@@ -182,3 +182,14 @@ describe("the plyo box", () => {
     }
   });
 });
+
+describe("the plants corner", () => {
+  it("has a money tree, a braided trunk in its own pot, which he can't walk through", async () => {
+    const { readFileSync } = await import("node:fs");
+    const svg = readFileSync("src/creative/stations/art/plants.svg", "utf8");
+    expect(svg).toMatch(/aria-label="[^"]*money tree/);
+    expect((svg.match(/m-trunk/g) || []).length).toBeGreaterThanOrEqual(5);
+    const meta = JSON.parse(readFileSync("src/creative/stations/art/meta.json", "utf8"));
+    expect(meta.plants.floor).toHaveLength(5);
+  });
+});
