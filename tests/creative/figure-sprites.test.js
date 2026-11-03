@@ -77,5 +77,6 @@ describe("figure sprite sheet", () => {
     for (const a of Object.values(ACTIONS)) for (const [name] of a.frames) expect(sheet, `${a.facing}-${name}`).toContain(`id="f-${a.facing}-${name}"`);
     expect(sheet).toContain('id="f-dr-wave1"');
     expect(sheet).toContain('id="f-dr-wave2"');
+    expect(sheet).toContain('id="f-dr-raise"');
   });
 });

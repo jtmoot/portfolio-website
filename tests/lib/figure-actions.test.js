@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ACTIONS, OVER_POSES, GREET_MS, PAUSE_MS, initialFigure, keyToDir, poseAt, standPoint, stepFigure } from "../../src/lib/figure.js";
+import { ACTIONS, OVER_POSES, GREET_MS, GREET_WAIT_MS, HELLO_MS, PAUSE_MS, initialFigure, keyToDir, poseAt, standPoint, stepFigure } from "../../src/lib/figure.js";
 
 const STATIONS = [
   { id: "desk", footprint: { x: 38, y: 0, w: 32, h: 16 } },
@@ -66,25 +66,57 @@ describe("station actions", () => {
 });
 
 describe("greeting", () => {
-  it("waves at the screen first, standing still and facing out", () => {
-    const s0 = initialFigure({ x: 54, y: 26 });
-    const s = run(s0, {}, 1);
+  it("waits for the room to settle, standing still and facing out, before it starts", () => {
+    const s = run(initialFigure({ x: 54, y: 26 }), {}, GREET_WAIT_MS / 1000 - 0.1);
     expect(s.pos).toEqual({ x: 54, y: 26 });
     expect(s.facing).toBe("dr");
     expect(s.greeting).toBe(true);
-    expect(["wave1", "wave2"]).toContain(s.pose);
-    const later = run(s, {}, GREET_MS / 1000);
-    expect(later.greeting).toBe(false);
+    expect(s.pose).toBeNull();
+    expect(s.helloLeft).toBe(HELLO_MS);
   });
 
-  it("stops waving the moment someone steers", () => {
-    const s = run(initialFigure({ x: 54, y: 26 }), { dir: keyToDir("ArrowRight") }, 0.1);
+  it("raises his arm and holds it, then waves broadly a few times, without a hop", () => {
+    let s = initialFigure({ x: 54, y: 26 });
+    const poses = [];
+    for (let t = 0; t < (GREET_WAIT_MS + GREET_MS) / 1000; t += 1 / 60) {
+      s = stepFigure(s, { dir: null, tapTarget: null }, CTX, 1 / 60);
+      if (poses.at(-1) !== s.pose) poses.push(s.pose);
+      expect(s.pos).toEqual({ x: 54, y: 26 });
+    }
+    expect(poses.slice(0, 3)).toEqual([null, "raise", "wave1"]);
+    expect(poses.filter((p) => p === "wave2").length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("waves for about three seconds once it starts", () => {
+    expect(GREET_WAIT_MS).toBe(1500);
+    expect(GREET_MS).toBeGreaterThanOrEqual(2600);
+    expect(GREET_MS).toBeLessThanOrEqual(3400);
+  });
+
+  it("keeps the hello up for 5 s from the first wave, even after he sets off", () => {
+    expect(HELLO_MS).toBe(5000);
+    let s = run(initialFigure({ x: 54, y: 26 }), {}, GREET_WAIT_MS / 1000 + 0.1);
+    expect(s.helloLeft).toBeLessThan(HELLO_MS);
+    s = run(s, {}, GREET_MS / 1000 + 0.5);
     expect(s.greeting).toBe(false);
-    expect(s.pos).not.toEqual({ x: 54, y: 26 });
+    expect(s.helloLeft).toBeGreaterThan(0);
+    s = run(s, {}, 3);
+    expect(s.helloLeft).toBe(0);
   });
 
-  it("can be switched off (reduced motion)", () => {
-    expect(initialFigure({ x: 54, y: 26 }, { greet: false }).greeting).toBe(false);
+  it("stops waving the moment someone steers, and the hello stays", () => {
+    let s = run(initialFigure({ x: 54, y: 26 }), {}, GREET_WAIT_MS / 1000 + 0.5);
+    s = run(s, { dir: keyToDir("ArrowDown") }, 0.1);
+    expect(s.greeting).toBe(false);
+    expect(s.pose).toBeNull();
+    expect(s.helloLeft).toBeGreaterThan(0);
+  });
+
+  it("under reduced motion says hello without waving", () => {
+    const s = run(initialFigure({ x: 54, y: 26 }, { greet: false, hello: true }), {}, 1);
+    expect(s.greeting).toBe(false);
+    expect(["raise", "wave1", "wave2"]).not.toContain(s.pose);
+    expect(s.helloLeft).toBeCloseTo(HELLO_MS - 1000, 0);
   });
 });
 
@@ -123,7 +155,7 @@ describe("after the hello", () => {
     ];
     const ctx = { stations, footprints: stations.map((s) => s.footprint) };
     let s = initialFigure({ x: 54, y: 26 });
-    for (let t = 0; t < GREET_MS / 1000 + 0.5; t += 1 / 60) s = stepFigure(s, { dir: null, tapTarget: null }, ctx, 1 / 60);
+    for (let t = 0; t < (GREET_WAIT_MS + GREET_MS) / 1000 + 0.5; t += 1 / 60) s = stepFigure(s, { dir: null, tapTarget: null }, ctx, 1 / 60);
     expect(s.greeting).toBe(false);
     expect(s.idleIndex).toBe(1);
     expect(s.pos.x).toBeLessThan(53);

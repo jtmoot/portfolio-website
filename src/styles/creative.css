@@ -593,17 +593,24 @@ html[data-theme="night"] .fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;
   border-radius: 1.1em 1.1em 1.1em 0.25em;
   box-shadow: 0 0.2cqw 0.6cqw rgba(0, 0, 0, 0.16);
   pointer-events: none;
-  animation: speech-in 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  /* Pops out of its tail (bottom left) with a small overshoot; fades over its last 0.4 s. */
+  transform-origin: 0 100%;
+  animation: speech-in 0.4s cubic-bezier(0.3, 1.45, 0.5, 1);
+  transition: opacity 0.4s ease;
 }
 
 .speech[hidden] {
   display: none;
 }
 
+.speech[data-fading] {
+  opacity: 0;
+}
+
 @keyframes speech-in {
   from {
     opacity: 0;
-    scale: 0.8;
+    scale: 0.6;
   }
 }
 

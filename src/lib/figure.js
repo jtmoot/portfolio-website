@@ -31,9 +31,18 @@ export const JOG_AT = 1.4;
  * @param {{ pose?: string | null, frame: number, gait?: "w" | "j" }} s
  */
 export const frameName = (s) => s.pose || (s.frame ? `${s.gait || "w"}${s.frame}` : "idle");
-/** How long he waves at the screen when the room opens. */
-export const GREET_MS = 3000;
-const WAVE_MS = 320;
+/** How long he waits for the room to finish rising before he greets you. */
+export const GREET_WAIT_MS = 1500;
+/** The greeting itself: the arm goes up and holds, then three broad waves. */
+const RAISE_MS = 600;
+const WAVE_MS = 380;
+export const GREET_MS = RAISE_MS + 6 * WAVE_MS;
+/** How long "Hello, Pittsburgh!" stays up, from the first wave; it fades out over its last 400 ms. */
+export const HELLO_MS = 5000;
+export const HELLO_FADE_MS = 400;
+
+/** True while the hello bubble should show. */
+export const saying = (s) => s.helloLeft > 0 && s.helloLeft < HELLO_MS;
 
 /**
  * What he does at each station during the stop, as sprite poses (f-{facing}-{pose}) and their
@@ -99,13 +108,15 @@ export function facingOf({ dx, dy }) {
 
 /**
  * @param {{ x: number, y: number }} start
- * @param {{ greet?: boolean }} [opts] greet: wave at the screen before setting off (off under reduced motion)
+ * @param {{ greet?: boolean, hello?: boolean }} [opts] greet: wave at the screen before setting off
+ *   (off under reduced motion); hello: show the hello bubble (on even without the wave)
  */
-export function initialFigure(start, { greet = true } = {}) {
+export function initialFigure(start, { greet = true, hello = greet } = {}) {
   return {
     greeting: greet,
-    greetLeft: greet ? GREET_MS : 0,
-    pose: greet ? "wave1" : null,
+    greetLeft: greet ? GREET_WAIT_MS + GREET_MS : 0,
+    helloLeft: hello ? HELLO_MS : 0,
+    pose: null,
     pos: { ...start },
     facing: "dr",
     frame: 0,
@@ -190,7 +201,12 @@ export function stepFigure(state, input, ctx, dtArg) {
     return s;
   }
 
-  // The hello: he faces the screen and waves until the greeting ends or someone steers.
+  // The hello bubble counts down from the first wave (or at once, when there's no wave).
+  const greetedFor = GREET_WAIT_MS + GREET_MS - s.greetLeft;
+  if (s.helloLeft > 0 && (!s.greeting || greetedFor >= GREET_WAIT_MS)) s.helloLeft = Math.max(0, s.helloLeft - ms);
+
+  // The greeting: he faces the screen, waits for the room to settle, raises his arm and holds it,
+  // then waves, until it ends or someone steers.
   if (s.greeting) {
     if (input.dir || input.tapTarget) {
       s.greeting = false;
@@ -198,9 +214,12 @@ export function stepFigure(state, input, ctx, dtArg) {
       s.pose = null;
     } else {
       s.greetLeft -= ms;
+      const t = GREET_WAIT_MS + GREET_MS - s.greetLeft;
       s.facing = "dr";
       s.frame = 0;
-      s.pose = Math.floor((GREET_MS - s.greetLeft) / WAVE_MS) % 2 ? "wave2" : "wave1";
+      if (t < GREET_WAIT_MS) s.pose = null;
+      else if (t < GREET_WAIT_MS + RAISE_MS) s.pose = "raise";
+      else s.pose = Math.floor((t - GREET_WAIT_MS - RAISE_MS) / WAVE_MS) % 2 ? "wave2" : "wave1";
       if (s.greetLeft <= 0) {
         s.greeting = false;
         s.pose = null;

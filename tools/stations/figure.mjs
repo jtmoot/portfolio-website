@@ -356,10 +356,13 @@ const POSES = {
   sit1: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [12, -19, 88], hand: [24, -9, 98] } }, extras: book([27, 0, 100]) },
   sit2: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [13, -17, 92], hand: [24, -3, 108] } }, extras: book([27, 0, 100], 1) },
   sip: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 86], hand: [23, 6, 94] }, R: { elbow: [8, -20, 90], hand: [11, -7, 114] } }, extras: (h) => [...book([26, 4, 96])(h), ...mug([12, -7, 114])(h)] },
-  wave1: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [8, -24, 178] } } },
-  wave2: { arms: { L: hang(1), R: { elbow: [4, -27, 150], hand: [9, -33, 175] } } },
+  // The hello: the right arm goes straight up and holds, then sweeps wide either side of it
+  // (about 26 cm hand to hand), the forearm keeping its length.
+  raise: { arms: { L: hang(1), R: { elbow: [4, -27, 160], hand: [7, -24, 188] } } },
+  wave1: { arms: { L: hang(1), R: { elbow: [4, -28, 152], hand: [8, -16.4, 177.7] } } },
+  wave2: { arms: { L: hang(1), R: { elbow: [4, -28, 152], hand: [9, -42.2, 176.2] } } },
 };
-const POSE_FACING = { wave1: "dr", wave2: "dr" };
+const POSE_FACING = { raise: "dr", wave1: "dr", wave2: "dr" };
 for (const a of Object.values(ACTIONS)) for (const [name] of a.frames) POSE_FACING[name] = a.facing;
 
 export default {

@@ -7,7 +7,7 @@ import StationCard from "./StationCard.jsx";
 import { floorToScreen, screenToFloor } from "../lib/floorView.js";
 import { artPlacement } from "../lib/iso.js";
 import { nearestStation, paintOrder, TILE } from "../lib/floor.js";
-import { frameName, OVER_POSES, standPoint, TILE_FADE_MS } from "../lib/figure.js";
+import { frameName, HELLO_FADE_MS, OVER_POSES, saying, standPoint, TILE_FADE_MS } from "../lib/figure.js";
 import { FIGURE_START } from "../lib/travelers.js";
 import { useFigure } from "./useFigure.js";
 import Figure, { FIGURE_META } from "./Figure.jsx";
@@ -141,8 +141,10 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
         const href = `#f-${s.facing}-${frameName(s)}`;
         const say = bubbleEl.current;
         if (say) {
-          say.hidden = !s.greeting;
-          if (s.greeting) {
+          const on = saying(s);
+          say.hidden = !on;
+          say.toggleAttribute("data-fading", on && s.helloLeft < HELLO_FADE_MS);
+          if (on) {
             say.style.left = `${p.left}cqw`;
             say.style.top = `${p.top - (214 / 5) * 0.8165 * v.scale}cqw`;
           }
@@ -175,6 +177,7 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
     hold: hoverId !== null,
     speed,
     greet: !still(),
+    hello: true,
   });
   if (import.meta.env.DEV && typeof window !== "undefined") window.__figure = stateRef;
 
