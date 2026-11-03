@@ -209,7 +209,10 @@ export const CHESS = { handle: "breakfast_enjoyer", href: "https://www.chess.com
 
 export const RUNS = { href: "https://www.strava.com/athletes/121070736" };
 
-/** Leadership, from the resume. Add { label, href } entries to `posts` to link LinkedIn posts. */
+/**
+ * Leadership, from the resume. A bullet can link some of its words ({ text, link: { words, href } });
+ * `posts` entries ({ label, href }) add links under the bullets.
+ */
 export const LEADERSHIP = [
   {
     id: "spe-advisor",
@@ -240,11 +243,12 @@ export const LEADERSHIP = [
     logo: "/logos/sigep-sc.png",
     points: [
       "Led a 200-member chapter to the #1 GPA of 24 fraternities.",
-      "National Frank J. Ruck Leadership Award; USC Greek Hall of Fame.",
+      {
+        text: "National Frank J. Ruck Leadership Award; USC Greek Hall of Fame.",
+        link: { words: "Frank J. Ruck Leadership Award", href: "https://www.linkedin.com/posts/joshua-moorehead_proud-to-say-ive-been-recognized-with-two-share-7307454972512616451-z_Sr/" },
+      },
     ],
     stack: [],
-    posts: [
-      { label: "The award and Hall of Fame, on LinkedIn", href: "https://www.linkedin.com/posts/joshua-moorehead_proud-to-say-ive-been-recognized-with-two-share-7307454972512616451-z_Sr/" },
-    ],
+    posts: [],
   },
 ];

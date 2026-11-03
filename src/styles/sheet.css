@@ -815,6 +815,22 @@ img.logo {
   opacity: 0.55;
 }
 
+/* Linked words inside a bullet: a quiet underline that warms on hover. */
+.xp-points a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color 0.2s ease, color 0.2s ease;
+}
+
+.xp-points a:hover,
+.xp-points a:focus-visible {
+  color: var(--live);
+  text-decoration-color: currentColor;
+}
+
 .xp-more .chips {
   margin-bottom: 1.2cqw;
 }

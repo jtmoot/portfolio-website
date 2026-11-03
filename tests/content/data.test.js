@@ -24,14 +24,16 @@ describe("leadership content", () => {
     for (const row of LEADERSHIP) expect(inPublic(row.logo)).toBe(true);
   });
 
-  it("links the president row to the LinkedIn post on the Ruck award and Hall of Fame, without tracking", () => {
-    expect(LEADERSHIP[1].posts).toEqual([
-      { label: "The award and Hall of Fame, on LinkedIn", href: "https://www.linkedin.com/posts/joshua-moorehead_proud-to-say-ive-been-recognized-with-two-share-7307454972512616451-z_Sr/" },
-    ]);
+  it("links the award's name in the president row to the LinkedIn post about it, without tracking", () => {
+    expect(LEADERSHIP[1].points[1]).toEqual({
+      text: "National Frank J. Ruck Leadership Award; USC Greek Hall of Fame.",
+      link: { words: "Frank J. Ruck Leadership Award", href: "https://www.linkedin.com/posts/joshua-moorehead_proud-to-say-ive-been-recognized-with-two-share-7307454972512616451-z_Sr/" },
+    });
+    expect(LEADERSHIP[1].posts).toEqual([]);
   });
 
   it("carries the president row's GPA standing from the resume", () => {
-    expect(LEADERSHIP[1].points.join(" ")).toContain("#1 GPA of 24 fraternities");
+    expect(LEADERSHIP[1].points[0]).toContain("#1 GPA of 24 fraternities");
   });
 });
 
@@ -97,7 +99,7 @@ describe("experience and leadership as short, strong bullets", () => {
   });
 
   it("keeps each bullet to about 12 words, verb or fact first, ending in a full stop", () => {
-    for (const p of rows.flatMap((x) => x.points)) {
+    for (const p of rows.flatMap((x) => x.points).map((p) => (typeof p === "string" ? p : p.text))) {
       expect(p.split(/\s+/).length).toBeLessThanOrEqual(12);
       expect(p).toMatch(/^[A-Z#0-9]/);
       expect(p).toMatch(/\.$/);

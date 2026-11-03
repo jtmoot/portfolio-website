@@ -1,6 +1,26 @@
 import { useState } from "react";
 
 /**
+ * One bullet: plain text, or text with some of its words linked ({ text, link: { words, href } }).
+ * @param {{ point: string | { text: string, link: { words: string, href: string } } }} props
+ */
+function Point({ point }) {
+  if (typeof point === "string") return <li>{point}</li>;
+  const { text, link } = point;
+  const at = text.indexOf(link.words);
+  if (at < 0) return <li>{text}</li>;
+  return (
+    <li>
+      {text.slice(0, at)}
+      <a href={link.href} target="_blank" rel="noreferrer" data-c="ring">
+        {link.words}
+      </a>
+      {text.slice(at + link.words.length)}
+    </li>
+  );
+}
+
+/**
  * One card of rows (logo, place and kind, role, dates and where); tapping a row unfolds its
  * bullets, chips and any links. Hovering a row still shows its photo in the preview card.
  * @param {{ items: object[] }} props
@@ -58,7 +78,7 @@ export default function Rows({ items }) {
               <div>
                 <ul className="xp-points">
                   {x.points.map((p) => (
-                    <li key={p}>{p}</li>
+                    <Point key={typeof p === "string" ? p : p.text} point={p} />
                   ))}
                 </ul>
                 {x.stack?.length > 0 && (
