@@ -48,16 +48,13 @@ Cut from max(5cqw, 56px) to max(3cqw, 40px). That's 43 px at 1440 and 40 px on s
 keeps the round 6 rule that it never closes up in a browser that draws the intro larger.
 
 ### 4. The intro
-Settled after several drafts. It leads with the direction (serving and production agents), gives
-the FDE signal as a real story rather than a claim, and stays within the resumes. Highlights in
-**bold**:
+Settled after several drafts: it leads with the direction (serving and production agents) and stays
+within the resumes. Highlights in **bold**:
 
 > I enjoy building the **systems around models**: inference that runs faster and cheaper, and
-> **agents** that hold up in production. I do my best work alongside the people who'll use them. I
-> run the tech for a 300-member golf league, and its owner now changes her own site through an AI
-> pipeline I built. I'm finishing an MS in Electrical and Computer Engineering at **Carnegie
-> Mellon** and interning at Core Natural Resources. Outside of work, I lift, run, cook, read history
-> and play chess.
+> **agents** that hold up in production. I'm finishing an MS in Electrical and Computer Engineering
+> at **Carnegie Mellon** and interning at Core Natural Resources. Outside of work, I lift, run,
+> cook, read history and play chess.
 
 - The role line stays "ML systems and AI engineer".
 - "3,100 miners" stays in the Core bullets; the intro tests change to match.
