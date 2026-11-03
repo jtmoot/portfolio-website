@@ -59,3 +59,28 @@ describe("corkboard drawing", () => {
     expect(label).not.toMatch(/sheet|poster|map|circuit|bust|chart/i);
   });
 });
+
+describe("the station lines", () => {
+  it("are Joshua's own words (Nov 3)", async () => {
+    const { CARD_TEXT } = await import("../../src/creative/StationCard.jsx");
+    expect(Object.fromEntries(Object.entries(CARD_TEXT).map(([id, t]) => [id, t.line]))).toEqual({
+      desk: "Building, one day at a time.",
+      library: "A short bookcase, mostly contained within my Kindle now.",
+      plants: "All thriving: monsteras, a dracaena, a hosta and a money tree.",
+      kitchen: "Short ribs, braised in my Dutch oven.",
+      gym: "Functional fitness, always.",
+      chess: "A Caro-Kann type of guy.",
+      reading: "Coffee usually. Tea sometimes. Bone broth occasionally.",
+      corkboard: "Highly recommended!",
+    });
+  });
+
+  it("shows no card for the brain chart", async () => {
+    const { default: Card } = await import("../../src/creative/StationCard.jsx");
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<Card station={{ id: "anatomy", link: null }} style={{}} onNavigate={() => {}} />));
+    expect(host.innerHTML).toBe("");
+    await act(async () => root.unmount());
+  });
+});

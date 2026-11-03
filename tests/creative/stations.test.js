@@ -129,7 +129,7 @@ describe("the reading corner", () => {
     expect(front).toContain("m-coffee");
     expect(front).not.toContain("m-tea");
     const { CARD_TEXT } = await import("../../src/creative/StationCard.jsx");
-    expect(CARD_TEXT.reading.line).toContain("coffee");
+    expect(CARD_TEXT.reading.line).toMatch(/^Coffee usually/);
   });
 });
 

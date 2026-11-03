@@ -1,17 +1,16 @@
 import { useLayoutEffect, useRef } from "react";
 import { PODCASTS } from "../content/shelf.js";
 
-/** One line and a link for each station, shown when the figure (or the pointer) is near it. */
+/** One line and a link for each station, shown when the figure (or the pointer) is near it. Joshua's own words. The brain chart has none. */
 export const CARD_TEXT = {
-  desk: { line: "Where the work happens.", cta: "See experience" },
-  library: { line: "The short library, mostly history.", cta: "See the reading list" },
-  plants: { line: "Two monsteras, a corn plant and a hosta. All thriving.", cta: null },
-  kitchen: { line: "Short ribs, low and slow.", cta: null },
-  gym: { line: "Barbell, kettlebells, sprints, a weighted vest.", cta: "See my runs" },
-  chess: { line: "Rapid, as breakfast_enjoyer.", cta: "Open chess.com" },
-  reading: { line: "The good chair, a lamp, and a cup of coffee.", cta: "See the shelf" },
-  corkboard: { line: "Pinned up: the podcasts on in the background.", cta: null },
-  anatomy: { line: "The brain, in sagittal section.", cta: null },
+  desk: { line: "Building, one day at a time.", cta: "See experience" },
+  library: { line: "A short bookcase, mostly contained within my Kindle now.", cta: "See the reading list" },
+  plants: { line: "All thriving: monsteras, a dracaena, a hosta and a money tree.", cta: null },
+  kitchen: { line: "Short ribs, braised in my Dutch oven.", cta: null },
+  gym: { line: "Functional fitness, always.", cta: "See my runs" },
+  chess: { line: "A Caro-Kann type of guy.", cta: "Open chess.com" },
+  reading: { line: "Coffee usually. Tea sometimes. Bone broth occasionally.", cta: "See the shelf" },
+  corkboard: { line: "Highly recommended!", cta: null },
 };
 
 /**
@@ -40,6 +39,7 @@ export default function StationCard({ station, style, onNavigate }) {
     const t = setInterval(fit, 250);
     return () => clearInterval(t);
   }, []);
+  if (!text) return null;
   const external = station.link?.startsWith("http");
   return (
     <div ref={el} className="station-card" style={style}>
