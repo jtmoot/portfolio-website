@@ -73,7 +73,19 @@ motion; land it on `main` by PR.
 - The bookcase column grows from 33 to 44 cqw; the plates at the bare end no longer hang over the
   books below.
 
+## The two wall pieces (added Nov 4, after the first merge)
+
+### 6. The anatomy chart and the corkboard, framed properly
+
+- **Chart:** a dark moulded frame of four rails standing proud and mitred, a cream mat with a
+  bevel line, the rails' shadow inside, two glints on the glass. Each leader starts at a dot on
+  the part it names and ends where its two-line label begins; a title, a three-line caption and a
+  plate number. The brain gains the central sulcus, the lateral fissure and the pons.
+- **Corkboard:** an oak frame of four proud, mitred rails around a recessed cork with its shadow,
+  speckle in two grades, push pins as round heads standing out of the wall (red and blue
+  materials), and an index card pinned at a slant beside the covers.
+
 ## Order
 
 1, 2, 4, 5, 3; then `npm test`, `npm run build`, screenshots of the entrance, exit and the room;
-PR to `main` and merge.
+PR to `main` and merge (PR #3). Then 6, in a second PR.
