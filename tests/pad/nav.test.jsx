@@ -45,6 +45,28 @@ describe("Nav", () => {
     await act(async () => root.unmount());
   });
 
+  it("hands a section link over in creative mode, so the page comes back first; on the pad it is a plain link", async () => {
+    const went = [];
+    const host = document.createElement("div");
+    document.body.append(host);
+    const root = createRoot(host);
+    const render = (mode) => act(async () => root.render(<Nav theme="day" onToggleTheme={() => {}} mode={mode} onToggleMode={() => {}} onNavigate={(href) => went.push(href)} />));
+    const experience = () => [...host.querySelectorAll("a")].find((a) => a.textContent === "Experience");
+    const click = () => {
+      const e = new MouseEvent("click", { bubbles: true, cancelable: true });
+      experience().dispatchEvent(e);
+      return e.defaultPrevented;
+    };
+    await render("creative");
+    expect(click()).toBe(true);
+    expect(went).toEqual(["#experience"]);
+    await render("pad");
+    expect(click()).toBe(false);
+    expect(went).toEqual(["#experience"]);
+    await act(async () => root.unmount());
+    host.remove();
+  });
+
   it("sits in a sticky dock so it can follow the scroll", async () => {
     const host = document.createElement("div");
     const root = createRoot(host);

@@ -58,13 +58,13 @@ function Tile({ book }) {
 /**
  * /shelf: Joshua's library. The bookcase comes first; below it the same books as plain lists,
  * with reading now and the textbooks as featured rows and the rest as cover grids.
- * The nav's creative-mode toggle, when given, leads to the room (the pad in creative mode).
- * @param {{ theme?: "day" | "night", onToggleTheme?: () => void, onToggleMode?: () => void }} props
+ * The nav has no creative-mode toggle here: the room belongs to the pad.
+ * @param {{ theme?: "day" | "night", onToggleTheme?: () => void }} props
  */
-export default function Shelf({ theme = "day", onToggleTheme = () => {}, onToggleMode }) {
+export default function Shelf({ theme = "day", onToggleTheme = () => {} }) {
   return (
     <main className="sheet shelf-page">
-      <Nav theme={theme} onToggleTheme={onToggleTheme} onToggleMode={onToggleMode} base="/" />
+      <Nav theme={theme} onToggleTheme={onToggleTheme} base="/" />
       <div className="shelf">
         <a className="back" href="/" data-c="ring">
           <svg viewBox="0 0 24 24" aria-hidden="true">

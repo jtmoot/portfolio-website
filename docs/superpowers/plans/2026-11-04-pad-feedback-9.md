@@ -160,8 +160,24 @@ motion; land it on `main` by PR.
   blank, 52 canvas resizes) and popped in at the end. It now flies with `scale` (its centre still
   lands on the room's spot); measured after: 0 blank frames, 1 resize.
 
+### 11. The page turn, the nav from the room, the shelf's toggle gone, the note hanging (Nov 4, late)
+
+- **The page turn looked wrong** because the book was held up at chest height, cream on a grey
+  top, all but invisible, so the right hand jerked up at nothing. The book is on his lap now
+  (`lapBook` in figure.mjs): an oxblood cover under two cream pages tilted up toward him, lines of
+  print on each, seen from above; the page turn stands the right page up as his hand lifts it; the
+  sip keeps the book in his left hand.
+- **Experience and Work from the room** used to do nothing visible (the sections are hidden and
+  the scroll locked). In creative mode the nav's section links hand over to App's `onNavigate`:
+  the page comes back, then it scrolls to the section.
+- **The shelf's toggle is gone** (he had not meant to leave the shelf), and `/?mode=creative`
+  cleans its address once it has tipped the page, so a reload is the page, not the room again.
+- **The sticky note hangs off the top ledge:** its glued top edge on the cornice's front beside
+  the light, the rest hanging down over the top shelf, a little askew, the bottom corner curling
+  out; 16 cm now, the lines at 1.85.
+
 ## Order
 
 1, 2, 4, 5, 3; then `npm test`, `npm run build`, screenshots of the entrance, exit and the room;
 PR to `main` and merge (PR #3). Then 6, in a second PR (PR #5). Then 7, in a third (PR #7). Then
-8, in a fourth (PR #11). Then 9, in a fifth (PR #12). Then 10, in a sixth.
+8, in a fourth (PR #11). Then 9, in a fifth (PR #12). Then 10, in a sixth (PR #13). Then 11.

@@ -294,6 +294,9 @@ html[data-theme="night"] .figure{--hair-0:#5b4430;--hair-1:#664d37;--hair-2:#715
 .fm-cuff .tb-body{fill:#303236}.fm-cuff .tb-shine{fill:#3d3f44}.fm-cuff .tb-shade{fill:#232528}
 .fm-watch .tb-body{fill:#5a3b26}.fm-watch .tb-shine{fill:#6e4a31}.fm-watch .tb-shade{fill:#432b1b}
 .fm-page{--anatomy-paper:#f3efe4;--anatomy-face:#f3efe4;--anatomy-top:#fbf8f0;--anatomy-shade-0:#d9d3c4;--anatomy-shade-1:#e1dbcd;--anatomy-shade-2:#e8e3d6;--anatomy-shade-3:#efeadf}
+/* The book on his lap: an oxblood cover, and lines of print on the pages. */
+.fm-cover{--anatomy-paper:#6b3a34;--anatomy-face:#6b3a34;--anatomy-top:#80463f;--anatomy-shade-0:#46241f;--anatomy-shade-1:#4f2923;--anatomy-shade-2:#582e27;--anatomy-shade-3:#61332c}
+.fm-print{fill:none;stroke:#5d564c;stroke-width:.4px;stroke-linecap:round;opacity:.75}
 .fm-iron{--anatomy-paper:#2f3033;--anatomy-face:#2f3033;--anatomy-top:#45464a;--anatomy-shade-0:#1f2022;--anatomy-shade-1:#252628;--anatomy-shade-2:#2a2b2e;--anatomy-shade-3:#2e2f32}
 .fm-iron .tb-body{fill:#2f3033}.fm-iron .tb-shine{fill:#4a4b4f}.fm-iron .tb-shade{fill:#1f2022}
 .fm-can{--anatomy-paper:#a9b0b3;--anatomy-face:#a9b0b3;--anatomy-top:#c9cfd1;--anatomy-shade-0:#8a9194;--anatomy-shade-1:#959c9f;--anatomy-shade-2:#a0a7aa;--anatomy-shade-3:#aab1b4}

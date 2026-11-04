@@ -24,10 +24,11 @@ function pittsburghTime() {
  * Top navigation: section links on the left; the local clock, theme and creative-mode toggles on the right.
  * It sits in a zero-height sticky dock; once the page scrolls it compacts into a frosted pill.
  * In creative mode a sound switch joins them, since the hero's mute icon is faded out there.
- * On /shelf it links back into the pad (`base` "/") and has no creative-mode toggle.
- * @param {{ theme: "day" | "night", onToggleTheme: () => void, mode?: "pad" | "creative", onToggleMode?: () => void, base?: string }} props
+ * On /shelf it links back into the pad (`base` "/") and has no creative-mode toggle. In creative
+ * mode a section link hands over to `onNavigate`, which brings the page back and then scrolls.
+ * @param {{ theme: "day" | "night", onToggleTheme: () => void, mode?: "pad" | "creative", onToggleMode?: () => void, onNavigate?: (href: string) => void, base?: string }} props
  */
-export default function Nav({ theme, onToggleTheme, mode = "pad", onToggleMode, base = "" }) {
+export default function Nav({ theme, onToggleTheme, mode = "pad", onToggleMode, onNavigate, base = "" }) {
   const [clock, setClock] = useState(pittsburghTime);
   const [compact, setCompact] = useState(false);
   const muted = useSyncExternalStore(onSoundChange, isMuted);
@@ -49,7 +50,17 @@ export default function Nav({ theme, onToggleTheme, mode = "pad", onToggleMode, 
       <nav className="nav" aria-label="Sections" data-compact={compact || undefined}>
         <div className="nav-links">
           {LINKS.map(([label, href]) => (
-            <a key={href} href={href.startsWith("#") ? `${base}${href}` : href} data-c="ring">
+            <a
+              key={href}
+              href={href.startsWith("#") ? `${base}${href}` : href}
+              data-c="ring"
+              onClick={(e) => {
+                // The sections are hidden under the room: leave it first, then scroll.
+                if (mode !== "creative" || !href.startsWith("#") || !onNavigate) return;
+                e.preventDefault();
+                onNavigate(href);
+              }}
+            >
               {label}
             </a>
           ))}

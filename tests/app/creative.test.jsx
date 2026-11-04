@@ -28,6 +28,8 @@ describe("creative mode in the app", () => {
       },
       { timeout: 8000, interval: 100 },
     );
+    // The address is the plain page again, so a reload is the page, not the room.
+    expect(window.location.search).toBe("");
     await act(async () => {
       window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
     });

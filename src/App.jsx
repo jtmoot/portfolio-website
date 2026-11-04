@@ -23,7 +23,7 @@ import { createModeController, createModeStore } from "./lib/mode.js";
 
 const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
 const PAGE = typeof window !== "undefined" ? pageOf(window.location.pathname) : "pad";
-/** /?mode=creative (the shelf's toggle): the pad opens, then tips into the room on its own. */
+/** /?mode=creative: the pad opens, then tips into the room on its own. */
 const AUTO_CREATIVE = PAGE === "pad" && params.get("mode") === "creative";
 const modeStore = createModeStore("pad");
 const PHONE = "(max-width: 819px)";
@@ -83,14 +83,16 @@ export default function App() {
   // Quiet music while the room is open (the pad only: /shelf has no creative mode).
   useEffect(() => (PAGE === "pad" ? startAmbient(modeStore) : undefined), []);
 
-  // Arriving for the room (from the shelf's toggle): once the opening has landed, or after three
-  // seconds at most, the paper tips on its own.
+  // Arriving for the room (a /?mode=creative link): once the opening has landed, or after three
+  // seconds at most, the paper tips on its own. The address goes back to the plain page, so a
+  // reload is the page, not the room again.
   useEffect(() => {
     if (!AUTO_CREATIVE) return undefined;
     const since = Date.now();
     const t = setInterval(() => {
       if (!document.querySelector(".hero[data-go]") && Date.now() - since < 3000) return;
       clearInterval(t);
+      window.history.replaceState(null, "", window.location.pathname);
       modeControl.toggle();
     }, 100);
     return () => clearInterval(t);
@@ -120,7 +122,7 @@ export default function App() {
   if (PAGE === "shelf") {
     return (
       <>
-        <Shelf theme={theme} onToggleTheme={onToggleTheme} onToggleMode={() => window.location.assign("/?mode=creative")} />
+        <Shelf theme={theme} onToggleTheme={onToggleTheme} />
         <HoverPreview />
         <Cursor />
       </>
@@ -145,7 +147,7 @@ export default function App() {
         {({ view, flipped, phone }) => (
           <>
           <main className="sheet">
-            <Nav theme={theme} onToggleTheme={onToggleTheme} mode={mode} onToggleMode={onToggleMode} />
+            <Nav theme={theme} onToggleTheme={onToggleTheme} mode={mode} onToggleMode={onToggleMode} onNavigate={onNavigate} />
             <section className="poster" inert={flipped || undefined}>
               <Hero />
             </section>

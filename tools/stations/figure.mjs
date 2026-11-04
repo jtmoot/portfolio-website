@@ -263,6 +263,42 @@ const book = (centre, lift = 0) => (h) => {
   ];
 };
 /**
+ * An open book on his lap, seen from above: a dark cover under two cream pages tilted up 35
+ * degrees toward him, a few lines of print on each, its bottom edge at `origin` (forward, side, z).
+ * With `lift`, the right-hand page stands up mid-turn.
+ */
+const lapBook = (origin, lift = 0) => (h) => {
+  const { S, P } = h;
+  const o = h.ptv(origin);
+  const a = (35 * Math.PI) / 180;
+  const up = h.pt(-Math.sin(a), 0, Math.cos(a));
+  const normal = h.pt(Math.cos(a), 0, Math.sin(a));
+  const side = h.pt(0, 1, 0);
+  const F = G.frameOf(o, normal, side, up);
+  const cover = [[-13, -1.6], [13, -1.6], [13, 17], [-13, 17]];
+  const leaf = (sign) => [[0, -0.8], [sign * 12, -0.8], [sign * 12, 16], [0, 16]];
+  const point = (u, v, n = 0.35) => G.add3(G.add3(G.add3(o, G.mul3(side, u)), G.mul3(up, v)), G.mul3(normal, n));
+  let print = "";
+  for (const sign of [1, -1]) for (const v of [3.5, 6.5, 9.5, 12.5]) print += k.pathOf([h.at(point(sign * 1.8, v)), h.at(point(sign * (v === 12.5 ? 7 : 10.2), v))]);
+  const items = [
+    {
+      at: point(0, 7, -0.5),
+      svg:
+        `<g class="fm-cover">${S(G.prismOf(F, cover, -1.4, -0.4, P), { tone: "hi", crease: "lo" })}</g>` +
+        `<g class="fm-page">${S(G.prismOf(F, leaf(1), -0.4, 0.3, P), { tone: "hi", crease: "lo" })}${S(G.prismOf(F, leaf(-1).reverse(), -0.4, 0.3, P), { tone: "hi", crease: "lo" })}</g>` +
+        `<path class="fm-print" d="${print}"/>`,
+    },
+  ];
+  if (lift) {
+    // The right page swung 70 degrees up from the book, about the spine.
+    const t = (70 * Math.PI) / 180;
+    const along = G.add3(G.mul3(side, -Math.cos(t)), G.mul3(normal, Math.sin(t)));
+    const F2 = G.frameOf(point(0, 0, 0.3), G.unit3(G.cross3(along, up)), along, up);
+    items.push({ at: G.add3(point(0, 8, 0.3), G.mul3(along, 6)), svg: `<g class="fm-page">${S(G.prismOf(F2, [[0, -0.8], [12, -0.8], [12, 16], [0, 16]], -0.15, 0.15, P), { tone: "hi", crease: "lo" })}</g>` });
+  }
+  return items;
+};
+/**
  * A salt shaker gripped round its middle at `hand`, tipped `tilt` degrees forward from upright (180
  * is upside down); `pour` (0, 1 or 2) drops flakes from its cap at one of two offsets.
  */
@@ -362,9 +398,10 @@ const POSES = {
   // hands coming forward for balance, before the book is open on his lap.
   sitdown1: { sit: 0.35, sink: 15, front: true, arms: { L: { elbow: [8, 19, 102], hand: [22, 14, 92] }, R: { elbow: [8, -19, 102], hand: [22, -14, 92] } } },
   sitdown2: { sit: 0.7, sink: 31, front: true, arms: { L: { elbow: [10, 19, 92], hand: [24, 11, 94] }, R: { elbow: [10, -19, 92], hand: [24, -11, 94] } } },
-  sit1: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [12, -19, 88], hand: [24, -9, 98] } }, extras: book([27, 0, 100]) },
-  sit2: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [13, -17, 92], hand: [24, -3, 108] } }, extras: book([27, 0, 100], 1) },
-  sip: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 86], hand: [23, 6, 94] }, R: { elbow: [8, -20, 90], hand: [11, -7, 114] } }, extras: (h) => [...book([26, 4, 96])(h), ...mug([12, -7, 114])(h)] },
+  // Reading: the book open on his lap, held at its sides; a page turned with the right hand; a sip.
+  sit1: { sit: true, sink: 44, front: true, arms: { L: { elbow: [10, 21, 76], hand: [27, 13, 63] }, R: { elbow: [10, -21, 76], hand: [27, -13, 63] } }, extras: lapBook([32, 0, 56]) },
+  sit2: { sit: true, sink: 44, front: true, arms: { L: { elbow: [10, 21, 76], hand: [27, 13, 63] }, R: { elbow: [12, -19, 86], hand: [30, -5, 73] } }, extras: lapBook([32, 0, 56], 1) },
+  sip: { sit: true, sink: 44, front: true, arms: { L: { elbow: [10, 21, 76], hand: [30, 4, 62] }, R: { elbow: [8, -20, 90], hand: [11, -7, 114] } }, extras: (h) => [...lapBook([32, 4, 56])(h), ...mug([11, -7, 114])(h)] },
   // The hello: the right arm goes straight up and holds, then sweeps wide either side of it
   // (about 26 cm hand to hand), the forearm keeping its length.
   raise: { arms: { L: hang(1), R: { elbow: [4, -27, 160], hand: [7, -24, 188] } } },
