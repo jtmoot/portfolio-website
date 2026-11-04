@@ -1897,12 +1897,15 @@ html.has-cursor textarea {
   }
 }
 
-/* The bookcase: a drawing beside the book it has out. */
+/* The bookcase: a drawing beside the book it has out. It runs wider than the column, so the
+   spines read at a glance (42 cqw of drawing, about 600 px at 1440). */
 .bookcase {
   display: grid;
-  grid-template-columns: 33cqw 1fr;
+  grid-template-columns: 42cqw 1fr;
   gap: 2.4cqw;
   align-items: start;
+  width: 66cqw;
+  margin-left: -7cqw;
   margin-bottom: 4cqw;
 }
 
