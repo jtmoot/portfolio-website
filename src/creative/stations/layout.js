@@ -87,21 +87,29 @@ export const LAYOUT = {
     // between the arms is a block too, except while he's on his way to sit in it or getting up.
     footprint: { x: 20.2, y: 36.8, w: 3.2, h: 18.4 },
     seat: { x: 7.8, y: 40, w: 12.4, h: 12 },
+    // The arms, then the lamp behind his far shoulder and the side table beside the near arm, so
+    // the floor in front of the chair is open.
     blocks: [
       { x: 7.8, y: 36.8, w: 12.4, h: 3.2 },
       { x: 7.8, y: 52, w: 12.4, h: 3.2 },
-      { x: 5.2, y: 32.2, w: 5.6, h: 5.6 },
-      { x: 5.8, y: 55.4, w: 6.4, h: 6.4 },
+      { x: 15.2, y: 31.2, w: 5.6, h: 5.6 },
+      { x: 12.8, y: 56.8, w: 6.4, h: 6.4 },
     ],
-    // He sits inside the chair's outline: the back, seat, far arm and lamp draw behind him; the near
-    // arm and the side table in front.
-    paint: { x: 5, y: 32, w: 18.5, h: 13 },
-    frontPaint: { x: 5, y: 48, w: 18.5, h: 14 },
+    // He sits inside the chair's outline. The back layer (tall back, lamp, far arm, seat) is boxed
+    // on the back and lamp only, so he is in front of it anywhere forward of x 15.5 (the seat, the
+    // floor in front) and behind it anywhere past the back; the front layer (near arm, side table)
+    // is boxed on those, so he is behind it from the seat and in front of it from the room.
+    paint: { x: 15.5, y: 31, w: 8, h: 24.2 },
+    frontPaint: { x: 5, y: 48, w: 18.5, h: 16 },
     link: "/shelf",
     labelAt: { x: 7, y: 70, z: 0 },
+    // Where he sits (his hips, over the seat's centre) and where he stands to sit down: his feet a
+    // hand's breadth in front of the cushion, 43 cm forward of the hips, so they stay planted as he
+    // lowers himself back onto the seat.
     standAt: { x: 14.7, y: 46 },
-    // He comes to the seat from in front of the chair, between the lamp and the side table.
-    approachAt: { x: 3, y: 46 },
+    sitFrom: { x: 6.1, y: 46 },
+    // He comes to the floor in front of the chair first, then turns to face the room.
+    approach: [{ x: 3, y: 46 }],
   },
   corkboard: {
     id: "corkboard",

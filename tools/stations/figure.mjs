@@ -100,13 +100,18 @@ function person(c, facing, pose = {}) {
     // The leg swinging forward lifts its foot and drives its knee; the planted one stays down.
     const lift = gait ? gait.lift * Math.max(0, -side * Math.sin(th)) : 0;
     const hip = pt(0, side * 9, 94 + b);
-    // Seated: thighs run forward along the seat, shins drop to the floor.
-    const knee = pose.sit ? pt(40, side * 10, 96 + b + 2) : pt(reach * 0.55 + 1.5 + lift * 0.8 + sink * 0.9, side * 8.6, 50 + lift * 0.85 + b * 0.5);
-    const ankle = pose.sit ? pt(43, side * 9, 11) : pt(reach - lift * 0.3, side * 8.4, 11 + lift);
+    // Seated: thighs run forward along the seat, shins drop to the floor. A sit between 0 and 1 is
+    // part way down (or up), the feet planted where they will be once he is seated.
+    const sit = pose.sit === true ? 1 : pose.sit || 0;
+    const standKnee = pt(reach * 0.55 + 1.5 + lift * 0.8 + sink * 0.9, side * 8.6, 50 + lift * 0.85 + b * 0.5);
+    const knee = sit ? G.lerp3(standKnee, pt(40, side * 10, 96 + b + 2), sit) : standKnee;
+    const standAnkle = pt(reach - lift * 0.3, side * 8.4, 11 + lift);
+    const ankle = sit ? G.lerp3(standAnkle, pt(43, side * 9, 11), sit) : standAnkle;
     put(G.lerp3(hip, knee, 0.5), `<g class="fm-jog">${c.tube([hip, knee], 7, { tone: "hi", spacing: 7 })}</g>`);
     put(G.lerp3(knee, ankle, 0.5), `<g class="fm-jog">${c.tube([knee, G.lerp3(knee, ankle, 0.85)], 5.6, { tone: "hi", spacing: 7 })}</g>`);
     put(G.lerp3(knee, ankle, 0.92), `<g class="fm-cuff">${c.tube([G.lerp3(knee, ankle, 0.85), ankle], 4.9, { tone: "hi", spacing: 7 })}</g>`);
-    const heel = pose.sit ? pt(34.5, side * 8.4, 0) : pt(reach - lift * 0.3 - 8.5, side * 8.4, lift);
+    const standHeel = pt(reach - lift * 0.3 - 8.5, side * 8.4, lift);
+    const heel = sit ? G.lerp3(standHeel, pt(34.5, side * 8.4, 0), sit) : standHeel;
     const F = G.frameOf(heel, s, f, [0, 0, 1]);
     // Novablast: a deep, rockered foam stack under a knit upper.
     const sole = [[0, 0.6], [26, 0], [30, 1.8], [29.5, 4.4], [0, 5.8]];
@@ -353,6 +358,10 @@ const POSES = {
   water3: { arms: { L: hang(1), R: { elbow: [14, -20, 121], hand: [29, -15, 116] } }, extras: can([29, -15, 116], 52, 2) },
   // Reading in the chair: the book open on his lap, turning a page, a sip of coffee.
   // Held high enough to show over the club chair's back from behind.
+  // Sitting down (and getting up, played backwards): a third of the way, then two thirds, the
+  // hands coming forward for balance, before the book is open on his lap.
+  sitdown1: { sit: 0.35, sink: 15, front: true, arms: { L: { elbow: [8, 19, 102], hand: [22, 14, 92] }, R: { elbow: [8, -19, 102], hand: [22, -14, 92] } } },
+  sitdown2: { sit: 0.7, sink: 31, front: true, arms: { L: { elbow: [10, 19, 92], hand: [24, 11, 94] }, R: { elbow: [10, -19, 92], hand: [24, -11, 94] } } },
   sit1: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [12, -19, 88], hand: [24, -9, 98] } }, extras: book([27, 0, 100]) },
   sit2: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 88], hand: [24, 9, 98] }, R: { elbow: [13, -17, 92], hand: [24, -3, 108] } }, extras: book([27, 0, 100], 1) },
   sip: { sit: true, sink: 44, front: true, arms: { L: { elbow: [12, 19, 86], hand: [23, 6, 94] }, R: { elbow: [8, -20, 90], hand: [11, -7, 114] } }, extras: (h) => [...book([26, 4, 96])(h), ...mug([12, -7, 114])(h)] },
@@ -363,7 +372,7 @@ const POSES = {
   wave2: { arms: { L: hang(1), R: { elbow: [4, -28, 152], hand: [9, -42.2, 176.2] } } },
 };
 const POSE_FACING = { raise: "dr", wave1: "dr", wave2: "dr" };
-for (const a of Object.values(ACTIONS)) for (const [name] of a.frames) POSE_FACING[name] = a.facing;
+for (const a of Object.values(ACTIONS)) for (const [name] of [...(a.settle || []), ...a.frames]) POSE_FACING[name] = a.facing;
 
 export default {
   render() {
