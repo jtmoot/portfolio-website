@@ -7,9 +7,9 @@ export const CARD_TEXT = {
   library: { line: "A short bookcase, mostly contained within my Kindle now.", cta: "See the reading list" },
   plants: { line: "All thriving: monsteras, a dracaena, a hosta and a money tree.", cta: null },
   kitchen: { line: "Short ribs, braised in my Dutch oven.", cta: null },
-  gym: { line: "Functional fitness, always.", cta: "See my runs" },
-  chess: { line: "A Caro-Kann type of guy.", cta: "Open chess.com" },
-  reading: { line: "Coffee usually. Tea sometimes. Bone broth occasionally.", cta: "See the shelf" },
+  gym: { line: "Functional fitness.", cta: "See my runs" },
+  chess: { line: "A Caro-Kann type of guy", cta: "Open chess.com" },
+  reading: { line: "Coffee usually. Tea sometimes. Bone broth occasionally...", cta: "See the shelf" },
   corkboard: { line: "Highly recommended!", cta: null },
 };
 
