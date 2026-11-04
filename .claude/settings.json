@@ -1,0 +1,61 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit",
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(npm test)",
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(git diff*)",
+      "Bash(git status)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(mkdir *)",
+      "Bash(python -m pytest*)",
+      "Bash(black *)",
+      "Bash(ruff *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Read(./secrets/**)",
+      "Read(./.env)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_response.filePath // .tool_input.file_path' | { read -r f; npx prettier --write \"$f\" --ignore-unknown; } 2>/dev/null || true",
+            "timeout": 30,
+            "statusMessage": "Running prettier..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/joshuamoorehead/Projects/Portfolio-Website && npm run build 2>&1 | tail -5",
+            "timeout": 60,
+            "statusMessage": "Running production build..."
+          }
+        ]
+      }
+    ]
+  }
+}

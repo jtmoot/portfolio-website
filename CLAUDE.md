@@ -1,85 +1,55 @@
-# Portfolio Website — CLAUDE.md
+# Portfolio Website — joshuamoorehead.dev
 
-## First Things First (Read This After Every Compaction)
-1. Re-read this file (CLAUDE.md)
-2. Re-read the current TASK_CONTRACT.md (whichever contract number you're on)
-3. Re-read any files you're about to modify before editing them
-4. If you don't have a task plan yet, create one and show me before coding
+> **Status: personal-pad, live.** The bento site is archived at tag `archive/bento-v1`;
+> the r3f studio direction (Sept 2026) is dead and archived in `docs/archive/`.
 
-## Project Overview
-Personal portfolio website for Joshua Moorehead — ML Infrastructure & Agent Engineering.
-Bento-grid layout with interactive features, scroll animations, and live data integrations.
-Built with Vite + React. No Next.js. No CSS frameworks. Deployed on Vercel.
+## The Vision
+
+A personal notepad page modeled closely on garvitsingla.in: dotted pad paper, Geist Mono
+body, Gloria Hallelujah for the name and section titles, halftone stickers in the left
+margin, posters on the right, hover screenshot previews, moving project cards, Experience
+before Work. One signature moment, "creative mode": the pad falls flat into an isometric
+floor and the margin objects become detailed isometric SVG illustrations of Joshua's real
+rooms, with a walkable drawn figure. Never a three.js or game-engine look.
+
+- Spec: `docs/superpowers/specs/2026-10-28-personal-pad-design.md`
+- Plan: `docs/superpowers/plans/2026-10-28-personal-pad.md`
+- Reference mockups: `docs/superpowers/reference/pad-mockups/`
 
 ## Tech Stack
-- Build: Vite 6.x
-- UI: React 19.x
-- Styling: CSS custom properties + inline styles (matching original component)
-- Fonts: Google Fonts (DM Sans, Newsreader)
-- Deployment: Vercel
-- No Tailwind. No CSS-in-JS. No component libraries. No routing library.
 
-## Task Flow (Follow This Every Time)
-1. Read the current TASK_CONTRACT.md — understand what needs to be built
-2. Create a step-by-step plan and show it to me — do NOT start coding until I approve
-3. Implement in small increments, testing after each one
-4. Run `npm run build` after each major step to verify no build errors
-5. Run `npm run dev` and visually verify in the browser
-6. Go through every acceptance criteria checkbox in the contract
-7. Do NOT mark the task as complete until ALL checkboxes pass
+- **Build:** Vite 6.x
+- **UI:** React 19.x (functional components + hooks only), JSX, no TypeScript, no routing
+- **Motion:** CSS transitions and transforms, `requestAnimationFrame`; no animation libraries
+- **Tests:** Vitest + jsdom (`tests/` mirrors `src/`)
+- **Deployment:** Vercel (auto-deploys from `main`)
 
-## Architecture Rules
-- All React components go in src/components/
-- All custom hooks go in src/hooks/
-- All utility functions go in src/utils/
-- Global styles and CSS variables go in src/index.css
-- Component-specific styles use inline styles (matching existing pattern) OR a co-located .css file
-- No CSS modules. No styled-components. No Tailwind.
+## Current Working State
 
-## Coding Rules
-- Never implement stubs, placeholders, or TODO functions
-- Always use functional components with hooks
-- Use descriptive variable names
-- Handle errors explicitly — fetch calls need try/catch with fallback UI
-- Use semantic HTML where appropriate (section, nav, main, footer)
-- All interactive elements need keyboard accessibility
-- All images need alt text
-- Respect prefers-reduced-motion for all animations
+- **Live on `main` since Nov 3 2026** (tag `release/personal-pad-v1`). Work continues on
+  `rebuild/personal-pad` and reaches `main` by PR.
+- Layout: `src/pad` (the page and /shelf), `src/creative` (the room), `src/lib` (pure logic),
+  `src/content` (all copy), `api/` (Vercel functions: hello, recommend, books), `tools/` (station
+  drawings, the book index, the recommendations CLI). Plans per feedback round in
+  `docs/superpowers/plans/`.
+- Project media (mp4, webm, poster jpg) lives in `public/media/`; featured order is in
+  `docs/project-rankings.md`.
 
-## Scaffolding Rules (CRITICAL)
-- DO NOT use `npx create-next-app`, `npx create-react-app`, or any scaffolding CLI
-- DO NOT use Next.js for anything
-- If a directory already exists, DO NOT delete it and recreate — work with what's there
-- If a command fails, STOP and report the error. Do NOT retry in /tmp or another directory
-- If `npm create vite@latest` fails because directory exists, manually create package.json and vite.config.js
+## Workflow Rules (from global config — follow exactly)
 
-## CSS Variable Convention
-All colors must use CSS custom properties defined in src/index.css.
-Never hardcode colors like `#1a1a1a` in components — use `var(--text-primary)` etc.
-The only exception is the Google Fonts `<style>` tag which stays as-is.
+- Do NOT start implementing until a plan is approved. Brainstorm → design spec → plan → build.
+- Conventional commits (`feat:`, `fix:`, `refactor:`…). Never commit to `main` — always branch.
+- Never delete or overwrite existing files without confirmation.
+- Run `npm run build` after major steps to verify no build errors.
+- No emoji in rendered UI. No `console.log` in production code. Handle fetch errors explicitly.
 
-## What NOT To Do
-- Don't install packages not listed in the current contract
-- Don't add features not specified in the current contract
-- Don't refactor working code unless the current contract asks for it
-- Don't add TypeScript (plain JSX is fine)
-- Don't add routing (single-page app)
-- Don't add a backend or serverless functions (except where specified in Phase 5)
-- Don't use emoji in code — use SVG icons
-- Don't add console.log statements in production code
+## Commands
 
-## File Naming Conventions
-- Components: PascalCase.jsx (e.g., StatusBadge.jsx)
-- Hooks: camelCase.js starting with "use" (e.g., useTheme.js)
-- Utilities: camelCase.js (e.g., github.js)
-- CSS files: camelCase.css matching component name
-
-## When Confused
-- Re-read the current TASK_CONTRACT.md
-- Re-read this CLAUDE.md
-- Ask me — don't guess or assume
-
-## Browser Verification
-After implementing visual changes, use Chrome to open http://localhost:5173 
-and verify the result visually. Check both light and dark mode if applicable.
-Check mobile viewport (375px width) for responsive layouts.
+```bash
+npm test           # Vitest unit tests
+npm run dev        # Vite dev server at http://localhost:5173
+                   # also serves api/*.js (DEV_CITY sets the greeting's city);
+                   # `doppler run -- npm run dev` gives /api/recommend the dev database
+npm run build      # Production build to dist/
+npm run preview    # Preview production build locally
+```

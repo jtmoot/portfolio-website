@@ -1,0 +1,2171 @@
+html,
+body {
+  background: var(--paper);
+  color: var(--text);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.stage {
+  min-height: 100vh;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dots) 1px, transparent 1.2px);
+  background-size: clamp(16px, 1.6vw, 24.2px) clamp(16px, 1.6vw, 24.2px);
+  transition: background-color 0.6s ease;
+}
+
+/* The sheet: every size inside is in cqw of the sheet, so the page scales as one picture. */
+.sheet {
+  position: relative;
+  max-width: 1512px;
+  margin: 0 auto;
+  container-type: inline-size;
+  font-size: 0.926cqw;
+  line-height: 1.323cqw;
+  padding-bottom: 8cqw;
+}
+
+.hand {
+  font-family: var(--font-hand);
+  font-weight: 400;
+}
+
+.sheet h1,
+.sheet h2 {
+  font-family: var(--font-head);
+  font-weight: var(--head-weight);
+  letter-spacing: var(--head-tracking);
+  font-size: 1.85cqw;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.sheet h1 {
+  font-size: 3cqw;
+}
+
+.sheet h2 {
+  margin-bottom: 0.9cqw;
+}
+
+/* Small data keeps the mono: dates, places, chips, badges, urls. */
+.when,
+.where,
+.xp-kind,
+.chip,
+.badge,
+.win-title,
+.nav-clock {
+  font-family: var(--font-mono);
+}
+
+.card-title,
+.xp-name b,
+.book-title {
+  font-family: var(--font-head);
+  font-weight: var(--head-weight);
+  letter-spacing: var(--head-tracking);
+}
+
+/* First screen: hero and margins. */
+.poster {
+  position: relative;
+  height: 78cqw;
+}
+
+.hero {
+  position: absolute;
+  left: 38.6cqw;
+  top: 8cqw;
+  width: 33.6cqw;
+}
+
+.margin {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.margin > * {
+  pointer-events: auto;
+}
+
+/* Body column starts max(3cqw, 40px) under the social links (the hero measures itself into
+   --hero-end), and never higher than 26cqw down the poster before that measurement arrives. It
+   follows a hero that runs long, as when a browser draws the intro larger. */
+.body {
+  position: relative;
+  margin-top: max(-52cqw, calc(var(--hero-end, 0px) + max(3cqw, 40px) - 78cqw));
+  margin-left: 20.4cqw;
+  width: 59.3cqw;
+}
+
+.body > section {
+  margin-bottom: 3.2cqw;
+  scroll-margin-top: 4cqw;
+}
+
+/* Nav: a zero-height sticky dock keeps it at the top of the sheet; scrolled, it shrinks into a
+   frosted pill (garvitsingla.in's timing: 0.65 s on an ease-out-expo curve). */
+.nav-dock {
+  position: sticky;
+  top: 0;
+  height: 0;
+  z-index: 50;
+}
+
+.nav {
+  position: absolute;
+  left: 51.15cqw;
+  top: 3.24cqw;
+  width: 57.1cqw;
+  translate: -50% 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.794cqw;
+  z-index: 5;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  --nav-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    width 0.65s var(--nav-ease),
+    top 0.65s var(--nav-ease),
+    padding 0.65s var(--nav-ease),
+    background-color 0.65s var(--nav-ease),
+    border-color 0.65s var(--nav-ease),
+    box-shadow 0.65s var(--nav-ease);
+}
+
+.nav[data-compact] {
+  top: 14px;
+  width: min(700px, 57.1cqw);
+  padding: 8px 24px;
+  background-color: color-mix(in srgb, var(--paper) 80%, transparent);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border-color: color-mix(in srgb, var(--ink) 12%, transparent);
+  box-shadow: 0 8px 30px var(--nav-shadow, rgba(0, 0, 0, 0.08));
+}
+
+.nav[data-compact] .nav-links {
+  gap: 1.3cqw;
+}
+
+[data-theme="night"] .nav {
+  --nav-shadow: rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav {
+    transition: none;
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.6cqw;
+}
+
+.nav a {
+  text-decoration: none;
+}
+
+.nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+}
+
+.nav-clock {
+  opacity: 0.6;
+}
+
+.nav button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.toggle-pill {
+  display: inline-block;
+  width: 1.7cqw;
+  height: 1cqw;
+  border-radius: 1cqw;
+  border: 1px solid currentColor;
+  position: relative;
+}
+
+.toggle-pill::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.18cqw;
+  width: 0.55cqw;
+  height: 0.55cqw;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translateY(-50%);
+  transition: left 0.25s ease;
+}
+
+button[aria-pressed="true"] .toggle-pill::after {
+  left: calc(100% - 0.73cqw);
+}
+
+/* Phones: the poster stops scaling, margins hide, the body is one column with 16px gutters. */
+@media (max-width: 819px) {
+  .sheet {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 0 16px 64px;
+  }
+
+  .sheet h1,
+  .sheet h2 {
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  .sheet h2 {
+    margin-bottom: 12px;
+  }
+
+  .nav-dock {
+    height: auto;
+  }
+
+  .nav {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    translate: none;
+    font-size: 12px;
+    padding: 16px 0;
+    border-radius: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav-links {
+    gap: 14px;
+  }
+
+  .nav[data-compact] .nav-links {
+    gap: 14px;
+  }
+
+  .nav[data-compact] {
+    top: 8px;
+    width: auto;
+    margin: 0 -8px;
+    padding: 10px 14px;
+  }
+
+  .nav-right {
+    gap: 14px;
+  }
+
+  .toggle-pill {
+    width: 24px;
+    height: 14px;
+    border-radius: 14px;
+  }
+
+  .toggle-pill::after {
+    left: 2px;
+    width: 8px;
+    height: 8px;
+  }
+
+  button[aria-pressed="true"] .toggle-pill::after {
+    left: calc(100% - 10px);
+  }
+
+  .poster {
+    height: auto;
+  }
+
+  .hero {
+    position: static;
+    width: auto;
+    padding: 24px 0 32px;
+  }
+
+  .margin {
+    display: none;
+  }
+
+  .body {
+    margin: 0;
+    width: auto;
+  }
+
+  .body > section {
+    margin-bottom: 40px;
+  }
+}
+
+/* Hero */
+.polaroid {
+  position: absolute;
+  left: 25.8cqw;
+  top: 8.6cqw;
+  width: 11cqw;
+  margin: 0;
+  background: #f7f6f1;
+  padding: 0.45cqw;
+  box-shadow: 0 0.3cqw 1cqw rgba(35, 35, 32, 0.16);
+  --ink: #2a2a28;
+}
+
+.portrait-dots,
+.portrait-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  background: #ebeae4;
+  object-fit: cover;
+}
+
+.hero h1 {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* The unwritten rest of the name holds its place, so the line never reflows as it writes. */
+.name-ghost {
+  visibility: hidden;
+}
+
+.role {
+  font-size: 0.95cqw;
+  color: color-mix(in srgb, var(--ink) 62%, transparent);
+  margin: 0.4cqw 0 1cqw;
+}
+
+/* Two faded icons after the role, full strength on hover. */
+.intro-tools {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 0.5em;
+  vertical-align: -0.28em;
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 1.55em;
+  height: 1.55em;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: inherit;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.icon-btn:hover,
+.icon-btn:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.icon-btn svg {
+  width: 0.85em;
+  height: 0.85em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.intro {
+  margin: 0 0 1.2cqw;
+}
+
+/* The highlights: a low band under the words that draws left to right. */
+.intro mark {
+  background: linear-gradient(#8a4a2a, #8a4a2a) no-repeat 0 100% / 100% 0.18em;
+  -webkit-box-decoration-break: slice;
+  box-decoration-break: slice;
+  color: inherit;
+  /* The band reaches 2px past the words; the negative margin keeps the text where it would be. */
+  padding: 0 2px;
+  margin: 0 -2px;
+}
+
+/* The name's caret: a thin bar right after the last letter, solid while typing, then blinking. */
+.name-caret {
+  display: inline-block;
+  width: 0.06em;
+  min-width: 2px;
+  height: 0.82em;
+  margin-left: 0.06em;
+  vertical-align: -0.04em;
+  background: currentColor;
+  animation: caret-blink 1.06s steps(1) infinite;
+}
+
+.hand-name[data-writing] .name-caret {
+  animation: none;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* The opening (times from opening.js, set on .hero): the role fades in as the name finishes, the
+   intro rises 4px, each highlight draws in turn, the links come last. A replay flips data-pass,
+   which swaps in an identical keyframe and so redraws the highlights only. */
+.hero .role {
+  animation: open-fade 0.4s ease var(--t-role, 0s) backwards;
+}
+
+.hero .intro {
+  animation: open-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) var(--t-intro, 0s) backwards;
+}
+
+.hero[data-pass="0"] .intro mark {
+  animation: mark-draw-0 0.45s cubic-bezier(0.5, 0, 0.2, 1) calc(var(--t-marks, 0s) + var(--i, 0) * var(--t-mark-gap, 0s)) backwards;
+}
+
+.hero[data-pass="1"] .intro mark {
+  animation: mark-draw-1 0.45s cubic-bezier(0.5, 0, 0.2, 1) calc(var(--t-marks, 0s) + var(--i, 0) * var(--t-mark-gap, 0s)) backwards;
+}
+
+.hero .socials {
+  animation: open-fade 0.45s ease var(--t-socials, 0s) backwards;
+}
+
+/* Tabbing in before the fade is done shows what has focus at once. */
+.hero .role:focus-within,
+.hero .socials:focus-within {
+  animation: none;
+}
+
+@keyframes open-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes open-rise {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+
+@keyframes mark-draw-0 {
+  from {
+    background-size: 0% 0.18em;
+  }
+}
+
+@keyframes mark-draw-1 {
+  from {
+    background-size: 0% 0.18em;
+  }
+}
+
+/* The polaroid drops 6px into place with one small overshoot, and lifts a little under the pointer. */
+.polaroid {
+  animation: settle 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) 0.05s backwards;
+}
+
+/* Only for a real pointer: on a phone a tap would leave it lifted. */
+@media (hover: hover) {
+  .stage[data-mode="pad"] .polaroid:hover {
+    transform: translateY(-2px) rotate(1deg);
+    box-shadow: 0 0.6cqw 1.6cqw rgba(35, 35, 32, 0.13);
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+
+.socials {
+  display: flex;
+  gap: 0.5cqw;
+  align-items: center;
+  font-size: 0.85cqw;
+  margin: 0;
+}
+
+.pill {
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  padding: 0.15em 0.9em;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.pill:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name-caret,
+  .hero .role,
+  .hero .intro,
+  .hero .intro mark,
+  .hero .socials,
+  .polaroid {
+    animation: none !important;
+  }
+
+
+  .stage[data-mode="pad"] .polaroid {
+    transform: none !important;
+  }
+}
+
+@media (max-width: 819px) {
+  .polaroid {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 170px;
+    padding: 7px;
+    margin: 16px 0 0 8px;
+  }
+
+  .role,
+  .socials {
+    font-size: 13px;
+  }
+
+  .role {
+    margin: 12px 0;
+  }
+
+  .intro {
+    margin-bottom: 16px;
+  }
+
+  .socials {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .hero h1 {
+    white-space: normal;
+  }
+}
+
+/* Body sections */
+.muted {
+  opacity: 0.6;
+}
+
+/* Section heads, Garvit style: a small tracked line, the hand-lettered title and a margin note. */
+.eyebrow {
+  margin: 0 0 0.2cqw;
+  font-size: 0.62cqw;
+  letter-spacing: 0.2em;
+  opacity: 0.5;
+}
+
+.sec-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.sec-hint {
+  font-size: 0.8cqw;
+  opacity: 0.55;
+  rotate: -2deg;
+  margin: 0 0.6cqw 1.1cqw 0;
+}
+
+/* Shared paper cards. */
+.xp-card,
+.card {
+  position: relative;
+  background: var(--sheet-card);
+  border: 1px solid var(--card-line);
+  box-shadow: 0 0.3cqw 1.4cqw rgba(35, 35, 32, 0.06);
+}
+
+/* Experience and Leadership: printed with a fine dot grid (garvitsingla.in's card texture), so they
+   read differently from the plain project cards. */
+.xp-card {
+  border-radius: 1.2cqw;
+  background-image: radial-gradient(circle, var(--card-dots) 0.75px, transparent 1.1px);
+  background-size: 6px 6px;
+  background-position: 3px 3px;
+}
+
+.xp {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.xrow + .xrow {
+  border-top: 1px dashed var(--card-line);
+}
+
+.xrow-head {
+  display: grid;
+  grid-template-columns: 2.6cqw 1fr auto 1cqw;
+  gap: 1.2cqw;
+  align-items: center;
+  width: 100%;
+  padding: 1.15cqw 1.6cqw;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.xrow-head:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -4px;
+  border-radius: 1cqw;
+}
+
+.logo {
+  width: 2.6cqw;
+  height: 2.6cqw;
+  display: grid;
+  place-items: center;
+  border-radius: 0.55cqw;
+  background: var(--paper);
+  border: 1px solid var(--card-line);
+  box-shadow: 0 0.1cqw 0.3cqw rgba(35, 35, 32, 0.08);
+  font-family: var(--font-sans);
+  font-size: 0.7cqw;
+  font-weight: 700;
+  object-fit: contain;
+  color: var(--brand, var(--ink));
+}
+
+html[data-theme="night"] .logo {
+  color: color-mix(in srgb, var(--brand, var(--ink)) 45%, #f2efe6);
+}
+
+img.logo {
+  padding: 0.15cqw;
+  box-sizing: border-box;
+}
+
+.xp-name {
+  display: flex;
+  align-items: center;
+  gap: 0.6cqw;
+}
+
+.xp-name b {
+  font-family: var(--font-sans);
+  font-size: 1.12cqw;
+  font-weight: 600;
+}
+
+.xp-kind,
+.chip {
+  font-size: 0.6cqw;
+  line-height: 1.5;
+  padding: 0.05cqw 0.5cqw;
+  border: 1px solid var(--card-line);
+  background: var(--paper);
+}
+
+.xp-kind {
+  border-radius: 99px;
+  opacity: 0.75;
+}
+
+.xp-role {
+  display: block;
+  margin-top: 0.2cqw;
+  font-family: var(--font-sans);
+  font-size: 0.9cqw;
+  opacity: 0.72;
+}
+
+.xp-meta {
+  display: grid;
+  gap: 0.25cqw;
+  justify-items: end;
+  font-size: 0.72cqw;
+  white-space: nowrap;
+}
+
+.when {
+  font-weight: 500;
+}
+
+.where {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25cqw;
+  opacity: 0.5;
+}
+
+.where svg,
+.chev {
+  width: 0.75cqw;
+  height: 0.75cqw;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chev {
+  width: 1cqw;
+  height: 1cqw;
+  opacity: 0.5;
+  transition: rotate 0.3s ease;
+}
+
+.xrow-head[aria-expanded="true"] .chev {
+  rotate: 180deg;
+}
+
+.xp-more {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.xp-more[data-open] {
+  grid-template-rows: 1fr;
+}
+
+.xp-more > div {
+  overflow: hidden;
+  padding: 0 4.4cqw 0 5.4cqw;
+}
+
+.xp-more p {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.88cqw;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+/* Short bullets, each led by a small dash in the margin. */
+.xp-points {
+  display: grid;
+  gap: 0.35cqw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-sans);
+  font-size: 0.88cqw;
+  line-height: 1.5;
+}
+
+.xp-points li {
+  position: relative;
+  padding-left: 1.1em;
+  opacity: 0.85;
+}
+
+.xp-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.75em;
+  width: 0.55em;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+/* Linked words inside a bullet: a quiet underline that warms on hover. */
+.xp-points a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color 0.2s ease, color 0.2s ease;
+}
+
+.xp-points a:hover,
+.xp-points a:focus-visible {
+  color: var(--live);
+  text-decoration-color: currentColor;
+}
+
+.xp-more .chips {
+  margin-bottom: 1.2cqw;
+}
+
+.xp-more > div > p:last-child,
+.xp-more > div > .xp-points:last-child {
+  margin-bottom: 1.2cqw;
+}
+
+.xp-posts {
+  display: flex;
+  gap: 1cqw;
+  margin-top: 0.6cqw !important;
+}
+
+.now {
+  display: inline-block;
+  width: 0.5cqw;
+  height: 0.5cqw;
+  border-radius: 50%;
+  background: #2f7d4a;
+  margin-left: 0.5em;
+  vertical-align: 1px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4cqw;
+  list-style: none;
+  margin: 0.7cqw 0 0;
+  padding: 0;
+}
+
+.chip {
+  border-radius: 0.25cqw;
+}
+
+/* Projects: two cards, then one wide, repeating. */
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2cqw;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.4cqw;
+  padding: 1.4cqw;
+}
+
+.card[data-wide] {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 2cqw;
+}
+
+.card[data-wide] .win {
+  flex: 0 0 46%;
+}
+
+.win {
+  background: #16181c;
+  border-radius: 0.8cqw;
+  overflow: hidden;
+  box-shadow: 0 0.3cqw 1cqw rgba(0, 0, 0, 0.16);
+}
+
+.win-bar {
+  display: flex;
+  gap: 0.35cqw;
+  align-items: center;
+  height: 2cqw;
+  padding: 0 0.8cqw;
+}
+
+.win-bar i {
+  flex: none;
+  width: 0.6cqw;
+  height: 0.6cqw;
+  border-radius: 50%;
+  background: #e0443e;
+}
+
+.win-bar i:nth-child(2) {
+  background: #dea123;
+}
+
+.win-bar i:nth-child(3) {
+  background: #1aab29;
+}
+
+.win-title {
+  margin-left: 0.6cqw;
+  font-size: 0.68cqw;
+  color: #8d96a3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.win-screen {
+  position: relative;
+}
+
+.win video,
+.win img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top left;
+  background: #16181c;
+}
+
+/* A project with no recording yet: the same dark screen, with a line where the demo will go. */
+.win-note {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  margin: 0;
+  background: #16181c;
+  color: #9a9ea6;
+  font-family: var(--font-mono);
+  font-size: max(0.8cqw, 11px);
+}
+
+.vid-btn {
+  position: absolute;
+  right: 0.7cqw;
+  bottom: 0.7cqw;
+  width: 2cqw;
+  height: 2cqw;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(20, 22, 26, 0.62);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  color: #f2f1ec;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.vid-btn:hover,
+.vid-btn:focus-visible {
+  opacity: 1;
+}
+
+.vid-btn svg {
+  width: 0.8cqw;
+  height: 0.8cqw;
+  fill: currentColor;
+}
+
+.card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding-top: 1.2cqw;
+}
+
+.card[data-wide] .card-body {
+  padding-top: 0.2cqw;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1cqw;
+  margin: 0;
+  font-size: 0.8cqw;
+}
+
+.card-meta > span:first-child {
+  opacity: 0.6;
+}
+
+.badge {
+  flex: none;
+  font-size: 0.6cqw;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.12cqw 0.45cqw;
+  border: 1px solid var(--ink);
+  border-radius: 0.2cqw;
+}
+
+.card-title {
+  margin: 0.5cqw 0 0;
+  font-family: var(--font-sans);
+  font-size: 1.55cqw;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.card-line {
+  margin: 0.15cqw 0 0.7cqw;
+  font-size: 0.85cqw;
+  opacity: 0.6;
+}
+
+.card-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.88cqw;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.card .chips {
+  margin-bottom: 1.2cqw;
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+  margin: auto 0 0;
+  padding-top: 0.9cqw;
+  border-top: 1px dashed var(--card-line);
+  font-size: 0.78cqw;
+}
+
+.card-foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3cqw;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.card-foot a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.go-live {
+  color: var(--live);
+}
+
+.go-code {
+  margin-left: auto;
+  font-weight: 400 !important;
+  opacity: 0.65;
+}
+
+.card-foot svg {
+  width: 0.8em;
+  height: 0.8em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.interests {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6cqw 3cqw;
+  margin-bottom: 3.2cqw;
+}
+
+.interests section {
+  margin: 0;
+}
+
+.interests p {
+  margin: 0;
+}
+
+.plain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contact-links {
+  display: flex;
+  gap: 0.5cqw;
+}
+
+@media (max-width: 819px) {
+  .eyebrow {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .sec-head {
+    flex-wrap: wrap;
+  }
+
+  .sec-hint {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+
+  .xp-card {
+    border-radius: 14px;
+  }
+
+  .xrow-head {
+    grid-template-columns: 36px 1fr 14px;
+    gap: 4px 12px;
+    padding: 14px;
+  }
+
+  .xp-meta {
+    grid-column: 2;
+    grid-row: 2;
+    justify-items: start;
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+  }
+
+  .chev {
+    grid-column: 3;
+    grid-row: 1;
+    width: 14px;
+    height: 14px;
+  }
+
+  .logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 11px;
+  }
+
+  .xp-name {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+
+  .xp-name b {
+    font-size: 15px;
+  }
+
+  .xp-role {
+    font-size: 13px;
+  }
+
+  .xp-kind,
+  .chip {
+    font-size: 10px;
+    padding: 1px 7px;
+  }
+
+  .where svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .xp-more > div {
+    padding: 0 14px 0 62px;
+  }
+
+  .xp-more p,
+  .xp-points,
+  .card-text {
+    font-size: 13px;
+  }
+
+  .xp-points {
+    gap: 4px;
+  }
+
+  .xp-more .chips,
+  .card .chips {
+    margin-bottom: 14px;
+  }
+
+  .chips {
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .now {
+    width: 7px;
+    height: 7px;
+  }
+
+  .cards,
+  .interests {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .card,
+  .card[data-wide] {
+    flex-direction: column;
+    gap: 0;
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .card[data-wide] .win {
+    flex: none;
+    width: 100%;
+  }
+
+  .win {
+    border-radius: 8px;
+  }
+
+  .win-bar {
+    height: 24px;
+    gap: 5px;
+    padding: 0 10px;
+  }
+
+  .win-bar i {
+    width: 8px;
+    height: 8px;
+  }
+
+  .win-title {
+    font-size: 10px;
+  }
+
+  .vid-btn {
+    width: 28px;
+    height: 28px;
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .vid-btn svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .card-body,
+  .card[data-wide] .card-body {
+    padding-top: 14px;
+  }
+
+  .card-meta {
+    font-size: 12px;
+  }
+
+  .badge {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+
+  .card-title {
+    font-size: 20px;
+    margin-top: 6px;
+  }
+
+  .card-line {
+    font-size: 12px;
+  }
+
+  .card-foot {
+    gap: 14px;
+    padding-top: 12px;
+    font-size: 12px;
+    flex-wrap: wrap;
+  }
+
+  .contact-links {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}
+
+/* Hover preview card */
+.preview {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 240px;
+  z-index: 50;
+  pointer-events: none;
+  background: #f7f6f1;
+  padding: 5px 5px 7px;
+  border: 1px solid rgba(35, 35, 32, 0.15);
+  box-shadow: 0 10px 24px rgba(35, 35, 32, 0.3);
+  opacity: 0;
+  transition: opacity 0.16s;
+  color: #2a2a28;
+}
+
+.preview.on {
+  opacity: 1;
+}
+
+.preview img,
+.preview-ph {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top left;
+  background: #fff;
+  rotate: -2deg;
+}
+
+.preview-ph {
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  text-align: center;
+  font-size: 11px;
+  background: repeating-linear-gradient(135deg, #ebeae4 0 6px, #dfded7 6px 12px);
+}
+
+.preview-cap {
+  font-size: 13px;
+  line-height: 1.2;
+  margin-top: 5px;
+}
+
+/* Custom cursor (fine pointers only) */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+
+html.has-cursor input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.has-cursor textarea {
+  cursor: text !important;
+}
+
+.cursor.text {
+  opacity: 0 !important;
+}
+
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.2s;
+  --cursor-hot: #d9662b;
+}
+
+/* The dot. */
+.cursor::before,
+.cursor::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+
+.cursor::before {
+  width: 10px;
+  height: 10px;
+  background: var(--ink);
+  transition:
+    width 0.18s ease,
+    height 0.18s ease,
+    background-color 0.18s ease;
+}
+
+/* The ring, closed until something clickable is under the dot. */
+.cursor::after {
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--cursor-hot);
+  opacity: 0;
+  transition:
+    width 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+    height 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.15s ease;
+}
+
+.cursor.on {
+  opacity: 1;
+}
+
+.cursor.hot::before {
+  width: 5px;
+  height: 5px;
+  background: var(--cursor-hot);
+}
+
+.cursor.hot::after {
+  width: 26px;
+  height: 26px;
+  opacity: 1;
+}
+
+.cursor.area::after {
+  width: 40px;
+  height: 40px;
+  opacity: 0.55;
+  border-color: var(--ink);
+  border-width: 1px;
+}
+
+.cursor.area.press::after {
+  width: 30px;
+  height: 30px;
+}
+
+.cursor.press::before {
+  width: 4px;
+  height: 4px;
+}
+
+.cursor.hot.press::after {
+  width: 18px;
+  height: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor::before,
+  .cursor::after {
+    transition: opacity 0.15s ease;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* /shelf: the bookcase, then the same books as lists. */
+.shelf-page {
+  min-height: 100vh;
+}
+
+.shelf {
+  width: 52cqw;
+  margin: 0 auto;
+  padding-top: 9cqw;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4cqw;
+  font-size: 0.8cqw;
+  text-decoration: none;
+  opacity: 0.65;
+}
+
+.back:hover {
+  opacity: 1;
+}
+
+.back svg,
+.book-links svg {
+  width: 0.9em;
+  height: 0.9em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.shelf .eyebrow {
+  margin-top: 1.8cqw;
+}
+
+.shelf h1 {
+  font-size: 2.8cqw;
+  line-height: 1.2;
+  margin-top: 1.4cqw;
+  margin-bottom: 1.8cqw;
+}
+
+.shelf-list {
+  margin-bottom: 3.4cqw;
+}
+
+.book-row {
+  display: grid;
+  grid-template-columns: 6.4cqw 1fr;
+  gap: 1.8cqw;
+  padding: 1.6cqw 0;
+}
+
+.book-row + .book-row {
+  border-top: 1px solid var(--card-line);
+}
+
+.cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border: 1px solid rgba(35, 35, 32, 0.18);
+  box-shadow: 0.15cqw 0.25cqw 0.6cqw rgba(35, 35, 32, 0.18);
+}
+
+.cover-drawn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.7cqw;
+  box-sizing: border-box;
+  background: #e9e3d2;
+  color: #1c1c1a;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.cover-drawn b {
+  font-size: 1.05cqw;
+  line-height: 1.1;
+}
+
+.cover-drawn i {
+  font-size: 0.6cqw;
+}
+
+.book-title {
+  margin: 0;
+  font-size: 1.35cqw;
+  line-height: 1.3;
+}
+
+.book-by {
+  margin: 0.25cqw 0 0;
+  font-size: 0.85cqw;
+  opacity: 0.6;
+}
+
+.book-links {
+  margin: 1cqw 0 0;
+  font-size: 0.78cqw;
+}
+
+.book-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3cqw;
+  padding: 0.3cqw 0.7cqw;
+  border: 1px solid var(--card-line);
+  border-radius: 0.35cqw;
+  background: var(--paper);
+  text-decoration: none;
+}
+
+.shelf-grid {
+  margin-bottom: 3cqw;
+}
+
+.sheet .shelf-grid h2 {
+  margin-bottom: 1.2cqw;
+}
+
+.shelf-grid .count {
+  font-family: var(--font-mono);
+  font-size: 0.75cqw;
+  opacity: 0.5;
+  vertical-align: middle;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.6cqw 1.2cqw;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.book-tile a {
+  display: grid;
+  gap: 0.15cqw;
+  text-decoration: none;
+}
+
+.book-tile .cover {
+  margin-bottom: 0.4cqw;
+  transition:
+    translate 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease;
+}
+
+.book-tile a:hover .cover,
+.book-tile a:focus-visible .cover {
+  translate: 0 -0.3cqw;
+  box-shadow: 0.2cqw 0.5cqw 1cqw rgba(35, 35, 32, 0.24);
+}
+
+.tile-title {
+  font-size: 0.72cqw;
+  line-height: 1.3;
+}
+
+.tile-by {
+  font-size: 0.62cqw;
+  opacity: 0.55;
+}
+
+.shelf #contact {
+  margin: 4cqw 0 6cqw;
+}
+
+@media (max-width: 819px) {
+  .shelf {
+    width: auto;
+    padding-top: 12px;
+  }
+
+  .back,
+  .book-by,
+  .book-links {
+    font-size: 13px;
+  }
+
+  .shelf h1 {
+    font-size: 32px;
+    margin-bottom: 18px;
+  }
+
+  .book-row {
+    grid-template-columns: 72px 1fr;
+    gap: 14px;
+    padding: 16px 0;
+  }
+
+  .book-title {
+    font-size: 17px;
+  }
+
+  .book-links a {
+    padding: 4px 9px;
+    border-radius: 6px;
+  }
+
+  .cover-drawn {
+    padding: 8px;
+  }
+
+  .cover-drawn b {
+    font-size: 12px;
+  }
+
+  .cover-drawn i {
+    font-size: 9px;
+  }
+
+  .tiles {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px 12px;
+  }
+
+  .tile-title {
+    font-size: 12px;
+  }
+
+  .tile-by,
+  .shelf-grid .count {
+    font-size: 10px;
+  }
+}
+
+/* Recommend a book: a quiet form card at the end of the lists. */
+.recommend {
+  margin: 1cqw 0 3cqw;
+  padding: 1.8cqw 2.2cqw 2cqw;
+  border: 1px solid var(--card-line);
+  border-radius: 1.2cqw;
+  background: var(--sheet-card);
+}
+
+.sheet .recommend h2 {
+  margin: 0;
+  font-size: 1.4cqw;
+}
+
+.rec-lede {
+  margin: 0.3cqw 0 1.4cqw;
+  color: color-mix(in srgb, var(--text) 70%, transparent);
+  font-size: max(0.9cqw, 13px);
+}
+
+.rec-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1cqw 1.4cqw;
+}
+
+.rec-field {
+  position: relative;
+  display: grid;
+  gap: 0.35cqw;
+}
+
+.rec-wide {
+  grid-column: 1 / -1;
+}
+
+/* How long the in-browser search took: top right of the Book field, in the mono of the page's data. */
+.rec-speed {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-family: var(--font-mono);
+  font-size: max(0.7cqw, 11px);
+  font-variant-numeric: tabular-nums;
+  color: var(--live);
+  opacity: 0.85;
+}
+
+.rec-field label {
+  font-size: max(0.78cqw, 12px);
+  color: color-mix(in srgb, var(--text) 75%, transparent);
+}
+
+.rec-field input,
+.rec-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55em 0.7em;
+  border: 1px solid var(--card-line);
+  border-radius: 6px;
+  background: var(--paper);
+  color: var(--text);
+  font: inherit;
+  font-size: max(0.92cqw, 14px);
+}
+
+.rec-field textarea {
+  resize: vertical;
+}
+
+.rec-field input:focus-visible,
+.rec-field textarea:focus-visible {
+  outline: 2px solid var(--live);
+  outline-offset: 1px;
+}
+
+.rec-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  margin: 4px 0 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--card-line);
+  border-radius: 8px;
+  background: var(--sheet-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.rec-options li {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  column-gap: 10px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: max(0.86cqw, 13px);
+}
+
+.rec-options li[aria-selected="true"],
+.rec-options li:hover {
+  background: var(--card);
+}
+
+.rec-options img,
+.rec-nocover {
+  grid-row: 1 / span 2;
+  width: 24px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 2px;
+  background: var(--card);
+}
+
+.rec-opt-author {
+  grid-column: 2;
+  color: color-mix(in srgb, var(--text) 65%, transparent);
+  font-size: 0.9em;
+}
+
+.rec-trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.rec-send {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1.2cqw;
+}
+
+.rec-send button {
+  padding: 0.6em 1.5em;
+  border: 0;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-size: max(0.86cqw, 13px);
+}
+
+.rec-send button:disabled {
+  opacity: 0.6;
+}
+
+.rec-status {
+  margin: 0;
+  font-size: max(0.86cqw, 13px);
+}
+
+@media (max-width: 819px) {
+  .recommend {
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 28px;
+  }
+
+  .sheet .recommend h2 {
+    font-size: 20px;
+  }
+
+  .rec-lede {
+    margin: 4px 0 14px;
+  }
+
+  .rec-form {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .rec-field {
+    gap: 4px;
+  }
+}
+
+/* The bookcase: a drawing beside the book it has out. */
+.bookcase {
+  display: grid;
+  grid-template-columns: 33cqw 1fr;
+  gap: 2.4cqw;
+  align-items: start;
+  margin-bottom: 4cqw;
+}
+
+.bookcase-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.book-panel {
+  position: sticky;
+  top: 7cqw;
+  padding-top: 2.6cqw;
+}
+
+.book-panel .cover {
+  width: 11cqw;
+}
+
+.sheet .book-panel h2 {
+  margin: 1.3cqw 0 0;
+  font-size: 1.5cqw;
+  line-height: 1.25;
+}
+
+.book-panel .book-status {
+  margin: 0.8cqw 0 0;
+  font-size: 0.8cqw;
+  opacity: 0.6;
+}
+
+.bookcase-art [data-book],
+.bookcase-art [data-book] * {
+  pointer-events: none;
+}
+
+.bookcase-art [data-book]:focus {
+  outline: none;
+}
+
+.bookcase-art [data-book]:focus-visible .bk-edge {
+  stroke: var(--accent, #d9642c);
+  stroke-width: 0.5;
+}
+
+.bk-hit {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+}
+
+.bk-spine {
+  fill: var(--b);
+}
+
+.bk-cover {
+  fill: color-mix(in srgb, var(--b) 76%, #000);
+  stroke: rgba(20, 18, 14, 0.5);
+  stroke-width: 0.18;
+}
+
+.bk-hinge,
+.bk-rule,
+.bk-leaf,
+.bk-edge {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.bk-edge,
+.bk-hinge {
+  stroke: rgba(20, 18, 14, 0.55);
+  stroke-width: 0.5px;
+}
+
+.bk-rule {
+  stroke: currentColor;
+  stroke-width: 0.5px;
+  opacity: 0.55;
+}
+
+.bk-pages {
+  fill: #e9e3d2;
+}
+
+.bk-leaf {
+  stroke: rgba(70, 60, 40, 0.4);
+  stroke-width: 0.35px;
+}
+
+.bk-label {
+  fill: #ece6d4;
+}
+
+.bk-title,
+.bk-author,
+.bk-plate-text {
+  font-family: var(--font-sans);
+}
+
+.bk-title {
+  font-weight: 500;
+}
+
+.bk-holder {
+  fill: #b08c44;
+  stroke: #6e5426;
+  stroke-width: 0.25;
+}
+
+.bk-plate {
+  fill: #ede6d0;
+  stroke: #8a6c32;
+  stroke-width: 0.2;
+}
+
+.bk-plate-text {
+  fill: #2a2520;
+}
+
+html[data-theme="night"] .bookcase-art [data-book],
+html[data-theme="night"] .bookcase-art .bk-holder,
+html[data-theme="night"] .bookcase-art .bk-plate,
+html[data-theme="night"] .bookcase-art .bk-plate-text,
+html[data-theme="night"] .bk-fronts {
+  filter: brightness(0.78);
+}
+
+@media (max-width: 720px) {
+  .bookcase {
+    grid-template-columns: 1fr;
+    margin-bottom: 44px;
+  }
+
+  .shelf-list {
+    margin-bottom: 36px;
+  }
+
+  .book-panel {
+    position: static;
+    padding-top: 0;
+    display: grid;
+    grid-template-columns: 24vw 1fr;
+    gap: 0 4vw;
+  }
+
+  .book-panel .cover {
+    width: 100%;
+    grid-row: 1 / span 5;
+  }
+
+  .sheet .book-panel h2 {
+    margin-top: 0;
+    font-size: 19px;
+  }
+
+  .book-panel .book-status {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+}
+
+/* The side margins on wide screens: a section index on the left, ending with the shelf. */
+.sides {
+  display: none;
+}
+
+.card {
+  scroll-margin-top: 6cqw;
+}
+
+@media (min-width: 1280px) {
+  /* A zero-height dock that rides at the middle of the viewport beside the body column. */
+  .sides {
+    display: block;
+    position: sticky;
+    top: 46vh;
+    height: 0;
+    z-index: 3;
+  }
+
+  .side-index {
+    position: absolute;
+    top: 0;
+    right: calc(100% + 3.2cqw);
+    width: 9cqw;
+    translate: 0 -50%;
+    display: grid;
+    gap: 1cqw;
+    justify-items: start;
+    font-size: max(0.95cqw, 13px);
+  }
+
+  .side-index a {
+    display: flex;
+    align-items: center;
+    gap: 0.8cqw;
+    color: color-mix(in srgb, var(--text) 42%, transparent);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .side-index a::before {
+    content: "";
+    width: 1cqw;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.25s ease;
+  }
+
+  .side-index a:hover {
+    color: color-mix(in srgb, var(--text) 75%, transparent);
+  }
+
+  .side-index a[aria-current="true"] {
+    color: var(--text);
+  }
+
+  .side-index a[aria-current="true"]::before {
+    width: 2.2cqw;
+  }
+
+  /* The index ends with the shelf, under a short rule: a book drawing at text size takes the
+     tick's place, and the leaning book stands up when you reach for it. */
+  .side-rule {
+    width: 3.2cqw;
+    margin: 0.2cqw 0;
+    border: 0;
+    border-top: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  }
+
+  .side-index .side-shelf::before {
+    content: none;
+  }
+
+  /* Wider than the ticks, so it hangs left into the margin and "Shelf" lines up with the labels. */
+  .side-shelf svg {
+    width: 1.9em;
+    height: auto;
+    margin-left: calc(1cqw - 1.9em);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .side-shelf .lean {
+    transform-box: fill-box;
+    transform-origin: 0% 100%;
+    rotate: -6deg;
+    transition: rotate 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+
+  .side-shelf:hover .lean,
+  .side-shelf:focus-visible .lean {
+    rotate: 0deg;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .side-shelf .lean {
+      transition: none;
+    }
+  }
+}

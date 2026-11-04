@@ -1,0 +1,9 @@
+{
+  "rewrites": [{ "source": "/shelf", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/books/index.bin.gz",
+      "headers": [{ "key": "cache-control", "value": "public, max-age=86400, stale-while-revalidate=604800" }]
+    }
+  ]
+}

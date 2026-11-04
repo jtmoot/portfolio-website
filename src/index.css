@@ -1,47 +1,10 @@
-:root {
-  --bg-primary: #f5f3f0;
-  --bg-card: #ffffff;
-  --bg-tag: #f5f3f0;
-  --bg-dark-card: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  --bg-research-item: #fafaf8;
-  --bg-connect-end: #ebe8e3;
-  --text-primary: #1a1a1a;
-  --text-secondary: #555;
-  --text-muted: #888;
-  --text-hint: #aaa;
-  --text-on-dark: #ccc;
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.06);
-  --shadow-card-hover: 0 20px 40px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
-  --bg-active-tab: #1a1a1a;
-  --text-active-tab: #ffffff;
-  --bg-active-link: #1a1a1a;
-  --text-active-link: #ffffff;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-[data-theme="dark"] {
-  --bg-primary: #0f0f0f;
-  --bg-card: #1a1a1a;
-  --bg-tag: #2a2a2a;
-  --bg-dark-card: linear-gradient(135deg, #111 0%, #1e1e1e 100%);
-  --bg-research-item: #1e1e1e;
-  --bg-connect-end: #1a1a1a;
-  --text-primary: #e8e6e1;
-  --text-secondary: #aaa;
-  --text-muted: #888;
-  --text-hint: #666;
-  --text-on-dark: #ccc;
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08);
-  --shadow-card-hover: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.12);
-  --bg-active-tab: #e8e6e1;
-  --text-active-tab: #1a1a1a;
-  --bg-active-link: #e8e6e1;
-  --text-active-link: #1a1a1a;
-}
-
+html,
 body {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: 'DM Sans', -apple-system, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  transition: background 0.3s, color 0.3s;
+  margin: 0;
 }
