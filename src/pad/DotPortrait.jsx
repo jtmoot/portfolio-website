@@ -3,20 +3,36 @@ import { useEffect, useRef, useState } from "react";
 /** Dots per side: fine enough to read as a photo, coarse enough to stay a drawing. */
 export const DOTS = 96;
 const N = DOTS;
-const S = 480; // canvas resolution
-const REPEL = 80; // px of canvas space
+const S = 480; // the drawing's own coordinates; the canvas is scaled to its real size on screen
+const MAX_PX = 1600; // the largest canvas side we redraw at, whatever the card's size and screen
+const REPEL = 80; // in drawing coordinates
 const MIN_R = 0.75; // smaller dots are dropped, so the paper-white background stays clean
 const PAPER = 0.92; // lighter than this is background: no dot
 const SHADE = 0.86; // each dot keeps the photo's colour, a touch deeper so it reads as ink on paper
 
 /**
- * Halftone headshot drawn as dots in the photo's own colours (skin, hair, shirt), sized by
- * darkness; the dots part around the cursor and spring back.
- * @param {{ src: string, alt: string }} props
+ * How many canvas pixels a side, for a card `css` px wide on a screen with `dpr` device pixels per
+ * px: one per device pixel, so the dots are drawn sharp instead of a fixed canvas being scaled.
+ * @param {number} css the canvas's laid-out width
+ * @param {number} dpr window.devicePixelRatio
+ * @returns {number}
  */
-export default function DotPortrait({ src, alt }) {
+export function backingSize(css, dpr) {
+  if (!(css > 0)) return S;
+  return Math.min(Math.round(css * dpr), MAX_PX);
+}
+
+/**
+ * Halftone headshot drawn as dots in the photo's own colours (skin, hair, shirt), sized by
+ * darkness; the dots part around the cursor and spring back. onReady fires once there is something
+ * to see: the first frame of dots, or the plain photo (loaded or not) when there's no canvas.
+ * @param {{ src: string, alt: string, onReady?: () => void }} props
+ */
+export default function DotPortrait({ src, alt, onReady }) {
   const ref = useRef(null);
   const [fallback, setFallback] = useState(false);
+  const ready = useRef(onReady);
+  ready.current = onReady;
 
   useEffect(() => {
     const cv = ref.current;
@@ -25,8 +41,16 @@ export default function DotPortrait({ src, alt }) {
       setFallback(true);
       return undefined;
     }
-    cv.width = S;
-    cv.height = S;
+    // Sizing the canvas clears it and resets its transform, so the scale is set again every time.
+    const fit = () => {
+      const px = backingSize(cv.getBoundingClientRect().width, window.devicePixelRatio || 1);
+      if (cv.width !== px) {
+        cv.width = px;
+        cv.height = px;
+      }
+      ctx.setTransform(px / S, 0, 0, px / S, 0, 0);
+    };
+    fit();
     const dots = [];
     const mouse = { x: -9999, y: -9999 };
     let frame = 0;
@@ -81,6 +105,7 @@ export default function DotPortrait({ src, alt }) {
         }
       }
       kick();
+      ready.current?.();
     };
     img.onerror = () => setFallback(true);
     img.src = src;
@@ -96,6 +121,14 @@ export default function DotPortrait({ src, alt }) {
       mouse.y = -9999;
       kick();
     };
+    const resized = () => {
+      fit();
+      kick();
+    };
+    const size = typeof ResizeObserver === "function" ? new ResizeObserver(resized) : null;
+    size?.observe(cv);
+    // A move to a screen with a different pixel density resizes the window, not the canvas.
+    window.addEventListener("resize", resized);
     const theme = new MutationObserver(kick);
     theme.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     cv.addEventListener("pointermove", move);
@@ -104,11 +137,13 @@ export default function DotPortrait({ src, alt }) {
       alive = false;
       cancelAnimationFrame(frame);
       theme.disconnect();
+      size?.disconnect();
+      window.removeEventListener("resize", resized);
       cv.removeEventListener("pointermove", move);
       cv.removeEventListener("pointerleave", leave);
     };
   }, [src]);
 
-  if (fallback) return <img className="portrait-img" src={src} alt={alt} />;
+  if (fallback) return <img className="portrait-img" src={src} alt={alt} onLoad={() => onReady?.()} onError={() => onReady?.()} />;
   return <canvas ref={ref} className="portrait-dots" role="img" aria-label={alt} />;
 }

@@ -12,33 +12,33 @@ afterEach(async () => {
   host.remove();
 });
 
-const render = async (tokens) => {
+const render = async (paragraphs) => {
   host = document.createElement("div");
   document.body.append(host);
   root = createRoot(host);
-  await act(async () => root.render(<Intro tokens={tokens} />));
+  await act(async () => root.render(<Intro paragraphs={paragraphs} />));
   return host;
 };
 
-const TOKENS = [{ text: "I build " }, { text: "ml systems", mark: true }, { text: " at " }, { text: "CMU", mark: true }, { text: "." }];
+const PARAS = [[{ text: "I build " }, { text: "ml systems", mark: true }, { text: "." }], [{ text: "At " }, { text: "CMU", mark: true }, { text: "." }]];
 
 describe("Intro", () => {
-  it("is the whole paragraph from the start, as real text: it appears whole rather than typing", async () => {
-    const p = (await render(TOKENS)).querySelector("p.intro");
-    expect(p.textContent).toBe("I build ml systems at CMU.");
-    expect(p.hasAttribute("aria-label")).toBe(false);
-    expect(p.querySelector("[aria-hidden]")).toBeNull();
-    expect(p.querySelector(".caret")).toBeNull();
+  it("is every paragraph from the start, as real text: it appears whole rather than typing", async () => {
+    const intro = (await render(PARAS)).querySelector(".intro");
+    expect([...intro.querySelectorAll(":scope > p")].map((p) => p.textContent)).toEqual(["I build ml systems.", "At CMU."]);
+    expect(intro.hasAttribute("aria-label")).toBe(false);
+    expect(intro.querySelector("[aria-hidden]")).toBeNull();
+    expect(intro.querySelector(".caret")).toBeNull();
   });
 
-  it("numbers the highlights so they can draw in one after another", async () => {
-    const marks = [...(await render(TOKENS)).querySelectorAll("mark")];
+  it("numbers the highlights across paragraphs so they draw in one after another", async () => {
+    const marks = [...(await render(PARAS)).querySelectorAll("mark")];
     expect(marks.map((m) => m.textContent)).toEqual(["ml systems", "CMU"]);
     expect(marks.map((m) => m.style.getPropertyValue("--i"))).toEqual(["0", "1"]);
   });
 
   it("escapes nothing by hand: text with markup characters stays text", async () => {
-    const p = (await render([{ text: "a <b> & c" }])).querySelector("p");
+    const p = (await render([[{ text: "a <b> & c" }]])).querySelector(".intro p");
     expect(p.textContent).toBe("a <b> & c");
     expect(p.querySelector("b")).toBeNull();
   });

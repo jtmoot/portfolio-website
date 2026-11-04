@@ -1,4 +1,4 @@
-# Portfolio Website — joshuamoorehead.dev
+# Portfolio Website — joshuamoorehead.com
 
 > **Status: personal-pad, live.** The bento site is archived at tag `archive/bento-v1`;
 > the r3f studio direction (Sept 2026) is dead and archived in `docs/archive/`.

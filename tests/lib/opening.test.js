@@ -36,6 +36,13 @@ describe("openingTimes", () => {
     expect(o.role).toBeGreaterThanOrEqual(850);
   });
 
+  it("sweeps the first highlight in 100 ms into the paragraphs' fade, like garvitsingla.in", () => {
+    const o = openingTimes(1000, 3);
+    expect(o.marks - o.intro).toBe(100);
+    // The links wait for the 0.7 s fade to finish.
+    expect(o.socials).toBeGreaterThanOrEqual(o.intro + 700);
+  });
+
   it("is over in about 2.2 s for a 1 s name", () => {
     const o = openingTimes(1000, 3);
     expect(o.socials).toBeGreaterThan(1900);

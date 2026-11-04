@@ -41,6 +41,23 @@ describe("Experience", () => {
     await act(async () => root.unmount());
   });
 
+  it("shows no photo on hover, and links the place's site from the unfolded row", async () => {
+    const { host, root } = await mount();
+    for (const row of host.querySelectorAll(".xrow")) {
+      expect(row.closest("[data-prev],[data-ph]")).toBeNull();
+      expect(row.querySelector("[data-prev],[data-ph]")).toBeNull();
+    }
+    const toggle = host.querySelectorAll(".xrow-head")[0];
+    // The link sits in the panel, not the row head: a link can't live inside the button.
+    expect(toggle.querySelector("a")).toBeNull();
+    const site = host.querySelector(`#${toggle.getAttribute("aria-controls")} a.xp-site`);
+    expect(site.getAttribute("href")).toBe("https://corenaturalresources.com/");
+    expect(site.textContent).toBe("corenaturalresources.com");
+    expect(site.getAttribute("target")).toBe("_blank");
+    expect(site.getAttribute("rel")).toBe("noreferrer");
+    await act(async () => root.unmount());
+  });
+
   it("every entry carries the fields the card needs", () => {
     for (const x of EXPERIENCE) {
       for (const k of ["id", "company", "kind", "role", "dates", "place"]) expect(typeof x[k]).toBe("string");

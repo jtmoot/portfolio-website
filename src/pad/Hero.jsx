@@ -10,7 +10,7 @@ import { INTRO, ROLE, SOCIALS } from "../content/data.js";
 import { FIGURE_START } from "../lib/travelers.js";
 
 const NAME = "Joshua Moorehead";
-const T = openingTimes(nameDuration(NAME), INTRO.filter((t) => t.mark).length);
+const T = openingTimes(nameDuration(NAME), INTRO.flat().filter((t) => t.mark).length);
 /** The opening's timeline, for the CSS animations in sheet.css. */
 const TIMES = {
   "--t-role": `${T.role}ms`,
@@ -34,6 +34,8 @@ export default function Hero() {
   const hero = useRef(null);
   // Flipping between two identical animations restarts the highlights' draw on a replay.
   const [pass, setPass] = useState(0);
+  // The polaroid settles in once its portrait is drawn, not while the photo is still loading.
+  const [ready, setReady] = useState(false);
   const replay = () => {
     name.current?.run();
     setPass((p) => 1 - p);
@@ -64,8 +66,8 @@ export default function Hero() {
 
   return (
     <>
-      <figure className="polaroid" data-traveler="polaroid" style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y }}>
-        <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" />
+      <figure className="polaroid" data-traveler="polaroid" data-ready={ready || undefined} style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y }}>
+        <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" onReady={() => setReady(true)} />
       </figure>
       <div className="hero" ref={hero} data-pass={pass} style={TIMES}>
         <HandName ref={name} text={NAME} />
@@ -73,7 +75,7 @@ export default function Hero() {
           {ROLE}
           <IntroTools onReplay={replay} />
         </p>
-        <Intro tokens={INTRO} />
+        <Intro paragraphs={INTRO} />
         <p className="socials">
           {SOCIALS.map((s) => (
             <a
