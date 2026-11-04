@@ -68,7 +68,7 @@ export default function Nav({ theme, onToggleTheme, mode = "pad", onToggleMode, 
             <button
               type="button"
               onClick={onToggleMode}
-              data-sound="flip"
+              data-sound="none"
               onPointerEnter={() => import("../creative/Floor.jsx")}
               onFocus={() => import("../creative/Floor.jsx")}
               aria-pressed={mode === "creative"}

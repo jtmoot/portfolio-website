@@ -73,11 +73,17 @@ export const canPlay = () => able();
 
 /**
  * Plays a short clip. A no-op before unlock, while muted, under reduced motion, or when the file is missing.
+ * With `delay` it starts that many ms later, and stays quiet if sound was muted meanwhile.
  * @param {"typing" | "click" | "flip"} name
+ * @param {{ delay?: number }} [options]
  * @returns {Promise<void>}
  */
-export async function play(name) {
+export async function play(name, { delay = 0 } = {}) {
   if (!able() || !FILES[name]) return;
+  if (delay > 0) {
+    await new Promise((resolve) => setTimeout(resolve, delay));
+    if (!able()) return;
+  }
   try {
     const clip = cache[name] || (cache[name] = new Audio(FILES[name]));
     clip.currentTime = 0;

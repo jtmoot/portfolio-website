@@ -1,6 +1,13 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { enterCreative, unlockScroll } from "../lib/mode.js";
 import { fitView, padTransform } from "../lib/floorView.js";
+import { play } from "../lib/audio.js";
+
+/**
+ * How long after the paper starts to move the page-flip clip starts. The clip's loud land is at
+ * 0.85 s; the paper lands at about 1.2 s of its 1.5 s tip, either way, so the two meet.
+ */
+export const FLIP_SOUND_DELAY_MS = 350;
 
 const viewport = () => ({ w: window.innerWidth, h: window.innerHeight });
 const PHONE = "(max-width: 819px)";
@@ -41,6 +48,16 @@ export default function Stage({ store, children }) {
   }, [mode]);
 
   useEffect(() => () => unlockScroll(), []);
+
+  // The page turns as the paper starts to move, either way; not on mount.
+  const turned = useRef(false);
+  useEffect(() => {
+    if (!turned.current) {
+      turned.current = true;
+      return;
+    }
+    play("flip", { delay: FLIP_SOUND_DELAY_MS });
+  }, [flipped]);
 
   return (
     <div className="stage" data-mode={flipped ? "creative" : "pad"} data-phone={phone || undefined} style={{ "--pad-transform": padTransform(view) }}>
