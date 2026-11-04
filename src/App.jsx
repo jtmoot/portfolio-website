@@ -23,7 +23,9 @@ import { createModeController, createModeStore } from "./lib/mode.js";
 
 const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
 const PAGE = typeof window !== "undefined" ? pageOf(window.location.pathname) : "pad";
-const modeStore = createModeStore(params.get("mode") === "creative" ? "creative" : "pad");
+/** /?mode=creative (the shelf's toggle): the pad opens, then tips into the room on its own. */
+const AUTO_CREATIVE = PAGE === "pad" && params.get("mode") === "creative";
+const modeStore = createModeStore("pad");
 const PHONE = "(max-width: 819px)";
 /** The room's code: the floor overlay (which pulls in every drawing), plus the phone stage on phones. */
 const loadRoom = () =>
@@ -81,6 +83,19 @@ export default function App() {
   // Quiet music while the room is open (the pad only: /shelf has no creative mode).
   useEffect(() => (PAGE === "pad" ? startAmbient(modeStore) : undefined), []);
 
+  // Arriving for the room (from the shelf's toggle): once the opening has landed, or after three
+  // seconds at most, the paper tips on its own.
+  useEffect(() => {
+    if (!AUTO_CREATIVE) return undefined;
+    const since = Date.now();
+    const t = setInterval(() => {
+      if (!document.querySelector(".hero[data-go]") && Date.now() - since < 3000) return;
+      clearInterval(t);
+      modeControl.toggle();
+    }, 100);
+    return () => clearInterval(t);
+  }, []);
+
   useEffect(() => {
     const first = () => unlock();
     window.addEventListener("pointerdown", first, { once: true });
@@ -105,7 +120,7 @@ export default function App() {
   if (PAGE === "shelf") {
     return (
       <>
-        <Shelf theme={theme} onToggleTheme={onToggleTheme} />
+        <Shelf theme={theme} onToggleTheme={onToggleTheme} onToggleMode={() => window.location.assign("/?mode=creative")} />
         <HoverPreview />
         <Cursor />
       </>
