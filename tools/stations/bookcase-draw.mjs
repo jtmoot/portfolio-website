@@ -38,7 +38,7 @@ function rng(seed) {
  *   and a layer for tipped copies (the page); otherwise plain art (the room)
  */
 export function drawBookcase(c, { interactive = false } = {}) {
-  const { box, cyl, L, D: dots, at, path3, halo, tube } = c;
+  const { box, cyl, L, D: dots, at, path3, halo, tube, frame, prism } = c;
   const out = [];
   const rand = rng(11);
   const wood = (svg) => `<g class="m-walnut">${svg}</g>`;
@@ -257,6 +257,24 @@ export function drawBookcase(c, { interactive = false } = {}) {
   out.push(arm(-15), arm(15));
   out.push(brass(tube([[3.2, -16, lz], [3.2, 16, lz]], 0.55, { tone: "mid" })));
   out.push(brass(box(3.2, -17, lz - 1.6, 9.5, 17, lz + 1.4, { r: 1.3, steps: 5, bevel: 0.3, lit: true, ...solid })));
+
+  // A sticky note on the top, by the light's near arm, set a little askew with one corner lifting,
+  // and a line in his hand on it (three lines of text, flat on the paper).
+  const [nx, ny, ns, nr] = [12.5, -27.5, 6.5, (-9 * Math.PI) / 180];
+  // The note's reading frame: U runs along the lines (toward -y, screen right), V down the note
+  // (toward +x, the reader), both turned by nr about z.
+  const U = [Math.sin(nr), -Math.cos(nr), 0];
+  const V = [Math.cos(nr), Math.sin(nr), 0];
+  const N3 = (u, v, z) => [nx + u * U[0] + v * V[0], ny + u * U[1] + v * V[1], TOP + z];
+  out.push(halo({ x: nx - ns - 0.4, y: ny - ns - 0.4, w: 2 * ns + 0.8, d: 2 * ns + 0.8, r: 1 }, TOP, 1.4));
+  out.push(`<g class="m-sticky">${prism(frame([nx, ny, TOP], [0, 0, 1], U, V), [[-ns, -ns], [ns, -ns], [ns, ns], [-ns, ns]], 0, 0.14, { tone: "hi", crease: "none" })}</g>`);
+  out.push(`<path class="bk-note-curl" d="${path3([N3(ns, ns - 3.2, 0.14), N3(ns, ns, 1.6), N3(ns - 3.2, ns, 0.14)], true)}"/>`);
+  const no = at(N3(-ns, -ns, 0.18));
+  const nu = at(N3(-ns + 1, -ns, 0.18));
+  const nv = at(N3(-ns, -ns + 1, 0.18));
+  const nm = [nu[0] - no[0], nu[1] - no[1], nv[0] - no[0], nv[1] - no[1], no[0], no[1]].map((n) => n.toFixed(3)).join(" ");
+  const noteLines = ["Never stop the", "intellectual", "struggle..."];
+  out.push(`<g class="bk-note-text" transform="matrix(${nm})">${noteLines.map((t, i) => `<text x="0.8" y="${(3.1 + i * 2.5).toFixed(2)}" font-size="1.55">${esc(t)}</text>`).join("")}</g>`);
 
   if (interactive) {
     // Above all the art: rest-pose hit strips, so a book moving away from the pointer keeps its hover,

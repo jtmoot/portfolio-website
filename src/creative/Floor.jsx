@@ -176,7 +176,8 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
         const seen = camera.seen();
         if (seen) placeArrows(v, camera.pan.current, seen);
       }
-      const near = s.falling ? null : (nearestStation(s.pos, LABELLED, 5)?.id ?? null);
+      // Within reach of a station's footprint: the chair's seat is 5.5 from its back, so 6.
+      const near = s.falling ? null : (nearestStation(s.pos, LABELLED, 6)?.id ?? null);
       setNearId((prev) => (prev === near ? prev : near));
       if ((s.tiles.size > 0 || tiles.length > 0) && (s.now - lastTiles.current > 200 || s.tiles.size === 0)) {
         lastTiles.current = s.now;

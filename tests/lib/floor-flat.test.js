@@ -44,27 +44,31 @@ describe("a flat box", () => {
   });
 });
 
-describe("a box open on its +x side", () => {
-  const back = { id: "reading", footprint: { x: 5, y: 32, w: 18, h: 8.5 } };
-  const front = { id: "reading-front", footprint: { x: 5, y: 40.5, w: 18, h: 21.5, open: "+x" } };
+describe("the reading chair, facing the camera", () => {
+  const back = { id: "reading", footprint: { x: 15.5, y: 31, w: 8, h: 24.2 } };
+  const front = { id: "reading-front", footprint: { x: 5, y: 48, w: 18.5, h: 16 } };
 
-  it("draws him over the chair while he walks up to its open front, and behind its front layer once he is in the seat", () => {
-    const walkingUp = paintOrder([back, front], { x: 27, y: 44.2 });
-    expect(walkingUp.at(-1)).toBe("figure");
-    const seated = paintOrder([back, front], { x: 14.7, y: 46 });
-    expect(seated).toEqual(["reading", "figure", "reading-front"]);
+  it("draws him whole in front of it as he walks up, between its layers in the seat, and behind it when he stands behind it", () => {
+    for (const p of [{ x: 4, y: 66 }, { x: 3, y: 56 }, { x: 3, y: 46 }, { x: 2, y: 36 }]) {
+      expect(paintOrder([back, front], p).at(-1), JSON.stringify(p)).toBe("figure");
+    }
+    for (const x of [3, 8, 12, 14.7]) {
+      const order = paintOrder([back, front], { x, y: 46 });
+      expect(order.indexOf("reading"), `x ${x}`).toBeLessThan(order.indexOf("figure"));
+    }
+    expect(paintOrder([back, front], { x: 14.7, y: 46 })).toEqual(["reading", "figure", "reading-front"]);
+    for (const p of [{ x: 26.6, y: 46 }, { x: 27, y: 40 }, { x: 22, y: 26 }]) {
+      expect(paintOrder([back, front], p)[0], JSON.stringify(p)).toBe("figure");
+    }
   });
 
-  it("lets the pieces that cover most of him settle a disagreement, so a table's corner cannot hide him behind the chair", () => {
-    const chess = { id: "chess", footprint: { x: 29, y: 60, w: 27, h: 14 } };
-    // A wide piece far behind him, which he is plainly in front of, must not tip the balance either.
+  it("lets the pieces that cover most of him settle a disagreement", () => {
+    const chess = { id: "chess", footprint: { x: 29.5, y: 60, w: 27, h: 14 } };
+    // A wide piece far behind him, which he is plainly in front of, must not tip the balance.
     const desk = { id: "desk", footprint: { x: 58, y: 0, w: 32, h: 16 } };
-    // On the way from the chess table to the chair: the chair's front covers him by 8 units, the
-    // table's corner by a sliver, whichever of the two is nearer.
-    for (const p of [{ x: 34.58, y: 48.36 }, { x: 34.64, y: 48.44 }, { x: 36, y: 49 }]) {
+    for (const p of [{ x: 20, y: 68 }, { x: 10, y: 67 }]) {
       const order = paintOrder([desk, back, front, chess], p);
-      expect(order.indexOf("figure"), JSON.stringify(p)).toBeGreaterThan(order.indexOf("reading-front"));
-      expect(order.indexOf("figure"), JSON.stringify(p)).toBeGreaterThan(order.indexOf("desk"));
+      expect(order.at(-1), JSON.stringify(p)).toBe("figure");
     }
   });
 });

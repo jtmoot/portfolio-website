@@ -54,7 +54,9 @@ export const ACTIONS = {
   library: { facing: "ul", frames: [["book1", 700], ["book2", 1300], ["book3", 450], ["book2", 900], ["book1", 550]] },
   kitchen: { facing: "ur", frames: [["cook1", 600], ["cook2", 240], ["cook3", 240], ["cook2", 240], ["cook3", 240], ["cook2", 240], ["cook3", 240], ["cook2", 240], ["cook3", 240], ["cook1", 600]] },
   plants: { facing: "ul", frames: [["water1", 600], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water1", 600]] },
-  reading: { facing: "dl", frames: [["sit1", 1300], ["sit2", 450], ["sit1", 900], ["sip", 850], ["sit1", 450]] },
+  // The chair: he sits down first (and gets up the same way, backwards), each settle frame drawn
+  // with his hips that fraction of the way from where he stood to the seat, his feet planted.
+  reading: { facing: "dl", settle: [["sitdown1", 110, 0.35], ["sitdown2", 110, 0.7]], frames: [["sit1", 1300], ["sit2", 450], ["sit1", 900], ["sip", 850], ["sit1", 450]] },
   chess: { facing: "dr", over: true, frames: [["chess1", 900], ["chess2", 1500], ["chess3", 1100]] },
   gym: { facing: "dr", loop: true, frames: [["kb1", 380], ["kb2", 160], ["kb3", 420], ["kb2", 160]] },
 };
@@ -81,6 +83,32 @@ export function poseAt(id, t) {
   }
   return a.frames.at(-1)[0];
 }
+/** How long a station's sitting-down frames take (0 for a station he stands at). */
+export const settleMs = (id) => (ACTIONS[id]?.settle || []).reduce((sum, [, ms]) => sum + ms, 0);
+
+/**
+ * The sitting-down frame t ms in: its pose, and how far his hips are from where he stood to the
+ * seat. Getting `up` plays them backwards. Null once the frames are over.
+ * @param {string} id
+ * @param {number} t
+ * @param {boolean} [up]
+ * @returns {{ pose: string, frac: number } | null}
+ */
+export function settleAt(id, t, up = false) {
+  const steps = ACTIONS[id]?.settle || [];
+  const total = settleMs(id);
+  if (!steps.length || t >= total) return null;
+  const at = up ? total - t - 1e-6 : t;
+  let cursor = 0;
+  for (const [pose, ms, frac] of steps) {
+    if (at < cursor + ms) return { pose, frac };
+    cursor += ms;
+  }
+  const [pose, , frac] = steps.at(-1);
+  return { pose, frac };
+}
+
+const between = (a, b, t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
 const ARRIVE = 0.02;
 const RESPAWN_FALLBACK = { x: 74, y: 26 };
 
@@ -132,6 +160,9 @@ export function initialFigure(start, { greet = true, hello = greet } = {}) {
     tiles: new Map(),
     falling: false,
     fallLeft: 0,
+    seated: false,
+    rising: 0,
+    pendingTap: null,
     now: 0,
   };
 }
@@ -147,18 +178,30 @@ export function standPoint(station) {
 }
 
 /**
- * A route to a station's stand point: round the furniture, and by way of its `approachAt` when it
- * has one (the reading chair: he comes to the seat straight in from the room, between the arms,
- * instead of cutting in over the near arm). Waypoints, ending at the stand point; null if unreachable.
+ * Where he walks to for a station: its stand point, or, for a chair, where he stands to sit down
+ * (`sitFrom`), from which the sitting-down frames carry him to the seat.
+ */
+export function walkPoint(station) {
+  return station.sitFrom ? { ...station.sitFrom } : standPoint(station);
+}
+
+const near = (p, q) => Math.hypot(p.x - q.x, p.y - q.y) < 0.5;
+
+/**
+ * A route to where he walks to for a station: round the furniture, and by way of its `approach`
+ * points when it has them (the reading chair: to the floor in front of it first). The way to the
+ * first approach point goes round the furniture; the legs after it are walked as given. Waypoints,
+ * ending at the walk point; null if unreachable.
  * @param {{ x: number, y: number }} from
  * @param {object} station
  * @param {object[]} blocks
  */
 export function routeTo(from, station, blocks) {
-  const stand = standPoint(station);
-  if (!station.approachAt) return findPath(from, stand, blocks, FLOOR);
-  const route = findPath(from, station.approachAt, blocks, FLOOR);
-  return route ? [...route, stand] : null;
+  const end = walkPoint(station);
+  const approach = station.approach || (station.approachAt ? [station.approachAt] : []);
+  if (!approach.length) return findPath(from, end, blocks, FLOOR);
+  const route = findPath(from, approach[0], blocks, FLOOR);
+  return route ? [...route, ...approach.slice(1).map((p) => ({ ...p })), end] : null;
 }
 
 /**
@@ -172,7 +215,7 @@ export function blocksFor(ctx, pos, dest) {
   const open = ctx.stations.find((st) => {
     if (!st.seat) return false;
     const seat = ctx.footprints.find((f) => f.seat === st.id);
-    const going = dest && Math.hypot(standPoint(st).x - dest.x, standPoint(st).y - dest.y) < 0.5;
+    const going = dest && (near(standPoint(st), dest) || near(walkPoint(st), dest));
     return going || (seat && collides(pos, seat));
   });
   return open ? ctx.footprints.filter((f) => f.seat !== open.id) : ctx.footprints;
@@ -212,6 +255,9 @@ export function stepFigure(state, input, ctx, dtArg) {
       s.route = [];
       s.tiles = new Map();
       s.frame = 0;
+      s.seated = false;
+      s.rising = 0;
+      s.pendingTap = null;
     }
     return s;
   }
@@ -252,23 +298,35 @@ export function stepFigure(state, input, ctx, dtArg) {
   }
 
   // Who is steering, and what's in his way (a seat is open only on the way to its chair).
-  const dest = () => s.target || (s.control === "idle" && ctx.stations.length ? standPoint(ctx.stations[s.idleIndex]) : null);
+  const dest = () => s.target || (s.control === "idle" && ctx.stations.length ? walkPoint(ctx.stations[s.idleIndex]) : null);
   const blocks = () => blocksFor(ctx, s.pos, dest());
+  // Seated: a steer or a tap first gets him up (the sitting-down frames backwards); the move itself
+  // follows once he is standing, a tap kept until then.
+  if ((input.dir || input.tapTarget) && s.seated && !s.rising) {
+    s.rising = settleMs(ctx.stations[s.idleIndex].id);
+    s.pauseLeft = 0;
+    if (input.tapTarget) s.pendingTap = { ...input.tapTarget };
+  }
+  const busy = s.rising > 0 || s.seated;
+  const dir = busy ? null : input.dir;
+  const tapTarget = busy ? null : input.tapTarget || s.pendingTap || null;
+  if (tapTarget) s.pendingTap = null;
   let step = null;
-  if (input.dir) {
+  if (dir) {
     s.control = "user";
     s.sinceInput = 0;
     s.target = null;
     s.route = [];
-    const len = Math.hypot(input.dir.dx, input.dir.dy) || 1;
-    step = { dx: (input.dir.dx / len) * speed * dt, dy: (input.dir.dy / len) * speed * dt };
+    const len = Math.hypot(dir.dx, dir.dy) || 1;
+    step = { dx: (dir.dx / len) * speed * dt, dy: (dir.dy / len) * speed * dt };
   } else {
-    if (input.tapTarget) {
+    if (tapTarget) {
       s.control = "user";
       s.sinceInput = 0;
-      s.target = { ...input.tapTarget };
-      // A tap on a station's stand point takes the station's own way in.
-      const st = ctx.stations.find((o) => Math.hypot(standPoint(o).x - s.target.x, standPoint(o).y - s.target.y) < 0.5);
+      s.target = { ...tapTarget };
+      // A tap on a station (its stand point or walk point) takes the station's own way in.
+      const st = ctx.stations.find((o) => near(standPoint(o), s.target) || near(walkPoint(o), s.target));
+      if (st) s.target = walkPoint(st);
       const route = st ? routeTo(s.pos, st, blocks()) : findPath(s.pos, s.target, blocks(), FLOOR);
       s.route = route && route.length > 1 ? route.slice(0, -1) : [];
     } else {
@@ -282,21 +340,52 @@ export function stepFigure(state, input, ctx, dtArg) {
     }
     const holding = input.hold && s.control === "idle";
     let goal = holding ? null : s.route[0] || s.target;
-    if (!goal && s.control === "idle" && ctx.stations.length && s.pauseLeft > 0) {
+    if (!goal && s.control === "idle" && ctx.stations.length && (s.pauseLeft > 0 || s.rising > 0)) {
       // At a station: face it and do its little action. An open card (hold) keeps him there,
-      // still at it; he moves on once the stop is over and nothing holds him.
+      // still at it; he moves on once the stop is over and nothing holds him. At a chair he sits
+      // down first and gets up last, his hips sliding between where he stood and the seat.
       const st = ctx.stations[s.idleIndex];
+      const sit = settleMs(st.id);
       s.facing = ACTIONS[st.id]?.facing ?? facingToward(s.pos, st.footprint);
-      s.actT = (s.actT || 0) + ms;
-      s.pose = poseAt(st.id, s.actT);
-      s.pauseLeft = Math.max(holding ? 1 : 0, s.pauseLeft - ms);
-      if (s.pauseLeft <= 0) {
-        s.idleIndex = (s.idleIndex + 1) % ctx.stations.length;
-        s.pose = null;
-        s.actT = 0;
+      if (s.rising > 0) {
+        const up = settleAt(st.id, sit - s.rising, true);
+        s.rising -= ms;
+        if (s.rising <= 0 || !up) {
+          s.rising = 0;
+          s.seated = false;
+          s.pos = walkPoint(st);
+          s.pose = null;
+          s.actT = 0;
+          if (!s.pendingTap) s.idleIndex = (s.idleIndex + 1) % ctx.stations.length;
+        } else {
+          s.pose = up.pose;
+          s.pos = between(walkPoint(st), standPoint(st), up.frac);
+        }
+      } else {
+        s.actT = (s.actT || 0) + ms;
+        const down = sit ? settleAt(st.id, s.actT) : null;
+        if (down) {
+          s.pose = down.pose;
+          s.pos = between(walkPoint(st), standPoint(st), down.frac);
+        } else {
+          if (sit && !s.seated) {
+            s.seated = true;
+            s.pos = standPoint(st);
+          }
+          s.pose = poseAt(st.id, s.actT - sit);
+        }
+        s.pauseLeft = Math.max(holding ? 1 : 0, s.pauseLeft - ms);
+        if (s.pauseLeft <= 0) {
+          if (sit) s.rising = sit;
+          else {
+            s.idleIndex = (s.idleIndex + 1) % ctx.stations.length;
+            s.pose = null;
+            s.actT = 0;
+          }
+        }
       }
     } else if (!goal && !holding && s.control === "idle" && ctx.stations.length && !s.route.length) {
-      goal = standPoint(ctx.stations[s.idleIndex]);
+      goal = walkPoint(ctx.stations[s.idleIndex]);
       // Plan each leg before setting off, so he walks the clear lane round the furniture instead
       // of heading straight at the station and only routing once he bumps into something.
       if (s.planned !== s.idleIndex) {
@@ -316,7 +405,7 @@ export function stepFigure(state, input, ctx, dtArg) {
         if (s.route.length) s.route.shift();
         else if (s.target) {
           // A tap on a station: once there, do its action, then pick the tour up from it.
-          const at = ctx.stations.findIndex((st) => Math.hypot(standPoint(st).x - s.target.x, standPoint(st).y - s.target.y) < 0.5);
+          const at = ctx.stations.findIndex((st) => near(walkPoint(st), s.target));
           s.target = null;
           if (at >= 0) {
             s.control = "idle";
@@ -339,14 +428,14 @@ export function stepFigure(state, input, ctx, dtArg) {
     const next = clampWalls({ x: s.pos.x + step.dx, y: s.pos.y + step.dy });
     const here = blocks();
     let moved = resolveCollision(s.pos, next, here);
-    if (moved === s.pos && input.dir) {
+    if (moved === s.pos && dir) {
       // Keyboard steering slides along the obstacle: try each axis on its own.
       const xOnly = clampWalls({ x: s.pos.x + step.dx, y: s.pos.y });
       const yOnly = clampWalls({ x: s.pos.x, y: s.pos.y + step.dy });
       moved = resolveCollision(s.pos, xOnly, here);
       if (moved === s.pos) moved = resolveCollision(s.pos, yOnly, here);
     }
-    if (moved === s.pos && !input.dir) {
+    if (moved === s.pos && !dir) {
       if (!s.route.length) {
         // Walking to a goal and blocked: find a way round the furniture.
         const end = dest();

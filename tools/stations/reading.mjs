@@ -20,8 +20,8 @@ export default station("reading", {
     const inset = (m) => path3([[RX0 + m, RY0 + m, 0.62], [RX1 - m, RY0 + m, 0.62], [RX1 - m, RY1 - m, 0.62], [RX0 + m, RY1 - m, 0.62]], true);
     out.push(L(inset(6) + inset(9), { tone: "faint" }));
 
-    // --- Floor lamp beside the chair's front corner: brass pole, weighted base, linen shade, a pool of light --
-    const LX = -55, LY = 35;
+    // --- Floor lamp behind his far shoulder: brass pole, weighted base, linen shade, a pool of light --
+    const LX = -60, LY = -15;
     out.push(`<path class="m-lamp-pool" d="${k.pathOf(k.circleRing(LX + 10, LY - 6, 46, 40).map(([x, y]) => at([x, y, 0.7])), true)}"/>`);
     out.push(cyl(LX, LY, 14, 0, 3, { steps: 40, bevel: 0.6, tone: "hi", crease: "lo", className: "m-brass" }));
     out.push(cyl(LX, LY, 1.2, 3, 146, { steps: 12, tone: "hi", crease: "lo", className: "m-brass" }));

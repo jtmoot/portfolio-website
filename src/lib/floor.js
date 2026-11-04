@@ -42,7 +42,8 @@ export function nearestStation(p, stations, radius = 6) {
   let best = null;
   let bestD = radius;
   for (const s of stations) {
-    const d = distanceTo(p, s.footprint);
+    // A chair is its back plus its seat.
+    const d = Math.min(distanceTo(p, s.footprint), s.seat ? distanceTo(p, s.seat) : Infinity);
     if (d <= bestD) {
       best = s;
       bestD = d;
@@ -60,12 +61,9 @@ export const zIndexFor = (footprintTopY, feetY) => (feetY > footprintTopY ? 10 :
 /**
  * True when a point on the floor is nearer the viewer than a footprint box. The camera looks in
  * from small x and large y, so a point is in front when it is past the box's front-left face
- * (x below the box) or its front-right face (y beyond the box). A box marked `open: "+x"` (the
- * reading chair's front layer: its seat opens toward +x, away from the camera) also counts a point
- * past that side as in front, so he stays whole while he walks up to the seat and only goes behind
- * the chair's back and near arm once he is in it.
+ * (x below the box) or its front-right face (y beyond the box).
  */
-export const inFront = (p, f) => p.x < f.x || p.y > f.y + f.h || (f.open === "+x" && p.x >= f.x + f.w);
+export const inFront = (p, f) => p.x < f.x || p.y > f.y + f.h;
 
 /**
  * True when box a is nearer the viewer than box b: entirely before it in x, or past it in y. A flat

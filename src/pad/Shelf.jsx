@@ -3,7 +3,6 @@ import Contact from "./Contact.jsx";
 import Bookcase from "./Bookcase.jsx";
 import Cover from "./Cover.jsx";
 import Recommend from "./Recommend.jsx";
-import StickyNote from "./StickyNote.jsx";
 import { SHELF, goodreads } from "../content/shelf.js";
 
 const ARROW = (
@@ -73,7 +72,6 @@ export default function Shelf({ theme = "day", onToggleTheme = () => {} }) {
           Back
         </a>
         <h1>Library</h1>
-        <StickyNote>Never stop the intellectual struggle...</StickyNote>
         <Bookcase />
         {SHELF.map((s) =>
           s.books.some((b) => b.topics.length) ? (

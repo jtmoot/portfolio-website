@@ -17,8 +17,8 @@ export default station("reading-front", {
     for (let i = 0; i <= 10; i++) nails.push(at([W + 0.1, -22 + (i * 54) / 10, 12]));
     out.push(D(nails, { size: 0.5, tone: "mid" }));
 
-    // --- Side table by the near arm: a wooden top on a pedestal --------------------------------------
-    const TX = 63, TY = 30, TZ = 57;
+    // --- Side table beside the near arm, level with the seat: a wooden top on a pedestal -------------
+    const TX = 70, TY = -5, TZ = 57;
     out.push(halo({ x: TX - 13, y: TY - 13, w: 26, d: 26, r: 13 }, 0, 2));
     out.push(cyl(TX, TY, 12, 0, 5, { steps: 40, bevel: 0.8, tone: "hi", crease: "lo", className: "m-wood-dark" }));
     out.push(cyl(TX, TY, 3, 5, TZ - 3, { steps: 16, tone: "hi", crease: "lo", className: "m-wood-dark" }));
