@@ -4,8 +4,8 @@ import { findPath } from "./path.js";
 /** Floor units per second at 1x on the speed wheel: round 1's 1.5x (0.68 m/s, an easy walk). */
 export const SPEED = 13.5;
 export const IDLE_RESUME_MS = 6000;
-/** Half his footprint in floor units (12 cm): furniture is kept this far from the point between his feet. */
-export const BODY = 2.4;
+/** Half his footprint in floor units (16 cm): furniture is kept this far from the point between his feet, so his shoulders stop short of it too. */
+export const BODY = 3.2;
 
 /**
  * Station footprints grown by his body, so his shoes stop at desk legs and pots instead of on them.

@@ -46,6 +46,24 @@ const EDGE = 1.2;
 export default function Floor({ view, flipped, onNavigate, children, posterSelector = ".poster" }) {
   const hover = useLinger();
   const hoverId = hover.id;
+  // The layer turns on one frame after it is in the DOM with the paper tipping, so the browser has
+  // its resting style (hidden, clipped) before the sketch-in transitions start. Born with data-on,
+  // as it was on every first entry, the drawings popped in at once onto a still-flat sheet.
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    if (!flipped) {
+      setOn(false);
+      return undefined;
+    }
+    let second = 0;
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => setOn(true));
+    });
+    return () => {
+      cancelAnimationFrame(first);
+      cancelAnimationFrame(second);
+    };
+  }, [flipped]);
   const [speed, setSpeed] = useState(loadSpeed);
   const changeSpeed = (v) => {
     setSpeed(v);
@@ -190,16 +208,17 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
   const labelSize = `max(12px, ${1.45 * (view.scale / 0.62)}cqw)`;
 
   return (
-    <div ref={layerEl} className="floor-layer" data-on={flipped || undefined} aria-hidden={!flipped}>
+    <div ref={layerEl} className="floor-layer" data-on={on || undefined} aria-hidden={!flipped}>
       <div className="floor-hit" onPointerDown={onTap} />
       <div className="floor-item floor-walls" style={{ ...at({ x: 0, y: 0 }, view, Walls.meta), zIndex: 1, "--d": "0.5s" }}>
         <Walls />
       </div>
       {STATIONS.map((st, i) => {
-        const z = START_Z.get(st.id);
         const delay = LATE.has(st.id) ? 1.05 + i * 0.08 : 0.85;
         const lp = floorToScreen(st.labelAt, view);
         const lift = (st.labelAt.z / 5) * 0.8165 * view.scale;
+        // A station drawn in parts is several items in the same box, each with its own depth.
+        const layers = st.parts ?? [{ id: st.id, Component: st.Component }];
         return (
           <div
             key={st.id}
@@ -208,13 +227,16 @@ export default function Floor({ view, flipped, onNavigate, children, posterSelec
             onPointerLeave={st.label ? hover.leave : undefined}
             onPointerDown={st.label ? () => tap(standPoint(st)) : undefined}
           >
-            <div
-              ref={(node) => (items.current[st.id] = node)}
-              className="floor-item"
-              style={{ ...at(st.pos, view, st.Component.meta), zIndex: z, "--d": `${delay}s` }}
-            >
-              <st.Component active={active === st.id} />
-            </div>
+            {layers.map((layer) => (
+              <div
+                key={layer.id}
+                ref={(node) => (items.current[layer.id] = node)}
+                className="floor-item"
+                style={{ ...at(st.pos, view, layer.Component.meta), zIndex: START_Z.get(layer.id), "--d": `${delay}s` }}
+              >
+                <layer.Component active={active === st.id} />
+              </div>
+            ))}
             {st.Front && (
               <div
                 ref={(node) => (items.current[`${st.id}-front`] = node)}

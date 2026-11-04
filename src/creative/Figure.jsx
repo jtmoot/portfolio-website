@@ -25,6 +25,7 @@ const Figure = forwardRef(function Figure({ over = false }, ref) {
     >
       {!over && <div className="figure-sheet-host" aria-hidden="true" dangerouslySetInnerHTML={{ __html: sheet }} />}
       <svg viewBox={`0 0 ${width} ${height}`} className="figure-svg iso-svg" aria-hidden="true">
+        {!over && <ellipse className="figure-shadow" cx={anchor[0]} cy={anchor[1]} rx={26} ry={10} />}
         <use href="#f-dr-idle" />
       </svg>
     </div>

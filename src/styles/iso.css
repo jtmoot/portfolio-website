@@ -246,5 +246,15 @@ html[data-theme="night"] .iso .m-mug{--anatomy-paper:#3c3b38;--anatomy-face:#3c3
 html[data-theme="night"] .iso .m-brass{--anatomy-paper:#6e5a33;--anatomy-face:#6e5a33;--anatomy-top:#86703f;--anatomy-shade-0:#54442a;--anatomy-shade-1:#5c4b2d;--anatomy-shade-2:#655230;--anatomy-shade-3:#6c5832}
 html[data-theme="night"] .iso .m-lamp-glow{opacity:1}
 html[data-theme="night"] .iso .m-lamp-pool{opacity:.3}
-.iso .m-walnut{--anatomy-paper:#4a3425;--anatomy-face:#4a3425;--anatomy-top:#5e4432;--anatomy-shade-0:#35251a;--anatomy-shade-1:#3c2a1e;--anatomy-shade-2:#433022;--anatomy-shade-3:#4a3425;--anatomy-faint:#6a4f3b;--anatomy-lo:#2a1d14}
-html[data-theme="night"] .iso .m-walnut{--anatomy-paper:#2c2017;--anatomy-face:#2c2017;--anatomy-top:#37291e;--anatomy-shade-0:#1e1610;--anatomy-shade-1:#221912;--anatomy-shade-2:#271c14;--anatomy-shade-3:#2c2017;--anatomy-faint:#46352a;--anatomy-lo:#14100b}
+/* Walnut: a wide spread from a lit top to a deep side, with a visible faint for the grain. */
+.iso .m-walnut{--anatomy-paper:#4a3425;--anatomy-face:#4a3425;--anatomy-top:#6b4b35;--anatomy-shade-0:#2b1c12;--anatomy-shade-1:#34231a;--anatomy-shade-2:#3e2b1f;--anatomy-shade-3:#46311f;--anatomy-faint:#8a6750;--anatomy-lo:#20150e;--anatomy-mid:#5a3f2c}
+html[data-theme="night"] .iso .m-walnut{--anatomy-paper:#2c2017;--anatomy-face:#2c2017;--anatomy-top:#3e2d20;--anatomy-shade-0:#17110c;--anatomy-shade-1:#1c150f;--anatomy-shade-2:#221912;--anatomy-shade-3:#281d15;--anatomy-faint:#5a4433;--anatomy-lo:#0f0b08;--anatomy-mid:#3a2a1e}
+/* Brass that catches the light (data-lit solids): the label holders, the inkwell cap, the picture light. */
+.iso .m-brass{--anatomy-lit-top:#f3d892;--anatomy-lit-shade:#d2ab5f;--anatomy-lit:#3a2c12}
+html[data-theme="night"] .iso .m-brass{--anatomy-lit-top:#b89a55;--anatomy-lit-shade:#8a7340;--anatomy-lit:#e0c88a}
+/* The picture light's pool on the bookcase top, and the head band at the top of each spine. */
+.iso .bk-glow{fill:#f0c76a;opacity:.3;filter:blur(5px);stroke:none}
+html[data-theme="night"] .iso .bk-glow{opacity:.45}
+.iso .bk-band{fill:none;stroke:rgba(255,255,255,.5);stroke-width:.45px;vector-effect:non-scaling-stroke}
+/* In the room at night the bright spines and cards dim with the rest of the drawing. */
+html[data-theme="night"] .st-library .bk-row,html[data-theme="night"] .st-library .bk-plate,html[data-theme="night"] .st-library .bk-plate-text{filter:brightness(.62) saturate(.85)}

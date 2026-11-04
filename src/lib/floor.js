@@ -64,13 +64,17 @@ export const zIndexFor = (footprintTopY, feetY) => (feetY > footprintTopY ? 10 :
  */
 export const inFront = (p, f) => p.x < f.x || p.y > f.y + f.h;
 
-const boxInFront = (a, b) => a.x + a.w <= b.x || a.y >= b.y + b.h;
+/**
+ * True when box a is nearer the viewer than box b: entirely before it in x, or past it in y. A flat
+ * box (a mat, the gym's tiles) lies under everything, so it is never in front and always behind.
+ */
+const boxInFront = (a, b) => !a.flat && (Boolean(b.flat) || a.footprint.x + a.footprint.w <= b.footprint.x || a.footprint.y >= b.footprint.y + b.footprint.h);
 const centreDepth = (f) => depthKey({ x: f.x + f.w / 2, y: f.y + f.h / 2 });
 
 /**
  * Paint order for stations: every box comes after each box it stands in front of. Boxes with no
  * clear relation (overlapping footprints, such as a wall chart above a shelf) fall back to depth.
- * @template {{ footprint: { x: number, y: number, w: number, h: number } }} T
+ * @template {{ footprint: { x: number, y: number, w: number, h: number }, flat?: boolean }} T
  * @param {T[]} boxes
  * @returns {T[]}
  */
@@ -78,7 +82,7 @@ export function stackOrder(boxes) {
   const left = [...boxes].sort((a, b) => centreDepth(a.footprint) - centreDepth(b.footprint));
   const out = [];
   while (left.length) {
-    const i = left.findIndex((a) => !left.some((b) => b !== a && boxInFront(a.footprint, b.footprint)));
+    const i = left.findIndex((a) => !left.some((b) => b !== a && boxInFront(a, b)));
     out.push(left.splice(i === -1 ? 0 : i, 1)[0]);
   }
   return out;
@@ -86,9 +90,9 @@ export function stackOrder(boxes) {
 
 /**
  * Paint order of the stations with the figure slotted in, as ids ("figure" for him). He goes
- * after every box he stands in front of and before every box he stands behind; boxes keep the
- * order stackOrder gives them among themselves.
- * @param {{ id: string, footprint: { x: number, y: number, w: number, h: number } }[]} boxes
+ * after every box he stands in front of and before every box he stands behind; a flat box is
+ * always under him; boxes keep the order stackOrder gives them among themselves.
+ * @param {{ id: string, footprint: { x: number, y: number, w: number, h: number }, flat?: boolean }[]} boxes
  * @param {{ x: number, y: number }} p his feet
  * @returns {string[]}
  */
@@ -96,9 +100,9 @@ export function paintOrder(boxes, p) {
   const fig = { id: "figure" };
   // b must be drawn before a?
   const mustPrecede = (b, a) => {
-    if (a === fig) return inFront(p, b.footprint);
-    if (b === fig) return !inFront(p, a.footprint);
-    return boxInFront(a.footprint, b.footprint);
+    if (a === fig) return Boolean(b.flat) || inFront(p, b.footprint);
+    if (b === fig) return !a.flat && !inFront(p, a.footprint);
+    return boxInFront(a, b);
   };
   const left = [...stackOrder(boxes), fig];
   const out = [];

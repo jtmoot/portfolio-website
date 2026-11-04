@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { bodyFootprints, initialFigure, stepFigure } from "../../src/lib/figure.js";
+import { BODY, bodyFootprints, initialFigure, stepFigure } from "../../src/lib/figure.js";
 
 // A chair: a back, two arms, and the seat between them, which he may only enter to sit.
 const CHAIR = {
@@ -28,7 +28,7 @@ const walk = (state, ctx, input, seconds, seen) => {
 describe("the reading chair's seat", () => {
   it("blocks the seat for everyone, marked as a seat", () => {
     const seat = bodyFootprints([CHAIR]).find((f) => f.seat === "reading");
-    expect(seat).toMatchObject({ x: 9.8 - 2.4, y: 40 - 2.4 });
+    expect(seat).toMatchObject({ x: 9.8 - BODY, y: 40 - BODY });
   });
 
   it("can't be walked across: steering straight through the chair stops at it", () => {

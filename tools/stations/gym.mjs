@@ -22,16 +22,20 @@ export default station("gym", {
     const out = [];
 
     // --- Rubber floor tiles -----------------------------------------------------------------------
-    out.push(halo({ x: -58, y: -112, w: 116, d: 224, r: 4 }, 0, 2, { walkable: true }));
+    // The tiles open the "floor" part, which the room draws under everything, him included.
     const tiles = [];
     for (let i = 0; i < 2; i++) for (let j = 0; j < 4; j++) tiles.push({ x: -55 + i * 55, y: -110 + j * 55 });
     out.push(
-      `<g class="m-rubber">` +
-        c.byDepth(tiles, (t) => [t.x + 27, t.y + 27, 0])
-          .map((t) => box(t.x, t.y, 0, t.x + 55, t.y + 55, 1.6, { r: 0.4, steps: 2, tone: "hi", crease: "lo" }) +
-            D(k.dotGrid(t.x + 9, t.y + 9, 5, 5, 9.25, 1.6, P), { size: 0.3, tone: "faint" }))
-          .join("") +
-        `</g>`,
+      c.part(
+        "floor",
+        halo({ x: -58, y: -112, w: 116, d: 224, r: 4 }, 0, 2, { walkable: true }) +
+          `<g class="m-rubber">` +
+          c.byDepth(tiles, (t) => [t.x + 27, t.y + 27, 0])
+            .map((t) => box(t.x, t.y, 0, t.x + 55, t.y + 55, 1.6, { r: 0.4, steps: 2, tone: "hi", crease: "lo" }) +
+              D(k.dotGrid(t.x + 9, t.y + 9, 5, 5, 9.25, 1.6, P), { size: 0.3, tone: "faint" }))
+            .join("") +
+          `</g>`,
+      ),
     );
     const F0 = 1.6; // floor level on the tiles
 
@@ -218,27 +222,33 @@ export default station("gym", {
       return s.join("");
     };
 
-    // --- Paint order: back to front ----------------------------------------------------------------
-    out.push(rear());
-    out.push(foot(-UY));
-    out.push(sleeve(-1, 75, 110) + plate(-1) + sleeve(-1, 66.5, 69) + collar(-1));
-    out.push(upright(-UY) + jcup(-UY));
-    out.push(crossTop());
-    out.push(foot(UY));
-    out.push(upright(UY) + jcup(UY));
-    out.push(vest());
-    out.push(shaft());
-    out.push(jcupLip(-UY) + jcupLip(UY));
-    out.push(collar(1) + sleeve(1, 66.5, 69) + plate(1) + sleeve(1, 77.4, 110));
-    // Floor items, sorted by depth.
+    // --- Paint order: back to front. The room sorts three parts against him on their own: the
+    // rack with its bar, vest and feet; the plyo box; and the floor (tiles, ladder, bells, shoes).
+    out.push(
+      c.part(
+        "rack",
+        rear() +
+          foot(-UY) +
+          sleeve(-1, 75, 110) + plate(-1) + sleeve(-1, 66.5, 69) + collar(-1) +
+          upright(-UY) + jcup(-UY) +
+          crossTop() +
+          foot(UY) +
+          upright(UY) + jcup(UY) +
+          vest() +
+          shaft() +
+          jcupLip(-UY) + jcupLip(UY) +
+          collar(1) + sleeve(1, 66.5, 69) + plate(1) + sleeve(1, 77.4, 110),
+      ),
+    );
+    // Floor items, sorted by depth (their contact shadows record in this order: bells, box, shoes).
     const floor = [
-      { p: [45, 2, 0], svg: kettlebell(42, -22, 10.5) },
-      { p: [45, 22, 0], svg: kettlebell(44, 12, 8.6) },
-      { p: [43, -122, 0], svg: plyo() },
-      { p: [55, 80, 0], svg: shoe(38, 63) + shoe(35, 76) },
-      { p: [70, -100, 0], svg: ladder.join("") },
+      { p: [45, 2, 0], part: "floor", svg: kettlebell(42, -22, 10.5) },
+      { p: [45, 22, 0], part: "floor", svg: kettlebell(44, 12, 8.6) },
+      { p: [43, -122, 0], part: "box", svg: plyo() },
+      { p: [55, 80, 0], part: "floor", svg: shoe(38, 63) + shoe(35, 76) },
+      { p: [70, -100, 0], part: "floor", svg: ladder.join("") },
     ];
-    out.push(...c.byDepth(floor, (f) => f.p).map((f) => f.svg));
+    out.push(...c.byDepth(floor, (f) => f.p).map((f) => c.part(f.part, f.svg)));
     return out.join("");
   },
 });

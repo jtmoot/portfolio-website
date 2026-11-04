@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { SPEED, IDLE_RESUME_MS, initialFigure, keyToDir, stepFigure, facingOf, standPoint } from "../../src/lib/figure.js";
+import { BODY, SPEED, IDLE_RESUME_MS, initialFigure, keyToDir, stepFigure, facingOf, standPoint } from "../../src/lib/figure.js";
 
 const STATIONS = [
   { id: "desk", footprint: { x: 27, y: 0, w: 32, h: 16 } },
@@ -66,7 +66,7 @@ describe("stepFigure", () => {
     expect(back.control).toBe("idle");
     expect(back.tiles.size).toBe(0);
     expect(back.pos.x).toBe(43);
-    expect(back.pos.y).toBeCloseTo(19.2, 6);
+    expect(back.pos.y).toBeCloseTo(16 + BODY + 0.8, 6);
   });
 
   it("walks to a tapped point and stops there", () => {

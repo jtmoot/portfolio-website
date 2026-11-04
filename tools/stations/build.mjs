@@ -17,10 +17,13 @@ for (const id of wanted) {
   const file = join(HERE, `${id}.mjs`);
   if (!existsSync(file)) continue;
   const mod = await import(`${file}?t=${Date.now()}`);
-  const { svg, meta: m } = mod.default.render();
+  const { svg, meta: m, parts = {} } = mod.default.render();
   writeFileSync(join(OUT, `${id}.svg`), svg);
+  // A station drawn in parts gets one file per part too (<id>-<part>.svg), in the same box.
+  for (const [name, part] of Object.entries(parts)) writeFileSync(join(OUT, `${id}-${name}.svg`), part);
   meta[id] = m;
   const paths = (svg.match(/<path/g) || []).length;
-  process.stdout.write(`${id}: ${m.width}x${m.height}, ${paths} paths, ${(svg.length / 1024).toFixed(0)} KB\n`);
+  const partNote = m.parts ? `, parts: ${m.parts.join(", ")}` : "";
+  process.stdout.write(`${id}: ${m.width}x${m.height}, ${paths} paths, ${(svg.length / 1024).toFixed(0)} KB${partNote}\n`);
 }
 writeFileSync(metaPath, JSON.stringify(meta, null, 2) + "\n");
