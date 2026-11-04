@@ -267,5 +267,12 @@ html[data-theme="night"] .iso .m-brass{--anatomy-lit-top:#b89a55;--anatomy-lit-s
 .iso .bk-glow{fill:#f0c76a;opacity:.3;filter:blur(5px);stroke:none}
 html[data-theme="night"] .iso .bk-glow{opacity:.45}
 .iso .bk-band{fill:none;stroke:rgba(255,255,255,.5);stroke-width:.45px;vector-effect:non-scaling-stroke}
+/* The sticky note on the bookcase top: yellow paper, its lifted corner's underside, his hand on it. */
+.iso .m-sticky{--anatomy-paper:#f6e27c;--anatomy-face:#f6e27c;--anatomy-top:#f9ea92;--anatomy-shade-0:#c9b14e;--anatomy-shade-1:#d4bc57;--anatomy-shade-2:#dec862;--anatomy-shade-3:#e8d46e;--anatomy-hi:#8a7a35}
+html[data-theme="night"] .iso .m-sticky{--anatomy-paper:#c4b159;--anatomy-face:#c4b159;--anatomy-top:#d1be66;--anatomy-shade-0:#8f8038;--anatomy-shade-1:#9a8a3e;--anatomy-shade-2:#a59445;--anatomy-shade-3:#b3a04d;--anatomy-hi:#5a4e22}
+.iso .bk-note-curl{fill:#e2c85a;stroke:#8a7a35;stroke-width:.3;vector-effect:non-scaling-stroke}
+html[data-theme="night"] .iso .bk-note-curl{fill:#a8963f;stroke:#5a4e22}
+.iso .bk-note-text text{font-family:var(--font-hand);fill:#2a2520}
+html[data-theme="night"] .iso .bk-note-text text{fill:#1f1b16}
 /* In the room at night the bright spines and cards dim with the rest of the drawing. */
 html[data-theme="night"] .st-library .bk-row,html[data-theme="night"] .st-library .bk-plate,html[data-theme="night"] .st-library .bk-plate-text{filter:brightness(.62) saturate(.85)}

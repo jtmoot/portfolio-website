@@ -62,12 +62,12 @@ describe("Shelf extras", () => {
     vi.unstubAllGlobals();
   });
 
-  it("has his sticky note at the top, in his hand", async () => {
+  it("has his sticky note drawn on top of the bookcase, in his hand", async () => {
     const { host, root } = await mount();
-    const note = host.querySelector(".sticky-note");
-    expect(note.textContent).toBe("Never stop the intellectual struggle...");
-    expect(note.querySelector("p").classList.contains("hand")).toBe(true);
-    expect(note.querySelector("svg.sticky-paper")).not.toBeNull();
+    const note = host.querySelector(".bookcase svg .bk-note-text");
+    expect([...note.querySelectorAll("text")].map((t) => t.textContent)).toEqual(["Never stop the", "intellectual", "struggle..."]);
+    expect(host.querySelector(".bookcase svg .m-sticky")).not.toBeNull();
+    expect(host.querySelector(".sticky-note")).toBeNull();
     await act(async () => root.unmount());
     vi.unstubAllGlobals();
   });
