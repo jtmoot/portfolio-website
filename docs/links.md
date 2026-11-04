@@ -4,7 +4,7 @@ Where everything behind the site lives. No secrets here: those stay in Doppler.
 
 ## The site
 
-- Live: https://joshuamoorehead.com (once the domain is bought and connected)
+- Live: https://joshuamoorehead.com (bought through Vercel, registrar Name.com; redirects to www)
 - Code: https://github.com/jtmoot/portfolio-website
 - Go-live PR: https://github.com/jtmoot/portfolio-website/pull/1
 
