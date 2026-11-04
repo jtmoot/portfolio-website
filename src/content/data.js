@@ -9,13 +9,13 @@ export const INTRO = [
   ],
   [
     {
-      text: "I come to both from a strong foundation in data engineering, a habit of following the frontier closely, and a preference for working directly with the people who'll use the work.",
+      text: "I come to both from a strong foundation in data engineering, a habit of following the frontier closely, and an appreciation for working alongside people who are just as curious.",
     },
   ],
   [
     { text: "I'm earning an MS in Electrical and Computer Engineering at " },
     { text: "Carnegie Mellon", mark: true },
-    { text: " while interning at Core Natural Resources. Outside of work, I lift, run, cook, read history and play chess." },
+    { text: " while interning at Core Natural Resources. Otherwise, I'm usually training, reading or playing chess." },
   ],
 ];
 
