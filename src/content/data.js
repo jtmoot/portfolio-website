@@ -5,7 +5,7 @@ export const INTRO = [
     { text: "systems around models", mark: true },
     { text: ": inference that runs faster and cheaper, and " },
     { text: "agents", mark: true },
-    { text: " that hold up in production." },
+    { text: " ready for production." },
   ],
   [
     {

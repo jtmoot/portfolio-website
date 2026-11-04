@@ -36,8 +36,9 @@ export function typingRhythm(text, { step = STEP_MS, seed = 7 } = {}) {
 }
 
 /**
- * The opening after the name: the role fades in as the name finishes, the intro rises, its
- * highlights draw one after another, and the links come last (garvitsingla.in's order).
+ * The opening after the name: the role fades in as the name finishes, the intro's paragraphs fade
+ * in as one block, its highlights sweep in one after another while that fade is still running
+ * (the first 100 ms in, as on garvitsingla.in), and the links come once both are done.
  * @param {number} nameMs when the name is finished
  * @param {number} markCount how many highlights the intro has
  * @returns {{ role: number, intro: number, marks: number, markGap: number, socials: number }} ms
@@ -46,7 +47,8 @@ export function openingTimes(nameMs, markCount) {
   const markGap = 150;
   const role = nameMs - 100;
   const intro = role + 200;
-  const marks = intro + 350;
-  const socials = marks + Math.max(markCount - 1, 0) * markGap + 400;
+  const marks = intro + 100;
+  // After the 0.7 s fade, and after the last highlight's 0.6 s sweep is mostly drawn.
+  const socials = Math.max(intro + 900, marks + Math.max(markCount - 1, 0) * markGap + 450);
   return { role, intro, marks, markGap, socials };
 }

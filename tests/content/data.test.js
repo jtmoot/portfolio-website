@@ -44,7 +44,7 @@ describe("content from the Nov 2 resumes", () => {
   it("keeps the role line and says, in three short paragraphs, what he enjoys building (the Nov 3 C3 wording)", () => {
     expect(ROLE).toBe("ML systems and AI engineer");
     expect(INTRO.map((p) => p.map((t) => t.text).join(""))).toEqual([
-      "I enjoy building the systems around models: inference that runs faster and cheaper, and agents that hold up in production.",
+      "I enjoy building the systems around models: inference that runs faster and cheaper, and agents ready for production.",
       "I come to both from a strong foundation in data engineering, a habit of following the frontier closely, and an appreciation for working alongside people who are just as curious.",
       "I'm earning an MS in Electrical and Computer Engineering at Carnegie Mellon while interning at Core Natural Resources. Otherwise, I'm usually training, reading or playing chess.",
     ]);
