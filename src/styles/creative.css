@@ -141,6 +141,9 @@
   opacity: 0;
   clip-path: inset(100% 0 0 0);
   transition: opacity 0.25s ease, clip-path 0.35s ease;
+  /* Each drawing lays out on its own: a card appearing or the figure moving must not relayout
+     twelve thousand paths. */
+  contain: layout style;
 }
 
 .floor-layer[data-on] .floor-item {
