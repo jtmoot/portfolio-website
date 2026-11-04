@@ -61,4 +61,14 @@ describe("Shelf extras", () => {
     await act(async () => root.unmount());
     vi.unstubAllGlobals();
   });
+
+  it("has his sticky note at the top, in his hand", async () => {
+    const { host, root } = await mount();
+    const note = host.querySelector(".sticky-note");
+    expect(note.textContent).toBe("Never stop the intellectual struggle...");
+    expect(note.querySelector("p").classList.contains("hand")).toBe(true);
+    expect(note.querySelector("svg.sticky-paper")).not.toBeNull();
+    await act(async () => root.unmount());
+    vi.unstubAllGlobals();
+  });
 });
