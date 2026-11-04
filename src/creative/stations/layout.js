@@ -10,6 +10,8 @@ export const LAYOUT = {
     label: "Desk",
     pos: { x: 74, y: 0 },
     footprint: { x: 58, y: 0, w: 32, h: 16 },
+    // Beside the desk's right end he stood behind a 110 cm top that hid him to the waist.
+    blocks: [{ x: 90, y: 0, w: 5, h: 16 }],
     link: "#experience",
     labelAt: { x: 75, y: 19, z: 0 },
   },
@@ -18,6 +20,8 @@ export const LAYOUT = {
     label: "Library",
     pos: { x: 37, y: 0 },
     footprint: { x: 28, y: 0, w: 18, h: 7 },
+    // Its right end is as tall as he is: standing just past it hid him to the waist.
+    blocks: [{ x: 46, y: 0, w: 4, h: 7 }],
     link: "/shelf",
     labelAt: { x: 47, y: 10, z: 0 },
   },
@@ -34,6 +38,11 @@ export const LAYOUT = {
     label: "Kitchen",
     pos: { x: 150, y: 48 },
     footprint: { x: 137, y: 30, w: 13, h: 36 },
+    // Past either end of the counters (90 cm tall) he was hidden to the waist and looked sunk in.
+    blocks: [
+      { x: 137, y: 66, w: 13, h: 4 },
+      { x: 137, y: 24, w: 13, h: 6 },
+    ],
     link: null,
     labelAt: { x: 142, y: 69, z: 0 },
     standAt: { x: 133, y: 48 },
@@ -43,12 +52,20 @@ export const LAYOUT = {
     label: "Gym",
     pos: { x: 92, y: 69 },
     footprint: { x: 70, y: 58, w: 54, h: 25 },
-    // Behind the plyo box (x 110.4 to 122.4): it stands 75 cm tall, so walking close behind it hid
-    // his shins and he looked to be standing in it. This keeps him back.
-    blocks: [{ x: 122.4, y: 72.6, w: 5, h: 10 }],
+    // Drawn in three parts the room sorts against him separately (tools/stations/gym.mjs): the
+    // tiles with the ladder, bells and shoes, always under him; the rack with its bar, whose plates
+    // reach out to x 69.6 and 114.4; and the plyo box.
+    parts: {
+      floor: { x: 70, y: 58, w: 54, h: 25 },
+      rack: { x: 69.6, y: 59.8, w: 44.8, h: 17.6 },
+      box: { x: 110.4, y: 72.6, w: 12, h: 10 },
+    },
+    // Behind and beside the plyo box (x 110.4 to 122.4, 75 cm tall): close behind it he was hidden
+    // from the waist down and looked to be standing in it. This keeps him out of its whole shadow.
+    blocks: [{ x: 122.4, y: 62, w: 6, h: 22 }],
     link: "https://www.strava.com/athletes/121070736",
     labelAt: { x: 104, y: 85, z: 0 },
-    standAt: { x: 84, y: 86.2 },
+    standAt: { x: 84, y: 86.6 },
   },
   chess: {
     id: "chess",
@@ -57,8 +74,8 @@ export const LAYOUT = {
     footprint: { x: 29, y: 60, w: 27, h: 14 },
     link: "https://www.chess.com/member/breakfast_enjoyer",
     labelAt: { x: 54, y: 79, z: 0 },
-    // Behind the board, on white's side, facing the room.
-    standAt: { x: 46, y: 57 },
+    // Behind the board, on white's side, facing the room (just clear of the table plus his body).
+    standAt: { x: 46, y: 56.4 },
   },
   reading: {
     id: "reading",

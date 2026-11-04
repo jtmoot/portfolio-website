@@ -30,18 +30,34 @@ function render(id, { label, bounds, pad = 6, draw, cam = CAM, role = "img" }) {
   const width = round(maxX - minX + pad * 2);
   const height = round(maxY - minY + pad * 2);
   const contacts = [];
-  const body = draw(context(P, id, contacts));
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" class="iso-svg st-${id}" viewBox="0 0 ${width} ${height}" role="${role}" aria-label="${label.replace(/"/g, "&quot;")}">${body}</svg>`;
+  const parts = new Map();
+  const body = draw(context(P, id, contacts, parts));
+  const open = (cls, named) =>
+    `<svg xmlns="http://www.w3.org/2000/svg" class="iso-svg ${cls}" viewBox="0 0 ${width} ${height}"` +
+    (named ? ` role="${role}" aria-label="${label.replace(/"/g, "&quot;")}"` : ` aria-hidden="true"`) +
+    `>`;
+  const svg = `${open(`st-${id}`, true)}${body}</svg>`;
   // Where things rest on the floor, in floor units (5 cm) from the station's anchor: the figure must
   // not walk through these (tests/creative/stations.test.js checks they're blocked).
   const floor = contacts.map(({ x, y, w, d }) => [x, y, w, d].map((n) => round(n / 5)));
-  return { svg, meta: { width, height, anchor: [round(P.origin[0]), round(P.origin[1])], floor } };
+  // A station drawn in parts (c.part) also renders each part on its own, in the same box, so the
+  // room can sort them against the figure separately. The first part carries the label.
+  const names = [...parts.keys()];
+  const partSvgs = Object.fromEntries(names.map((name, i) => [name, `${open(`st-${id} st-${id}-${name}`, i === 0)}${parts.get(name).join("")}</svg>`]));
+  const meta = { width, height, anchor: [round(P.origin[0]), round(P.origin[1])], floor, ...(names.length ? { parts: names } : {}) };
+  return { svg, meta, parts: partSvgs };
 }
 
 const round = (n) => Math.round(n * 100) / 100;
 
-export function context(P, id, contacts = []) {
+export function context(P, id, contacts = [], parts = new Map()) {
   let clipCount = 0;
+  /** Tags a chunk of the drawing as part of a named layer the room sorts on its own; returns it unchanged. */
+  const part = (name, svg) => {
+    if (!parts.has(name)) parts.set(name, []);
+    parts.get(name).push(svg);
+    return svg;
+  };
   const at = (p) => k.iso(p, P);
   const S = (paths, style) => k.solidSvg(paths, style);
   const L = (d, style) => k.lineSvg(d, style);
@@ -87,5 +103,5 @@ export function context(P, id, contacts = []) {
 
   const clipId = () => `${id}-c${clipCount++}`;
 
-  return { P, k, G, at, S, L, D, path3, depth, byDepth, box, cyl, prism, frame, planeX, planeY, halo, face, tube, clipId };
+  return { P, k, G, at, S, L, D, path3, depth, byDepth, box, cyl, prism, frame, planeX, planeY, halo, face, tube, clipId, part };
 }
