@@ -110,6 +110,23 @@ describe("content from the Nov 2 resumes", () => {
 describe("experience and leadership as short, strong bullets", () => {
   const rows = [...EXPERIENCE, ...LEADERSHIP];
 
+  it("says what Core and Baron actually built, in full (the Nov 4 bullets)", () => {
+    const points = (id) => EXPERIENCE.find((x) => x.id === id).points;
+    expect(points("core")).toEqual([
+      "Co-built, with one other engineer, a serverless AWS platform that automates shift-incentive payroll for about 3,100 employees across nine mines and six prep plants.",
+      "Own its payout engine on Lambda, AppSync, Aurora PostgreSQL and Step Functions in Terraform, with safe reruns and lineage from every payout back to its source records.",
+      "Building a Bedrock agent that turns plain-English requests into Oracle requisitions: the model reads the intent, deterministic SQL picks the catalog items, and a person approves each one.",
+      "Built an internal research tool with cited Bedrock answers over SEC filings and earnings calls.",
+    ]);
+    expect(points("baron")).toEqual([
+      "Built Python/SQL ingestion from the Sage Intacct API into an S3 lake, with nightly incremental pulls, schema validation and reruns that never duplicate a record.",
+      "Modeled the lake in dbt on Athena, from raw tables to marts for vendor scorecards, customer profitability and the cash conversion cycle.",
+      "Reconciled the two ledgers account by account, after a QuickBooks-to-Sage migration left the company without reliable historical financials.",
+      "Shipped the company's first operational dashboard, in Metabase, with supplier lead times and a demand forecast.",
+    ]);
+    expect(EXPERIENCE.find((x) => x.id === "baron").stack).toEqual(["Python", "SQL", "dbt", "AWS S3", "Athena", "Terraform", "Sage Intacct", "Metabase"]);
+  });
+
   it("gives every row 1 to 4 bullets in place of a paragraph", () => {
     for (const x of rows) {
       expect(x.blurb).toBeUndefined();
@@ -118,9 +135,9 @@ describe("experience and leadership as short, strong bullets", () => {
     }
   });
 
-  it("keeps each bullet to about 12 words, verb or fact first, ending in a full stop", () => {
+  it("keeps each bullet to one sentence of at most 30 words, verb or fact first, ending in a full stop", () => {
     for (const p of rows.flatMap((x) => x.points).map((p) => (typeof p === "string" ? p : p.text))) {
-      expect(p.split(/\s+/).length).toBeLessThanOrEqual(12);
+      expect(p.split(/\s+/).length).toBeLessThanOrEqual(30);
       expect(p).toMatch(/^[A-Z#0-9]/);
       expect(p).toMatch(/\.$/);
     }
