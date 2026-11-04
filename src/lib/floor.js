@@ -60,9 +60,12 @@ export const zIndexFor = (footprintTopY, feetY) => (feetY > footprintTopY ? 10 :
 /**
  * True when a point on the floor is nearer the viewer than a footprint box. The camera looks in
  * from small x and large y, so a point is in front when it is past the box's front-left face
- * (x below the box) or its front-right face (y beyond the box).
+ * (x below the box) or its front-right face (y beyond the box). A box marked `open: "+x"` (the
+ * reading chair's front layer: its seat opens toward +x, away from the camera) also counts a point
+ * past that side as in front, so he stays whole while he walks up to the seat and only goes behind
+ * the chair's back and near arm once he is in it.
  */
-export const inFront = (p, f) => p.x < f.x || p.y > f.y + f.h;
+export const inFront = (p, f) => p.x < f.x || p.y > f.y + f.h || (f.open === "+x" && p.x >= f.x + f.w);
 
 /**
  * True when box a is nearer the viewer than box b: entirely before it in x, or past it in y. A flat
@@ -88,27 +91,52 @@ export function stackOrder(boxes) {
   return out;
 }
 
+/** Half the width he is drawn at, in floor units along the screen's x axis (where x + y is constant). */
+export const HALF_WIDTH = 6.5;
+
+/** How many of his screen columns a box's drawing can share (floor units along x + y); 0 or less when none. */
+const covered = (p, f) => {
+  const s = p.x + p.y;
+  return Math.min(f.x + f.w + f.y + f.h, s + HALF_WIDTH) - Math.max(f.x + f.y, s - HALF_WIDTH);
+};
+
+/** True when a box's drawing can share screen columns with his: its footprint spans x + y near his feet's. */
+export const overlaps = (p, f) => covered(p, f) > 0;
+
 /**
- * Paint order of the stations with the figure slotted in, as ids ("figure" for him). He goes
- * after every box he stands in front of and before every box he stands behind; a flat box is
- * always under him; boxes keep the order stackOrder gives them among themselves.
+ * Paint order of the stations with the figure slotted in, as ids ("figure" for him). The boxes
+ * keep the order stackOrder gives them; he goes after the last box he stands in front of and
+ * before the first box he stands behind (a flat box is always under him), counting only boxes
+ * that can overlap him on screen. The pairwise rule is approximate off a box's corners, and a
+ * box that cannot touch him (the reading chair, from the kitchen; the rack, from just past the
+ * end of its bar) used to demand an order that contradicted the ones that could, which drew him
+ * over the rack he was walking behind.
  * @param {{ id: string, footprint: { x: number, y: number, w: number, h: number }, flat?: boolean }[]} boxes
  * @param {{ x: number, y: number }} p his feet
  * @returns {string[]}
  */
 export function paintOrder(boxes, p) {
-  const fig = { id: "figure" };
-  // b must be drawn before a?
-  const mustPrecede = (b, a) => {
-    if (a === fig) return Boolean(b.flat) || inFront(p, b.footprint);
-    if (b === fig) return !a.flat && !inFront(p, a.footprint);
-    return boxInFront(a, b);
-  };
-  const left = [...stackOrder(boxes), fig];
-  const out = [];
-  while (left.length) {
-    const i = left.findIndex((a) => !left.some((b) => b !== a && mustPrecede(b, a)));
-    out.push(left.splice(i === -1 ? 0 : i, 1)[0].id);
+  const order = stackOrder(boxes);
+  // Each box that can touch him asks for a side: in front of him (drawn before him) or behind.
+  const wants = [];
+  order.forEach((b, i) => {
+    const c = covered(p, b.footprint);
+    if (c > 0) wants.push({ i, c, front: Boolean(b.flat) || inFront(p, b.footprint) });
+  });
+  // His slot is the one that disappoints the least of him: when boxes disagree (the pairwise
+  // rule is approximate off their corners), the sliver of a table's corner gives way to the
+  // chair he is walking up to. Ties go to the later slot.
+  let slot = order.length;
+  let least = Infinity;
+  for (let k = order.length; k >= 0; k--) {
+    let cost = 0;
+    for (const w of wants) if (w.front ? w.i >= k : w.i < k) cost += w.c;
+    if (cost < least) {
+      least = cost;
+      slot = k;
+    }
   }
-  return out;
+  const ids = order.map((b) => b.id);
+  ids.splice(slot, 0, "figure");
+  return ids;
 }

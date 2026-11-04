@@ -85,7 +85,27 @@ motion; land it on `main` by PR.
   speckle in two grades, push pins as round heads standing out of the wall (red and blue
   materials), and an index card pinned at a slant beside the covers.
 
+## After he saw it live (Nov 4, afternoon)
+
+### 7. Three more things in the room
+
+- **The chart sat on the bookcase.** The new bookcase with its picture light reaches 127 cm; the
+  chart hung from 122. It now hangs from 140 (top at 202).
+- **He walked over the rack on the way from the kitchen to the gym.** His depth was a topological
+  sort over every station's box with an approximate pairwise rule; a far box (the reading chair,
+  seen from the kitchen) demanded an order that contradicted the near ones, and the fallback drew
+  him over the rack he was walking behind. Now only boxes that can cover him on screen have a say
+  (their footprint spans x + y within half his width of his feet), and his slot is the one that
+  leaves the least of him wrongly covered, so a sliver of a table's corner gives way to the chair
+  he is walking up to.
+- **He walked through the reading chair.** The seat opens toward +x, away from the camera, so the
+  chair's front hid his legs while he was still walking up, and he cut in over the near arm. The
+  chair's front layer is marked `open: "+x"`: past that side he draws over it, and only once in the
+  seat does he go behind the back and near arm. He also comes to the seat by way of an
+  `approachAt` point in front of the chair, straight in along the seat's far half.
+- **The station sayings:** Joshua will give new lines; `CARD_TEXT` in `StationCard.jsx`.
+
 ## Order
 
 1, 2, 4, 5, 3; then `npm test`, `npm run build`, screenshots of the entrance, exit and the room;
-PR to `main` and merge (PR #3). Then 6, in a second PR.
+PR to `main` and merge (PR #3). Then 6, in a second PR (PR #5). Then 7, in a third.

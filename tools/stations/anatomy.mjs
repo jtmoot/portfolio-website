@@ -4,7 +4,8 @@
 // number below. Local world: wall plane x = 0. Centimetres.
 import { station, k } from "./lib.mjs";
 
-const W = 46, H = 62, Z0 = 122;
+// Hung with its bottom edge 13 cm above the bookcase's picture light (127 cm), top at 202 cm.
+const W = 46, H = 62, Z0 = 140;
 const FR = 2.6; // rail width
 const MAT = 2.4; // mat width inside the rails
 const D = 1.8; // backing depth: its front carries the mat and the plate

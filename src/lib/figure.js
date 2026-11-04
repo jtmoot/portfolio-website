@@ -147,6 +147,21 @@ export function standPoint(station) {
 }
 
 /**
+ * A route to a station's stand point: round the furniture, and by way of its `approachAt` when it
+ * has one (the reading chair: he comes to the seat straight in from the room, between the arms,
+ * instead of cutting in over the near arm). Waypoints, ending at the stand point; null if unreachable.
+ * @param {{ x: number, y: number }} from
+ * @param {object} station
+ * @param {object[]} blocks
+ */
+export function routeTo(from, station, blocks) {
+  const stand = standPoint(station);
+  if (!station.approachAt) return findPath(from, stand, blocks, FLOOR);
+  const route = findPath(from, station.approachAt, blocks, FLOOR);
+  return route ? [...route, stand] : null;
+}
+
+/**
  * What blocks him right now: every footprint, except a chair's seat while that chair is where he's
  * going or while he's in it (so he can sit, and get up again), never on the way past.
  * @param {{ stations: object[], footprints: object[] }} ctx
@@ -252,7 +267,9 @@ export function stepFigure(state, input, ctx, dtArg) {
       s.control = "user";
       s.sinceInput = 0;
       s.target = { ...input.tapTarget };
-      const route = findPath(s.pos, s.target, blocks(), FLOOR);
+      // A tap on a station's stand point takes the station's own way in.
+      const st = ctx.stations.find((o) => Math.hypot(standPoint(o).x - s.target.x, standPoint(o).y - s.target.y) < 0.5);
+      const route = st ? routeTo(s.pos, st, blocks()) : findPath(s.pos, s.target, blocks(), FLOOR);
       s.route = route && route.length > 1 ? route.slice(0, -1) : [];
     } else {
       s.sinceInput += ms;
@@ -284,7 +301,7 @@ export function stepFigure(state, input, ctx, dtArg) {
       // of heading straight at the station and only routing once he bumps into something.
       if (s.planned !== s.idleIndex) {
         s.planned = s.idleIndex;
-        const route = findPath(s.pos, goal, blocks(), FLOOR);
+        const route = routeTo(s.pos, ctx.stations[s.idleIndex], blocks());
         if (route && route.length > 1) {
           s.route = route.slice(0, -1);
           goal = s.route[0];
