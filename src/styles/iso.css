@@ -180,6 +180,17 @@ html[data-theme="night"] .iso .m-sheet{fill:#2a2a28}html[data-theme="night"] .is
 html[data-theme="night"] .iso .m-plate-paper{fill:#2b2721}
 .iso .m-brain{fill:#ead9c4;stroke:none}.iso .m-brain-dark{fill:#d9bfa1;stroke:none}
 html[data-theme="night"] .iso .m-brain{fill:#3a3127}html[data-theme="night"] .iso .m-brain-dark{fill:#4a3d30}
+/* Framed things on the wall: the mat under the chart, the rails' shadow inside a frame, push pins, an index card. */
+.iso .m-mat{fill:#efe9db;stroke:none}
+html[data-theme="night"] .iso .m-mat{fill:#262320}
+.iso .m-inset-shade{fill:#000;opacity:.11;stroke:none}
+html[data-theme="night"] .iso .m-inset-shade{opacity:.28}
+.iso .m-card{fill:#f7f4ea;stroke:none}.iso .m-card-head{fill:none;stroke:#c9574b;stroke-width:.45;vector-effect:non-scaling-stroke}.iso .m-card-rule{fill:none;stroke:#9bb4d1;stroke-width:.35;vector-effect:non-scaling-stroke}
+html[data-theme="night"] .iso .m-card{fill:#3a3730}html[data-theme="night"] .iso .m-card-head{stroke:#8a3f36}html[data-theme="night"] .iso .m-card-rule{stroke:#4f6378}
+.iso .m-pin-red{--anatomy-paper:#b9412f;--anatomy-face:#b9412f;--anatomy-top:#d8695a;--anatomy-shade-0:#7a2a1e;--anatomy-shade-1:#8a3024;--anatomy-shade-2:#9a3629;--anatomy-shade-3:#a83b2c}
+.iso .m-pin-blue{--anatomy-paper:#2f5f8f;--anatomy-face:#2f5f8f;--anatomy-top:#5a86b3;--anatomy-shade-0:#1d3d5e;--anatomy-shade-1:#22466b;--anatomy-shade-2:#284f78;--anatomy-shade-3:#2c5784}
+html[data-theme="night"] .iso .m-pin-red{--anatomy-paper:#6e2a21;--anatomy-face:#6e2a21;--anatomy-top:#8a3a2f;--anatomy-shade-0:#3f1812;--anatomy-shade-1:#4a1c15;--anatomy-shade-2:#55211a;--anatomy-shade-3:#60251d}
+html[data-theme="night"] .iso .m-pin-blue{--anatomy-paper:#213f5e;--anatomy-face:#213f5e;--anatomy-top:#2f5478;--anatomy-shade-0:#13263a;--anatomy-shade-1:#172d44;--anatomy-shade-2:#1b344e;--anatomy-shade-3:#1e3a56}
 .iso .m-plate-fig{fill:var(--anatomy-mid);font-family:var(--anatomy-mono)}
 .iso .m-wall{--anatomy-paper:#f1f0eb;--anatomy-face:#f1f0eb;--anatomy-top:#d9d7cf;--anatomy-shade-0:#e8e6e0;--anatomy-shade-1:#ecebe5;--anatomy-shade-2:#f0efea;--anatomy-shade-3:#f4f3ee}
 html[data-theme="night"] .iso .m-wall{--anatomy-paper:#1c1d20;--anatomy-face:#1c1d20;--anatomy-top:#2a2b2f;--anatomy-shade-0:#17181a;--anatomy-shade-1:#191a1c;--anatomy-shade-2:#1b1c1e;--anatomy-shade-3:#1d1e20}
