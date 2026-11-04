@@ -70,39 +70,38 @@ export const LAYOUT = {
   chess: {
     id: "chess",
     label: "Chess",
-    pos: { x: 42, y: 67 },
-    footprint: { x: 29, y: 60, w: 27, h: 14 },
+    pos: { x: 42.5, y: 67 },
+    footprint: { x: 29.5, y: 60, w: 27, h: 14 },
     link: "https://www.chess.com/member/breakfast_enjoyer",
-    labelAt: { x: 54, y: 79, z: 0 },
+    labelAt: { x: 54.5, y: 79, z: 0 },
     // Behind the board, on white's side, facing the room (just clear of the table plus his body).
-    standAt: { x: 46, y: 56.4 },
+    standAt: { x: 46.5, y: 56.4 },
   },
   reading: {
     id: "reading",
     label: "Reading chair",
-    // Front left, beside the chess table, facing into the room. pos is the seat's centre.
+    // Front left, beside the chess table, facing the camera (-x), so he walks up to it in full view
+    // and sits facing us. pos is the seat's centre.
     pos: { x: 15, y: 46 },
-    // The chair's back. The arms, lamp and side table are in `blocks`; the seat between the arms is
-    // a block too, except while he's on his way to sit in it or getting up from it.
-    footprint: { x: 6.6, y: 36.8, w: 3.2, h: 18.4 },
-    seat: { x: 9.8, y: 40, w: 12.4, h: 12 },
+    // The chair's back, on its far side. The arms, lamp and side table are in `blocks`; the seat
+    // between the arms is a block too, except while he's on his way to sit in it or getting up.
+    footprint: { x: 20.2, y: 36.8, w: 3.2, h: 18.4 },
+    seat: { x: 7.8, y: 40, w: 12.4, h: 12 },
     blocks: [
-      { x: 9.8, y: 36.8, w: 12.4, h: 3.2 },
-      { x: 9.8, y: 52, w: 12.4, h: 3.2 },
+      { x: 7.8, y: 36.8, w: 12.4, h: 3.2 },
+      { x: 7.8, y: 52, w: 12.4, h: 3.2 },
       { x: 5.2, y: 32.2, w: 5.6, h: 5.6 },
       { x: 5.8, y: 55.4, w: 6.4, h: 6.4 },
     ],
-    // He sits inside the chair's outline: the seat and far arm draw behind him, the back and near arm
-    // in front. The seat opens toward +x (away from the camera), so until he is in it he draws over
-    // the front layer too, instead of losing his legs behind the chair as he walks up.
-    paint: { x: 5, y: 32, w: 18, h: 8.5 },
-    frontPaint: { x: 5, y: 40.5, w: 18, h: 21.5, open: "+x" },
+    // He sits inside the chair's outline: the back, seat, far arm and lamp draw behind him; the near
+    // arm and the side table in front.
+    paint: { x: 5, y: 32, w: 18.5, h: 13 },
+    frontPaint: { x: 5, y: 48, w: 18.5, h: 14 },
     link: "/shelf",
     labelAt: { x: 7, y: 70, z: 0 },
     standAt: { x: 14.7, y: 46 },
-    // He comes to the seat from here, straight in between the arms along the seat's far half, so
-    // his legs clear the near arm on screen instead of seeming to step over it.
-    approachAt: { x: 28.5, y: 44.2 },
+    // He comes to the seat from in front of the chair, between the lamp and the side table.
+    approachAt: { x: 3, y: 46 },
   },
   corkboard: {
     id: "corkboard",
@@ -111,7 +110,8 @@ export const LAYOUT = {
     footprint: { x: 124, y: 0, w: 12, h: 2 },
     link: null,
     labelAt: { x: 129, y: 0, z: 186 },
-    standAt: { x: 130, y: 8 },
+    // Close enough to the board that its card (the podcasts) comes up while he looks at it.
+    standAt: { x: 130, y: 6.2 },
   },
   anatomy: {
     id: "anatomy",

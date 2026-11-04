@@ -148,7 +148,7 @@ describe("holding at a station", () => {
 });
 
 describe("after the hello", () => {
-  it("sets off within half a second of waving, toward a station away from the desk he starts at", () => {
+  it("sets off within half a second of waving, to the desk he starts beside", () => {
     const stations = [
       { id: "desk", footprint: { x: 38, y: 0, w: 32, h: 16 } },
       { id: "library", footprint: { x: 8, y: 0, w: 18, h: 7 } },
@@ -157,8 +157,8 @@ describe("after the hello", () => {
     let s = initialFigure({ x: 54, y: 26 });
     for (let t = 0; t < (GREET_WAIT_MS + GREET_MS) / 1000 + 0.5; t += 1 / 60) s = stepFigure(s, { dir: null, tapTarget: null }, ctx, 1 / 60);
     expect(s.greeting).toBe(false);
-    expect(s.idleIndex).toBe(1);
-    expect(s.pos.x).toBeLessThan(53);
+    expect(s.idleIndex).toBe(0);
+    expect(s.pos.y).toBeLessThan(25);
   });
 
   it("waves for about three seconds", () => {

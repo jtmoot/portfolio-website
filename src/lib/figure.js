@@ -54,7 +54,7 @@ export const ACTIONS = {
   library: { facing: "ul", frames: [["book1", 700], ["book2", 1300], ["book3", 450], ["book2", 900], ["book1", 550]] },
   kitchen: { facing: "ur", frames: [["cook1", 600], ["cook2", 240], ["cook3", 240], ["cook2", 240], ["cook3", 240], ["cook2", 240], ["cook3", 240], ["cook2", 240], ["cook3", 240], ["cook1", 600]] },
   plants: { facing: "ul", frames: [["water1", 600], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water2", 380], ["water3", 380], ["water1", 600]] },
-  reading: { facing: "ur", frames: [["sit1", 1300], ["sit2", 450], ["sit1", 900], ["sip", 850], ["sit1", 450]] },
+  reading: { facing: "dl", frames: [["sit1", 1300], ["sit2", 450], ["sit1", 900], ["sip", 850], ["sit1", 450]] },
   chess: { facing: "dr", over: true, frames: [["chess1", 900], ["chess2", 1500], ["chess3", 1100]] },
   gym: { facing: "dr", loop: true, frames: [["kb1", 380], ["kb2", 160], ["kb3", 420], ["kb2", 160]] },
 };
@@ -123,8 +123,8 @@ export function initialFigure(start, { greet = true, hello = greet } = {}) {
     gait: "w",
     stepDist: 0,
     control: "idle",
-    // He waves from beside the desk, so the tour opens with the next station: he sets off at once.
-    idleIndex: greet ? 1 : 0,
+    // The tour opens at the desk he waves from: a few steps to it, then he types.
+    idleIndex: 0,
     pauseLeft: 0,
     sinceInput: IDLE_RESUME_MS,
     target: null,
