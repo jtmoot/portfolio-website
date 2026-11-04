@@ -105,7 +105,30 @@ motion; land it on `main` by PR.
   `approachAt` point in front of the chair, straight in along the seat's far half.
 - **The station sayings:** Joshua will give new lines; `CARD_TEXT` in `StationCard.jsx`.
 
+### 8. The tour, the chair again, the corkboard, speed, and a sticky note (Nov 4, evening)
+
+- **The tour opens at the desk** he waves from (`idleIndex` 0), then the library and on round.
+- **The chair faces the camera now.** Approaching its open side from the room could only read as
+  walking into it, whatever the draw order. `reading.mjs` and `reading-front.mjs` mirror the
+  chair in local y: the tall back, back cushion, seat, far arm and lamp draw behind him, the near
+  arm and side table in front. He comes to a point in front of the chair (`approachAt` 3, 46),
+  steps in between the arms and sits facing us (`ACTIONS.reading.facing` is `dl`, so the sprite
+  sheet carries `f-dl-sit1`, `sit2`, `sip`). The chess table moved half a unit right to keep the
+  30 cm aisle. Layout: footprint (the back) at x 20.2, seat at x 7.8, paint boxes y 32 to 45 and
+  48 to 62.
+- **The corkboard's card comes up:** its stand point is 6.2 from the wall, within the card's reach
+  of 5 from the board.
+- **Speed.** Measured in headless Chrome: the room runs at about 60 fps once open; the glitches
+  were three stalls of 100 to 160 ms (the first open parsing 3.5 MB of drawings into 19,000 DOM
+  nodes, a station card appearing, and the exit). The room now mounts hidden at idle 4 s after
+  load, so the first click pays nothing; each drawing has `contain: layout style`, so a card or
+  the figure moving relays out only its own box. After: worst frame 50 to 67 ms, longest task
+  about 55 ms.
+- **A sticky note on /shelf:** `src/pad/StickyNote.jsx`, yellow paper with a lifting corner, the
+  line "Never stop the intellectual struggle..." in his hand, top right of the title.
+
 ## Order
 
 1, 2, 4, 5, 3; then `npm test`, `npm run build`, screenshots of the entrance, exit and the room;
-PR to `main` and merge (PR #3). Then 6, in a second PR (PR #5). Then 7, in a third.
+PR to `main` and merge (PR #3). Then 6, in a second PR (PR #5). Then 7, in a third (PR #7). Then
+8, in a fourth.

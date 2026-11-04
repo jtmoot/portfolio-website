@@ -50,7 +50,9 @@ export default function App() {
     };
     window.addEventListener("keydown", onKey);
     const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 1));
-    const t = PAGE === "pad" ? setTimeout(() => idle(() => loadRoom().catch(() => {})), 4000) : 0;
+    // Fetch the room's code, then mount its drawings hidden, so the first click into creative
+    // mode is not the moment the page parses three megabytes of SVG.
+    const t = PAGE === "pad" ? setTimeout(() => idle(() => loadRoom().then(() => setRoomLoaded(true)).catch(() => {})), 4000) : 0;
     return () => {
       window.removeEventListener("keydown", onKey);
       clearTimeout(t);

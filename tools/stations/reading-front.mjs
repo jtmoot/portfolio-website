@@ -1,23 +1,20 @@
-// The reading corner, the part drawn in front of the figure when he sits: the club chair's back
-// cushion, near arm and tall back, then the side table by the near arm with a mug of coffee (steam
-// rising, class m-steam) and two books. Registers with reading.mjs through the shared bounds.
+// The reading corner, the part drawn in front of the figure when he sits: the club chair's near arm
+// (toward the camera's right), then the side table by it with a mug of coffee (steam rising, class
+// m-steam) and two books. Registers with reading.mjs through the shared bounds.
 import { station, k } from "./lib.mjs";
 import { BOUNDS, SEAT, W } from "./reading-shared.mjs";
 
 export default station("reading-front", {
-  label: "The back of the reading chair and a side table with a mug of coffee.",
+  label: "The near arm of the reading chair and a side table with a mug of coffee.",
   bounds: BOUNDS,
   draw(c) {
     const { box, cyl, L, D, at, path3, halo } = c;
     const out = [];
-    // Painter's order, far to near: back cushion, near arm, then the tall back nearest the viewer.
-    out.push(`<g class="m-leather-hi">${box(-W + 16, 18, SEAT, W - 16, 26, 90, { r: 4, steps: 4, bevel: 1.4, tone: "hi", crease: "lo" })}</g>`);
-    out.push(`<g class="m-leather">${box(W - 16, -36, SEAT - 6, W, 26, 62, { r: 6, steps: 4, bevel: 2.2, tone: "hi", crease: "lo" })}</g>`);
-    out.push(`<g class="m-leather">${box(-W, 26, SEAT - 6, W, 42, 96, { r: 6, steps: 4, bevel: 2, tone: "hi", crease: "lo" })}</g>`);
-    // On the back's outer panel: welt seams and a row of brass nailheads along the bottom.
-    out.push(`<g class="m-leather">${L(path3([[-W + 16, 42.05, 44], [-W + 16, 42.05, 92]]) + path3([[W - 16, 42.05, 44], [W - 16, 42.05, 92]]), { tone: "lo" })}</g>`);
+    // The near arm, with a row of brass nailheads along the bottom of its outer face.
+    out.push(`<g class="m-leather">${box(W - 16, -26, SEAT - 6, W, 36, 62, { r: 6, steps: 4, bevel: 2.2, tone: "hi", crease: "lo" })}</g>`);
+    out.push(`<g class="m-leather">${L(path3([[W + 0.05, -22, 44], [W + 0.05, 32, 44]]), { tone: "lo" })}</g>`);
     const nails = [];
-    for (let i = 0; i <= 14; i++) nails.push(at([-W + 4 + (i * (2 * W - 8)) / 14, 42.1, 15]));
+    for (let i = 0; i <= 10; i++) nails.push(at([W + 0.1, -22 + (i * 54) / 10, 12]));
     out.push(D(nails, { size: 0.5, tone: "mid" }));
 
     // --- Side table by the near arm: a wooden top on a pedestal --------------------------------------
