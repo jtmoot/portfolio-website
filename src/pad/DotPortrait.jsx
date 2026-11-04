@@ -24,7 +24,9 @@ export function backingSize(css, dpr) {
 
 /**
  * Halftone headshot drawn as dots in the photo's own colours (skin, hair, shirt), sized by
- * darkness; the dots part around the cursor and spring back. onReady fires once there is something
+ * darkness; the dots part around the cursor and spring back. The plain photo sits over the dots,
+ * hidden, for the polaroid to show while it flies in: a dot grid that small and tilted shimmers
+ * (moiré), a photo doesn't. onReady fires once there is something
  * to see: the first frame of dots, or the plain photo (loaded or not) when there's no canvas.
  * @param {{ src: string, alt: string, onReady?: () => void }} props
  */
@@ -149,5 +151,10 @@ export default function DotPortrait({ src, alt, onReady }) {
   }, [src]);
 
   if (fallback) return <img className="portrait-img" src={src} alt={alt} onLoad={() => onReady?.()} onError={() => onReady?.()} />;
-  return <canvas ref={ref} className="portrait-dots" role="img" aria-label={alt} />;
+  return (
+    <div className="portrait">
+      <canvas ref={ref} className="portrait-dots" role="img" aria-label={alt} />
+      <img className="portrait-photo" src={src} alt="" aria-hidden="true" />
+    </div>
+  );
 }

@@ -345,6 +345,28 @@ button[aria-pressed="true"] .toggle-pill::after {
   --ink: #2a2a28;
 }
 
+.portrait {
+  position: relative;
+}
+
+/* The plain photo over the dots, shown only while the polaroid flies in (Hero's data-flying), then
+   dissolving into the halftone as it lands. */
+.portrait-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.polaroid[data-flying] .portrait-photo {
+  opacity: 1;
+  transition: none;
+}
+
 .portrait-dots,
 .portrait-img {
   display: block;
