@@ -62,6 +62,19 @@ describe("Shelf extras", () => {
     vi.unstubAllGlobals();
   });
 
+  it("offers creative mode in its nav when the app gives it a way to the room", async () => {
+    const { default: Shelf } = await import("../../src/pad/Shelf.jsx");
+    const go = vi.fn();
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<Shelf onToggleMode={go} />));
+    const button = [...host.querySelectorAll(".nav button")].find((b) => b.textContent.includes("Creative mode"));
+    expect(button).toBeTruthy();
+    await act(async () => button.click());
+    expect(go).toHaveBeenCalledTimes(1);
+    await act(async () => root.unmount());
+  });
+
   it("has his sticky note drawn on top of the bookcase, in his hand", async () => {
     const { host, root } = await mount();
     const note = host.querySelector(".bookcase svg .bk-note-text");

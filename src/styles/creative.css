@@ -98,22 +98,25 @@
   pointer-events: none;
 }
 
-/* Travelers slide along the tipping paper to their station, then fade as the drawing rises. */
+/* Travelers slide along the tipping paper to their station, then fade as the drawing rises. The
+   polaroid shrinks with `scale`, not `width`: its portrait is a canvas that is cleared on every
+   resize and redrawn a frame later, so a width transition left it blank for the whole flight. */
 .polaroid {
   transition:
     left 1.5s cubic-bezier(0.6, 0, 0.25, 1),
     top 1.5s cubic-bezier(0.6, 0, 0.25, 1),
-    width 1.5s cubic-bezier(0.6, 0, 0.25, 1),
+    scale 1.5s cubic-bezier(0.6, 0, 0.25, 1),
     rotate 1.5s cubic-bezier(0.6, 0, 0.25, 1),
     opacity 0.45s ease,
     transform 0.3s ease,
     box-shadow 0.3s ease;
 }
 
+/* Its centre lands on the room's spot (the card is 11cqw wide), a third the size. */
 .stage[data-mode="creative"] .polaroid {
-  left: calc(var(--to-x) * 1cqw - 2cqw);
-  top: calc(var(--to-y) * 1cqw - 2cqw);
-  width: 4cqw;
+  left: calc(var(--to-x) * 1cqw - 5.5cqw);
+  top: calc(var(--to-y) * 1cqw - 5.5cqw);
+  scale: 0.364;
   opacity: 0;
   transition-delay: 0s, 0s, 0s, 0s, 0.6s;
 }
@@ -414,7 +417,7 @@ html[data-theme="night"] .fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;
 .stage[data-phone][data-mode="creative"] .polaroid {
   left: auto;
   top: auto;
-  width: 120px;
+  scale: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -705,7 +708,7 @@ html[data-theme="night"] .fm-mug{--anatomy-paper:#f4f1ea;--anatomy-face:#f4f1ea;
     transition:
       left 1.5s cubic-bezier(0.6, 0, 0.25, 1),
       top 1.5s cubic-bezier(0.6, 0, 0.25, 1),
-      width 1.5s cubic-bezier(0.6, 0, 0.25, 1),
+      scale 1.5s cubic-bezier(0.6, 0, 0.25, 1),
       rotate 1.5s cubic-bezier(0.6, 0, 0.25, 1),
       opacity 0.45s ease 0.75s,
       transform 0.3s ease,
