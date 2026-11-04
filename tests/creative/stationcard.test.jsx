@@ -61,16 +61,16 @@ describe("corkboard drawing", () => {
 });
 
 describe("the station lines", () => {
-  it("are Joshua's own words (Nov 3)", async () => {
+  it("are Joshua's own words (Nov 3, three of them changed Nov 4)", async () => {
     const { CARD_TEXT } = await import("../../src/creative/StationCard.jsx");
     expect(Object.fromEntries(Object.entries(CARD_TEXT).map(([id, t]) => [id, t.line]))).toEqual({
       desk: "Building, one day at a time.",
       library: "A short bookcase, mostly contained within my Kindle now.",
       plants: "All thriving: monsteras, a dracaena, a hosta and a money tree.",
       kitchen: "Short ribs, braised in my Dutch oven.",
-      gym: "Functional fitness, always.",
-      chess: "A Caro-Kann type of guy.",
-      reading: "Coffee usually. Tea sometimes. Bone broth occasionally.",
+      gym: "Functional fitness.",
+      chess: "A Caro-Kann type of guy",
+      reading: "Coffee usually. Tea sometimes. Bone broth occasionally...",
       corkboard: "Highly recommended!",
     });
   });
