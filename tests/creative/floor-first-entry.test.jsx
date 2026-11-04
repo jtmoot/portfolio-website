@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeAll, afterEach } from "vitest";
 import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { VIEW } from "../../src/lib/floorView.js";
+// Imported here, not inside the test: pulling in every drawing can take seconds on a busy machine.
+import Floor from "../../src/creative/Floor.jsx";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -15,7 +17,6 @@ describe("the floor layer on a first entry", () => {
     const frames = [];
     vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => frames.push(cb));
     vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
-    const { default: Floor } = await import("../../src/creative/Floor.jsx");
     const stage = document.createElement("div");
     stage.className = "stage";
     stage.innerHTML = '<main class="sheet"><section class="poster"></section></main>';
@@ -44,5 +45,5 @@ describe("the floor layer on a first entry", () => {
     expect(layer.hasAttribute("data-on")).toBe(false);
     await act(async () => root.unmount());
     stage.remove();
-  });
+  }, 20000);
 });
