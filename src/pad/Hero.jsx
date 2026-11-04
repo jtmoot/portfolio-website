@@ -95,6 +95,7 @@ export default function Hero() {
         className="polaroid"
         data-traveler="polaroid"
         data-ready={ready || undefined}
+        data-flying={(ready && !go) || undefined}
         style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y }}
       >
         <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" onReady={arrive} />

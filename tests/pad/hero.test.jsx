@@ -104,6 +104,16 @@ describe("the polaroid swoops in from the room", () => {
     await done(m);
   });
 
+  it("flies the plain photo and lets it dissolve into the dots on landing (a dot grid that small shimmers)", async () => {
+    const { ARRIVE_MS } = await import("../../src/lib/opening.js");
+    const m = await mountWith(false);
+    await act(async () => m.card.querySelector("img").dispatchEvent(new Event("load")));
+    expect(m.card.hasAttribute("data-flying")).toBe(true);
+    await act(async () => vi.advanceTimersByTime(ARRIVE_MS + 50));
+    expect(m.card.hasAttribute("data-flying")).toBe(false);
+    await done(m);
+  });
+
   it("doesn't wait forever on a slow photo", async () => {
     const { ARRIVE_MS, READY_CAP_MS } = await import("../../src/lib/opening.js");
     const m = await mountWith(false);
@@ -142,6 +152,11 @@ describe("the opening's CSS reads what Hero sets", () => {
     expect(css).toMatch(/\.hero\[data-go\]\[data-pass="1"\] \.intro mark \{\s*animation: mark-draw-1 /);
     expect(css).toMatch(/@keyframes mark-draw-0/);
     expect(css).toMatch(/@keyframes mark-draw-1/);
+  });
+
+  it("shows the photo over the dots only while flying, and fades it off as the card lands", () => {
+    expect(css).toMatch(/\.portrait-photo \{[^}]*position: absolute;[^}]*opacity: 0;[^}]*transition: opacity 0\.45s ease;/);
+    expect(css).toMatch(/\.polaroid\[data-flying\] \.portrait-photo \{\s*opacity: 1;\s*transition: none;/);
   });
 
   it("hides the card until ready without opacity (its creative-mode opacity transition would re-fade it as it lands)", () => {
