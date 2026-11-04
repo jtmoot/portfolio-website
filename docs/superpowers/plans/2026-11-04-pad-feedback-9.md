@@ -127,8 +127,29 @@ motion; land it on `main` by PR.
 - **A sticky note on /shelf:** `src/pad/StickyNote.jsx`, yellow paper with a lifting corner, the
   line "Never stop the intellectual struggle..." in his hand, top right of the title.
 
+### 9. The chair, properly; the note drawn in (Nov 4, night)
+
+- **What was still wrong:** after 8 he walked into the seat standing, so his legs crossed the
+  cushion's front; the lamp and the side table stood in front of the chair; and the card's reach
+  (5 from the chair's back) missed the seat.
+- **Sitting down.** The chair's `standAt` is where his hips end up (the seat's centre), its new
+  `sitFrom` where he stands to sit (feet a hand's breadth in front of the cushion, 43 cm forward
+  of the hips). Routes end at `walkPoint` (sitFrom when a station has one). On arrival the stop
+  plays the action's `settle` frames first (`sitdown1`, `sitdown2`: the sit pose a third and two
+  thirds of the way down, `sit` in figure.mjs now takes a fraction), each drawn with his hips that
+  fraction of the way from sitFrom to standAt, so his feet stay planted and he lowers himself back
+  onto the seat. Getting up plays them backwards before he leaves, and before he answers a steer
+  or a tap (`seated`, `rising`, `pendingTap` in the state).
+- **The chair's parts:** the lamp moved behind his far shoulder, the side table beside the near
+  arm, level with the seat, so the floor in front of the chair is open; the back layer's paint box
+  is the back and lamp only (x 15.5 to 23.5), the front layer's the near arm and table (y 48 to 64).
+- **The card** reaches a chair's seat as well as its back (`nearestStation`), and the reach is 6.
+- **The sticky note** is drawn on the bookcase top beside the picture light (both /shelf and the
+  room's library), yellow paper with a lifting corner, the line in his hand set flat on it; the flat
+  HTML note from 8 is gone.
+
 ## Order
 
 1, 2, 4, 5, 3; then `npm test`, `npm run build`, screenshots of the entrance, exit and the room;
 PR to `main` and merge (PR #3). Then 6, in a second PR (PR #5). Then 7, in a third (PR #7). Then
-8, in a fourth.
+8, in a fourth (PR #11). Then 9, in a fifth.
