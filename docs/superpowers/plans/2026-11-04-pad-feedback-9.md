@@ -148,8 +148,20 @@ motion; land it on `main` by PR.
   room's library), yellow paper with a lifting corner, the line in his hand set flat on it; the flat
   HTML note from 8 is gone.
 
+### 10. Creative mode from the shelf; the portrait no longer blinks out (Nov 4, late)
+
+- **The shelf's nav has the creative-mode toggle.** It leads to `/?mode=creative`: the pad opens,
+  its opening plays, and once the polaroid has landed (or after three seconds at most) the paper
+  tips into the room on its own (`AUTO_CREATIVE` in App.jsx). `?mode=creative` no longer starts
+  the page already tipped.
+- **The portrait blinked out on the way back.** The polaroid flew between the page and the room by
+  transitioning `width`; its portrait is a canvas that is cleared on every resize and redrawn a
+  frame later, so it was blank for the whole flight (measured on the live site: 51 of 66 frames
+  blank, 52 canvas resizes) and popped in at the end. It now flies with `scale` (its centre still
+  lands on the room's spot); measured after: 0 blank frames, 1 resize.
+
 ## Order
 
 1, 2, 4, 5, 3; then `npm test`, `npm run build`, screenshots of the entrance, exit and the room;
 PR to `main` and merge (PR #3). Then 6, in a second PR (PR #5). Then 7, in a third (PR #7). Then
-8, in a fourth (PR #11). Then 9, in a fifth.
+8, in a fourth (PR #11). Then 9, in a fifth (PR #12). Then 10, in a sixth.
