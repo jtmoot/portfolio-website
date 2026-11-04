@@ -5,11 +5,12 @@ import IntroTools from "./IntroTools.jsx";
 import Intro from "./Intro.jsx";
 import { unlock } from "../lib/audio.js";
 import { trackHeroEnd } from "../lib/heroEnd.js";
-import { openingTimes } from "../lib/opening.js";
+import { ARRIVE_MS, READY_CAP_MS, openingTimes } from "../lib/opening.js";
 import { INTRO, ROLE, SOCIALS } from "../content/data.js";
 import { FIGURE_START } from "../lib/travelers.js";
 
 const NAME = "Joshua Moorehead";
+const still = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const T = openingTimes(nameDuration(NAME), INTRO.flat().filter((t) => t.mark).length);
 /** The opening's timeline, for the CSS animations in sheet.css. */
 const TIMES = {
@@ -22,8 +23,9 @@ const TIMES = {
 
 /**
  * The first screen's centre: the polaroid, the name, the intro and the ways to reach Joshua.
- * The opening runs in garvitsingla.in's order: the name types, the role fades in, the intro rises
- * whole, its highlights draw one after another, and the links come last. Browsers keep the page
+ * The opening: once the portrait is drawn, the polaroid appears in the middle of the window and
+ * floats left into its place; as it lands (data-go) the name types, the role fades in, the intro
+ * rises whole, its highlights sweep in one after another, and the links come last. Browsers keep the page
  * silent until a gesture, so the first click or key press after the opening retypes the name with
  * the sound and redraws the highlights (the paragraph and links stay, so a first click on a link
  * still lands); one during the opening only turns the sound on.
@@ -34,8 +36,13 @@ export default function Hero() {
   const hero = useRef(null);
   // Flipping between two identical animations restarts the highlights' draw on a replay.
   const [pass, setPass] = useState(0);
-  // The polaroid settles in once its portrait is drawn, not while the photo is still loading.
+  const card = useRef(null);
+  // The polaroid comes in once its portrait is drawn, not while the photo is still loading,
+  // starting from the window's centre (arriveX px to the right of its place).
   const [ready, setReady] = useState(false);
+  const [arriveX, setArriveX] = useState(0);
+  const [go, setGo] = useState(false);
+  const started = useRef(null);
   const replay = () => {
     name.current?.run();
     setPass((p) => 1 - p);
@@ -43,15 +50,38 @@ export default function Hero() {
 
   useEffect(() => trackHeroEnd(hero.current), []);
 
-  useEffect(() => {
+  const landed = useRef(false);
+  const timers = useRef([]);
+  const begin = () => {
+    started.current = Date.now();
+    setGo(true);
     name.current?.run();
-    const started = Date.now();
+  };
+  // The portrait is drawn (or the photo took too long): measure the way from the window's centre,
+  // bring the card in, and start the name as it lands. Under reduced motion it is simply there.
+  const arrive = () => {
+    if (landed.current) return;
+    landed.current = true;
+    const r = card.current?.getBoundingClientRect();
+    if (r) setArriveX(Math.round(window.innerWidth / 2 - (r.left + r.width / 2)));
+    setReady(true);
+    if (still()) begin();
+    else timers.current.push(setTimeout(begin, ARRIVE_MS));
+  };
+
+  // A photo that takes too long doesn't hold the whole opening up.
+  useEffect(() => {
+    timers.current.push(setTimeout(arrive, READY_CAP_MS));
+    return () => timers.current.forEach(clearTimeout);
+  }, []);
+
+  useEffect(() => {
     const first = (e) => {
       window.removeEventListener("pointerdown", first);
       window.removeEventListener("keydown", first);
       unlock();
-      // While the opening is still running, a replay would knock it out of order: sound only.
-      if (Date.now() - started < T.socials) return;
+      // Before or while the opening runs, a replay would knock it out of order: sound only.
+      if (started.current === null || Date.now() - started.current < T.socials) return;
       // The replay and mute icons do their own thing, and the toggle turns the page instead.
       if (e.target instanceof Element && e.target.closest('.intro-tools, [data-sound="flip"]')) return;
       replay();
@@ -66,10 +96,16 @@ export default function Hero() {
 
   return (
     <>
-      <figure className="polaroid" data-traveler="polaroid" data-ready={ready || undefined} style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y }}>
-        <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" onReady={() => setReady(true)} />
+      <figure
+        ref={card}
+        className="polaroid"
+        data-traveler="polaroid"
+        data-ready={ready || undefined}
+        style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y, "--arrive-x": `${arriveX}px` }}
+      >
+        <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" onReady={arrive} />
       </figure>
-      <div className="hero" ref={hero} data-pass={pass} style={TIMES}>
+      <div className="hero" ref={hero} data-go={go || undefined} data-pass={pass} style={TIMES}>
         <HandName ref={name} text={NAME} />
         <p className="role">
           {ROLE}

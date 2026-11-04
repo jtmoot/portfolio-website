@@ -72,6 +72,58 @@ describe("Hero portrait", () => {
   });
 });
 
+describe("the polaroid floats in from the middle", () => {
+  const mountWith = async (reduced) => {
+    vi.resetModules();
+    vi.useFakeTimers();
+    vi.stubGlobal("matchMedia", () => ({ matches: reduced }));
+    const { default: Fresh } = await import("../../src/pad/Hero.jsx");
+    const host = document.createElement("div");
+    document.body.append(host);
+    const root = createRoot(host);
+    await act(async () => root.render(<Fresh />));
+    return { host, root, card: host.querySelector(".polaroid"), hero: host.querySelector(".hero") };
+  };
+  const done = async ({ host, root }) => {
+    await act(async () => root.unmount());
+    host.remove();
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  };
+
+  it("starts it at the window's centre once the portrait is ready, and starts the name only as it lands", async () => {
+    const { ARRIVE_MS } = await import("../../src/lib/opening.js");
+    const m = await mountWith(false);
+    expect(m.hero.hasAttribute("data-go")).toBe(false);
+    await act(async () => m.card.querySelector("img").dispatchEvent(new Event("load")));
+    expect(m.card.hasAttribute("data-ready")).toBe(true);
+    // jsdom lays the card out at 0,0 with no size, so the way to the centre is half the window.
+    expect(m.card.style.getPropertyValue("--arrive-x")).toBe(`${Math.round(window.innerWidth / 2)}px`);
+    await act(async () => vi.advanceTimersByTime(ARRIVE_MS - 50));
+    expect(m.hero.hasAttribute("data-go")).toBe(false);
+    await act(async () => vi.advanceTimersByTime(100));
+    expect(m.hero.hasAttribute("data-go")).toBe(true);
+    await done(m);
+  });
+
+  it("doesn't wait forever on a slow photo", async () => {
+    const { ARRIVE_MS, READY_CAP_MS } = await import("../../src/lib/opening.js");
+    const m = await mountWith(false);
+    await act(async () => vi.advanceTimersByTime(READY_CAP_MS));
+    expect(m.card.hasAttribute("data-ready")).toBe(true);
+    await act(async () => vi.advanceTimersByTime(ARRIVE_MS));
+    expect(m.hero.hasAttribute("data-go")).toBe(true);
+    await done(m);
+  });
+
+  it("skips the float under reduced motion: the opening starts as soon as the portrait is ready", async () => {
+    const m = await mountWith(true);
+    await act(async () => m.card.querySelector("img").dispatchEvent(new Event("load")));
+    expect(m.hero.hasAttribute("data-go")).toBe(true);
+    await done(m);
+  });
+});
+
 describe("the opening's CSS reads what Hero sets", () => {
   // Vitest runs from the repo root.
   const css = readFileSync("src/styles/sheet.css", "utf8");
@@ -81,23 +133,31 @@ describe("the opening's CSS reads what Hero sets", () => {
   });
 
   it("fades the paragraphs in as one block rising 8px over 0.7 s, and sweeps each highlight in over 0.6 s", () => {
-    expect(css).toMatch(/\.hero \.intro \{\s*animation: open-rise 0\.7s cubic-bezier\(0\.4, 0, 0\.2, 1\) /);
+    expect(css).toMatch(/\.hero\[data-go\] \.intro \{\s*animation: open-rise 0\.7s cubic-bezier\(0\.4, 0, 0\.2, 1\) /);
     expect(css).toMatch(/@keyframes open-rise \{\s*from \{\s*opacity: 0;\s*translate: 0 8px;/);
-    expect(css).toMatch(/\.hero\[data-pass="0"\] \.intro mark \{\s*animation: mark-draw-0 0\.6s cubic-bezier\(0\.25, 1, 0\.5, 1\) /);
-    expect(css).toMatch(/\.hero\[data-pass="1"\] \.intro mark \{\s*animation: mark-draw-1 0\.6s cubic-bezier\(0\.25, 1, 0\.5, 1\) /);
+    expect(css).toMatch(/\.hero\[data-go\]\[data-pass="0"\] \.intro mark \{\s*animation: mark-draw-0 0\.6s cubic-bezier\(0\.25, 1, 0\.5, 1\) /);
+    expect(css).toMatch(/\.hero\[data-go\]\[data-pass="1"\] \.intro mark \{\s*animation: mark-draw-1 0\.6s cubic-bezier\(0\.25, 1, 0\.5, 1\) /);
   });
 
   it("has a highlight animation for each pass, so a replay restarts them", () => {
-    expect(css).toMatch(/\.hero\[data-pass="0"\] \.intro mark \{\s*animation: mark-draw-0 /);
-    expect(css).toMatch(/\.hero\[data-pass="1"\] \.intro mark \{\s*animation: mark-draw-1 /);
+    expect(css).toMatch(/\.hero\[data-go\]\[data-pass="0"\] \.intro mark \{\s*animation: mark-draw-0 /);
+    expect(css).toMatch(/\.hero\[data-go\]\[data-pass="1"\] \.intro mark \{\s*animation: mark-draw-1 /);
     expect(css).toMatch(/@keyframes mark-draw-0/);
     expect(css).toMatch(/@keyframes mark-draw-1/);
   });
 
-  it("settles the polaroid only once it is ready, and hides the empty card until then", () => {
-    expect(css).toMatch(/\.polaroid\[data-ready\] \{\s*animation: settle /);
+  it("hides the empty card until it is ready, then floats it from the centre into place, with no drop or tilt", () => {
     expect(css).toMatch(/\.stage\[data-mode="pad"\] \.polaroid:not\(\[data-ready\]\) \{\s*opacity: 0;/);
-    expect(css).toMatch(/@keyframes settle \{\s*from \{\s*opacity: 0;\s*translate: 0 -16px;\s*rotate: -2deg;/);
+    expect(css).toMatch(/\.polaroid\[data-ready\] \{\s*animation: arrive 1\.1s linear backwards;/);
+    expect(css).toMatch(/@keyframes arrive \{\s*0% \{\s*opacity: 0;\s*translate: var\(--arrive-x, 0px\) 0;/);
+    expect(css).toMatch(/100% \{\s*opacity: 1;\s*translate: 0 0;/);
+    expect(css).not.toMatch(/@keyframes settle/);
+  });
+
+  it("keeps the name, role, intro and links hidden until the polaroid has landed", () => {
+    expect(css).toMatch(/\.hero:not\(\[data-go\]\) > \* \{\s*opacity: 0;/);
+    expect(css).toMatch(/\.hero\[data-go\] \.role \{\s*animation: open-fade /);
+    expect(css).toMatch(/\.hero\[data-go\] \.socials \{\s*animation: open-fade /);
   });
 
   it("never hides a focused link or button behind the fade, and lifts the polaroid only for a real pointer", () => {
