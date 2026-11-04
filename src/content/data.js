@@ -1,12 +1,22 @@
-/** The typed intro; marked tokens get the highlighter. */
+/** The intro, one array of tokens per paragraph; marked tokens get the highlighter. */
 export const INTRO = [
-  { text: "I enjoy building the " },
-  { text: "systems around models", mark: true },
-  { text: ": inference that runs faster and cheaper, and " },
-  { text: "agents", mark: true },
-  { text: " that hold up in production. I come to both from a strong foundation in data engineering, and I'm working toward an MS in Electrical and Computer Engineering at " },
-  { text: "Carnegie Mellon", mark: true },
-  { text: " while interning at Core Natural Resources. Outside of work, I lift, run, cook, read history and play chess." },
+  [
+    { text: "I enjoy building the " },
+    { text: "systems around models", mark: true },
+    { text: ": inference that runs faster and cheaper, and " },
+    { text: "agents", mark: true },
+    { text: " that hold up in production." },
+  ],
+  [
+    {
+      text: "I come to both from a strong foundation in data engineering, a habit of following the frontier closely, and a preference for working directly with the people who'll use the work.",
+    },
+  ],
+  [
+    { text: "I'm earning an MS in Electrical and Computer Engineering at " },
+    { text: "Carnegie Mellon", mark: true },
+    { text: " while interning at Core Natural Resources. Outside of work, I lift, run, cook, read history and play chess." },
+  ],
 ];
 
 export const ROLE = "ML systems and AI engineer";
@@ -120,6 +130,7 @@ export const PROJECTS = [
 export const EXPERIENCE = [
   {
     id: "core",
+    site: "https://corenaturalresources.com/",
     company: "Core Natural Resources",
     kind: "Internship",
     role: "Cloud & Data Engineering Intern",
@@ -136,11 +147,10 @@ export const EXPERIENCE = [
       "Building an LLM agent that drafts Oracle requisitions for human approval.",
     ],
     stack: ["Lambda", "AppSync GraphQL", "Aurora PostgreSQL", "Step Functions", "Terraform", "Glue/Spark", "DMS", "Amazon Bedrock"],
-    preview: null,
-    ph: "A photo from Core goes here",
   },
   {
     id: "cmu",
+    site: "https://www.cmu.edu/",
     company: "Carnegie Mellon University",
     kind: "Graduate",
     role: "MS, Electrical and Computer Engineering · AI/ML Systems",
@@ -162,11 +172,10 @@ export const EXPERIENCE = [
       "18-661 Intro to ML for Engineers",
       "18-613 Foundations of Computer Systems",
     ],
-    preview: null,
-    ph: "A photo from CMU goes here",
   },
   {
     id: "baron",
+    site: "https://www.baronfiltration.com/",
     company: "Baron Filtration",
     kind: "Internship",
     role: "Data Engineering Intern",
@@ -181,11 +190,10 @@ export const EXPERIENCE = [
       "Shipped the company's first operational dashboard.",
     ],
     stack: ["Python", "SQL", "AWS S3", "Sage Intacct", "Metabase"],
-    preview: null,
-    ph: "A photo from Baron goes here",
   },
   {
     id: "usc-reu",
+    site: "https://sc.edu/",
     company: "University of South Carolina",
     kind: "Research",
     role: "Research Assistant, Department of Mathematics",
@@ -199,8 +207,6 @@ export const EXPERIENCE = [
       "Benchmarked a dual-decoder model tuned by DARTS on an HPC cluster.",
     ],
     stack: ["PyTorch", "Autoencoders", "Computer vision", "Simulation"],
-    preview: "/media/stm-reconstruction.jpg",
-    ph: null,
   },
 ];
 

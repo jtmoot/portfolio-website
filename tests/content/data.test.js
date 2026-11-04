@@ -41,12 +41,27 @@ describe("content from the Nov 2 resumes", () => {
   const text = (items) => JSON.stringify(items);
   const row = (id) => EXPERIENCE.find((x) => x.id === id);
 
-  it("keeps the role line and says, in the intro, what he enjoys building (the Nov 3 wording)", () => {
+  it("keeps the role line and says, in three short paragraphs, what he enjoys building (the Nov 3 C3 wording)", () => {
     expect(ROLE).toBe("ML systems and AI engineer");
-    expect(INTRO.map((t) => t.text).join("")).toBe(
-      "I enjoy building the systems around models: inference that runs faster and cheaper, and agents that hold up in production. I come to both from a strong foundation in data engineering, and I'm working toward an MS in Electrical and Computer Engineering at Carnegie Mellon while interning at Core Natural Resources. Outside of work, I lift, run, cook, read history and play chess.",
-    );
-    expect(INTRO.filter((t) => t.mark).map((t) => t.text)).toEqual(["systems around models", "agents", "Carnegie Mellon"]);
+    expect(INTRO.map((p) => p.map((t) => t.text).join(""))).toEqual([
+      "I enjoy building the systems around models: inference that runs faster and cheaper, and agents that hold up in production.",
+      "I come to both from a strong foundation in data engineering, a habit of following the frontier closely, and a preference for working directly with the people who'll use the work.",
+      "I'm earning an MS in Electrical and Computer Engineering at Carnegie Mellon while interning at Core Natural Resources. Outside of work, I lift, run, cook, read history and play chess.",
+    ]);
+    expect(INTRO.flat().filter((t) => t.mark).map((t) => t.text)).toEqual(["systems around models", "agents", "Carnegie Mellon"]);
+  });
+
+  it("links each experience row to the place's own site, and shows no hover photo", () => {
+    expect(Object.fromEntries(EXPERIENCE.map((x) => [x.id, x.site]))).toEqual({
+      core: "https://corenaturalresources.com/",
+      cmu: "https://www.cmu.edu/",
+      baron: "https://www.baronfiltration.com/",
+      "usc-reu": "https://sc.edu/",
+    });
+    for (const x of EXPERIENCE) {
+      expect(x).not.toHaveProperty("preview");
+      expect(x).not.toHaveProperty("ph");
+    }
   });
 
   it("leads Experience with the Core internship, current, with its logo", () => {

@@ -414,6 +414,14 @@ button[aria-pressed="true"] .toggle-pill::after {
   margin: 0 0 1.2cqw;
 }
 
+.intro p {
+  margin: 0;
+}
+
+.intro p + p {
+  margin-top: 0.75em;
+}
+
 /* The highlights: a low band under the words that draws left to right. */
 .intro mark {
   background: linear-gradient(#8a4a2a, #8a4a2a) no-repeat 0 100% / 100% 0.18em;
@@ -501,9 +509,15 @@ button[aria-pressed="true"] .toggle-pill::after {
   }
 }
 
-/* The polaroid drops 6px into place with one small overshoot, and lifts a little under the pointer. */
-.polaroid {
-  animation: settle 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) 0.05s backwards;
+/* The polaroid waits, hidden, until its portrait is drawn (so it never settles in empty while the
+   photo loads), then drops 16px into place, straightening from a slight tilt with one small
+   overshoot. It lifts a little under the pointer. */
+.stage[data-mode="pad"] .polaroid:not([data-ready]) {
+  opacity: 0;
+}
+
+.polaroid[data-ready] {
+  animation: settle 0.75s cubic-bezier(0.3, 1.4, 0.5, 1) backwards;
 }
 
 /* Only for a real pointer: on a phone a tap would leave it lifted. */
@@ -517,7 +531,8 @@ button[aria-pressed="true"] .toggle-pill::after {
 @keyframes settle {
   from {
     opacity: 0;
-    translate: 0 -6px;
+    translate: 0 -16px;
+    rotate: -2deg;
   }
 }
 
@@ -818,8 +833,9 @@ img.logo {
   opacity: 0.55;
 }
 
-/* Linked words inside a bullet: a quiet underline that warms on hover. */
-.xp-points a {
+/* Linked words inside a bullet, and the place's site: a quiet underline that warms on hover. */
+.xp-points a,
+.xp-site {
   color: inherit;
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
@@ -829,7 +845,9 @@ img.logo {
 }
 
 .xp-points a:hover,
-.xp-points a:focus-visible {
+.xp-points a:focus-visible,
+.xp-site:hover,
+.xp-site:focus-visible {
   color: var(--live);
   text-decoration-color: currentColor;
 }

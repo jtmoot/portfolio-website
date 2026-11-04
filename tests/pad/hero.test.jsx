@@ -21,6 +21,21 @@ describe("Hero portrait", () => {
     vi.unstubAllGlobals();
   });
 
+  it("holds the polaroid back until its portrait is drawn, then settles it in", async () => {
+    vi.stubGlobal("matchMedia", () => ({ matches: false }));
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    await act(async () => root.render(<Hero />));
+    const card = host.querySelector(".polaroid");
+    expect(card.hasAttribute("data-ready")).toBe(false);
+    // jsdom has no canvas, so the portrait falls back to the photo; its load is the ready signal.
+    const img = card.querySelector("img.portrait-img");
+    await act(async () => img.dispatchEvent(new Event("load")));
+    expect(card.hasAttribute("data-ready")).toBe(true);
+    await act(async () => root.unmount());
+    vi.unstubAllGlobals();
+  });
+
   it("times the opening from the name: role, intro, each highlight, then the links", async () => {
     vi.stubGlobal("matchMedia", () => ({ matches: false }));
     const { nameDuration } = await import("../../src/pad/HandName.jsx");
@@ -30,14 +45,14 @@ describe("Hero portrait", () => {
     const root = createRoot(host);
     await act(async () => root.render(<Hero />));
     const hero = host.querySelector(".hero");
-    const o = openingTimes(nameDuration("Joshua Moorehead"), INTRO.filter((t) => t.mark).length);
+    const o = openingTimes(nameDuration("Joshua Moorehead"), INTRO.flat().filter((t) => t.mark).length);
     expect(hero.style.getPropertyValue("--t-role")).toBe(`${o.role}ms`);
     expect(hero.style.getPropertyValue("--t-intro")).toBe(`${o.intro}ms`);
     expect(hero.style.getPropertyValue("--t-marks")).toBe(`${o.marks}ms`);
     expect(hero.style.getPropertyValue("--t-mark-gap")).toBe(`${o.markGap}ms`);
     expect(hero.style.getPropertyValue("--t-socials")).toBe(`${o.socials}ms`);
     expect(hero.dataset.pass).toBe("0");
-    expect(host.querySelectorAll(".hero p.intro mark")).toHaveLength(3);
+    expect(host.querySelectorAll(".hero .intro p mark")).toHaveLength(3);
     await act(async () => root.unmount());
     vi.unstubAllGlobals();
   });
@@ -60,6 +75,12 @@ describe("the opening's CSS reads what Hero sets", () => {
     expect(css).toMatch(/\.hero\[data-pass="1"\] \.intro mark \{\s*animation: mark-draw-1 /);
     expect(css).toMatch(/@keyframes mark-draw-0/);
     expect(css).toMatch(/@keyframes mark-draw-1/);
+  });
+
+  it("settles the polaroid only once it is ready, and hides the empty card until then", () => {
+    expect(css).toMatch(/\.polaroid\[data-ready\] \{\s*animation: settle /);
+    expect(css).toMatch(/\.stage\[data-mode="pad"\] \.polaroid:not\(\[data-ready\]\) \{\s*opacity: 0;/);
+    expect(css).toMatch(/@keyframes settle \{\s*from \{\s*opacity: 0;\s*translate: 0 -16px;\s*rotate: -2deg;/);
   });
 
   it("never hides a focused link or button behind the fade, and lifts the polaroid only for a real pointer", () => {

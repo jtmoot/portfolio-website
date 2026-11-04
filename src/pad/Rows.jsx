@@ -22,7 +22,8 @@ function Point({ point }) {
 
 /**
  * One card of rows (logo, place and kind, role, dates and where); tapping a row unfolds its
- * bullets, chips and any links. Hovering a row still shows its photo in the preview card.
+ * bullets, chips, the place's own site and any links. The site sits in the unfolded part because
+ * the row head is a button, and a link can't live inside one.
  * @param {{ items: object[] }} props
  */
 export default function Rows({ items }) {
@@ -34,7 +35,7 @@ export default function Rows({ items }) {
         const isOpen = open === x.id;
         const panel = `xp-${x.id}`;
         return (
-          <li key={x.id} className="xrow" data-prev={x.preview || undefined} data-ph={x.ph || undefined} data-cap={x.company}>
+          <li key={x.id} className="xrow">
             <button
               type="button"
               className="xrow-head"
@@ -89,6 +90,13 @@ export default function Rows({ items }) {
                       </li>
                     ))}
                   </ul>
+                )}
+                {x.site && (
+                  <p className="xp-posts">
+                    <a className="xp-site" href={x.site} target="_blank" rel="noreferrer" data-c="ring">
+                      {new URL(x.site).hostname.replace(/^www\./, "")}
+                    </a>
+                  </p>
                 )}
                 {x.posts?.length > 0 && (
                   <p className="xp-posts">

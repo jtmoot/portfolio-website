@@ -11,12 +11,15 @@ const SHADE = 0.86; // each dot keeps the photo's colour, a touch deeper so it r
 
 /**
  * Halftone headshot drawn as dots in the photo's own colours (skin, hair, shirt), sized by
- * darkness; the dots part around the cursor and spring back.
- * @param {{ src: string, alt: string }} props
+ * darkness; the dots part around the cursor and spring back. onReady fires once there is something
+ * to see: the first frame of dots, or the plain photo (loaded or not) when there's no canvas.
+ * @param {{ src: string, alt: string, onReady?: () => void }} props
  */
-export default function DotPortrait({ src, alt }) {
+export default function DotPortrait({ src, alt, onReady }) {
   const ref = useRef(null);
   const [fallback, setFallback] = useState(false);
+  const ready = useRef(onReady);
+  ready.current = onReady;
 
   useEffect(() => {
     const cv = ref.current;
@@ -81,6 +84,7 @@ export default function DotPortrait({ src, alt }) {
         }
       }
       kick();
+      ready.current?.();
     };
     img.onerror = () => setFallback(true);
     img.src = src;
@@ -109,6 +113,6 @@ export default function DotPortrait({ src, alt }) {
     };
   }, [src]);
 
-  if (fallback) return <img className="portrait-img" src={src} alt={alt} />;
+  if (fallback) return <img className="portrait-img" src={src} alt={alt} onLoad={() => onReady?.()} onError={() => onReady?.()} />;
   return <canvas ref={ref} className="portrait-dots" role="img" aria-label={alt} />;
 }
