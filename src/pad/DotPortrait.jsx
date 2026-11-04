@@ -55,6 +55,7 @@ export default function DotPortrait({ src, alt, onReady }) {
     const mouse = { x: -9999, y: -9999 };
     let frame = 0;
     let alive = true;
+    let shown = false; // the first frame of dots is on the canvas
 
     const draw = () => {
       ctx.clearRect(0, 0, S, S);
@@ -75,6 +76,10 @@ export default function DotPortrait({ src, alt, onReady }) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
+      }
+      if (dots.length && !shown) {
+        shown = true;
+        ready.current?.();
       }
       frame = alive && (moving || mouse.x > -9000) ? requestAnimationFrame(draw) : 0;
     };
@@ -105,7 +110,6 @@ export default function DotPortrait({ src, alt, onReady }) {
         }
       }
       kick();
-      ready.current?.();
     };
     img.onerror = () => setFallback(true);
     img.src = src;

@@ -44,11 +44,16 @@ describe("content from the Nov 2 resumes", () => {
   it("keeps the role line and says, in three short paragraphs, what he enjoys building (the Nov 3 C3 wording)", () => {
     expect(ROLE).toBe("ML systems and AI engineer");
     expect(INTRO.map((p) => p.map((t) => t.text).join(""))).toEqual([
-      "I enjoy building the systems around models: inference that runs faster and cheaper, and agents ready for production.",
+      "I'm Josh, an engineer based in Pittsburgh. I enjoy building the systems around models: inference that runs faster and cheaper, and agents ready for production.",
       "I come to both from a strong foundation in data engineering, a habit of following the frontier closely, and an appreciation for working alongside people who are just as curious.",
       "I'm earning an MS in Electrical and Computer Engineering at Carnegie Mellon while interning at Core Natural Resources. Otherwise, I'm usually training, reading or playing chess.",
     ]);
     expect(INTRO.flat().filter((t) => t.mark).map((t) => t.text)).toEqual(["systems around models", "agents", "Carnegie Mellon"]);
+  });
+
+  it("shows an envelope, not a placeholder, when hovering Email", () => {
+    const email = SOCIALS.find((s) => s.label === "Email");
+    expect(email).toMatchObject({ icon: "mail", ph: "josh.moorehead@outlook.com" });
   });
 
   it("links each experience row to the place's own site, and shows no hover photo", () => {
@@ -66,7 +71,7 @@ describe("content from the Nov 2 resumes", () => {
 
   it("leads Experience with the Core internship, current, with its logo", () => {
     const core = EXPERIENCE[0];
-    expect(core).toMatchObject({ id: "core", company: "Core Natural Resources", kind: "Internship", role: "Cloud & Data Engineering Intern", dates: "May 2026 — Present", place: "Canonsburg, PA", now: true, logo: "/logos/core.png" });
+    expect(core).toMatchObject({ id: "core", company: "Core Natural Resources", kind: "Internship", role: "AI & Data Engineering Intern", dates: "May 2026 — Present", place: "Canonsburg, PA", now: true, logo: "/logos/core.png" });
     expect(inPublic(core.logo)).toBe(true);
     for (const s of ["3,100", "payout engine", "Bedrock", "requisitions"]) expect(core.points.join(" ")).toContain(s);
     expect(core.stack).toEqual(["Lambda", "AppSync GraphQL", "Aurora PostgreSQL", "Step Functions", "Terraform", "Glue/Spark", "DMS", "Amazon Bedrock"]);

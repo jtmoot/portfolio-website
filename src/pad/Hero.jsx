@@ -23,8 +23,8 @@ const TIMES = {
 
 /**
  * The first screen's centre: the polaroid, the name, the intro and the ways to reach Joshua.
- * The opening: once the portrait is drawn, the polaroid appears in the middle of the window and
- * floats left into its place; as it lands (data-go) the name types, the role fades in, the intro
+ * The opening: once the portrait is drawn, the polaroid swoops up from where it stands in the room
+ * (as it does on leaving creative mode) and grows into its place; as it lands (data-go) the name types, the role fades in, the intro
  * rises whole, its highlights sweep in one after another, and the links come last. Browsers keep the page
  * silent until a gesture, so the first click or key press after the opening retypes the name with
  * the sound and redraws the highlights (the paragraph and links stay, so a first click on a link
@@ -36,11 +36,8 @@ export default function Hero() {
   const hero = useRef(null);
   // Flipping between two identical animations restarts the highlights' draw on a replay.
   const [pass, setPass] = useState(0);
-  const card = useRef(null);
-  // The polaroid comes in once its portrait is drawn, not while the photo is still loading,
-  // starting from the window's centre (arriveX px to the right of its place).
+  // The polaroid comes in once its portrait is drawn, not while the photo is still loading.
   const [ready, setReady] = useState(false);
-  const [arriveX, setArriveX] = useState(0);
   const [go, setGo] = useState(false);
   const started = useRef(null);
   const replay = () => {
@@ -57,13 +54,11 @@ export default function Hero() {
     setGo(true);
     name.current?.run();
   };
-  // The portrait is drawn (or the photo took too long): measure the way from the window's centre,
-  // bring the card in, and start the name as it lands. Under reduced motion it is simply there.
+  // The portrait is drawn (or the photo took too long): bring the card in, and start the name as
+  // it lands. Under reduced motion it is simply there.
   const arrive = () => {
     if (landed.current) return;
     landed.current = true;
-    const r = card.current?.getBoundingClientRect();
-    if (r) setArriveX(Math.round(window.innerWidth / 2 - (r.left + r.width / 2)));
     setReady(true);
     if (still()) begin();
     else timers.current.push(setTimeout(begin, ARRIVE_MS));
@@ -97,11 +92,10 @@ export default function Hero() {
   return (
     <>
       <figure
-        ref={card}
         className="polaroid"
         data-traveler="polaroid"
         data-ready={ready || undefined}
-        style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y, "--arrive-x": `${arriveX}px` }}
+        style={{ "--to-x": FIGURE_START.x, "--to-y": FIGURE_START.y }}
       >
         <DotPortrait src="/headshot-grin.jpg" alt="Joshua Moorehead, drawn in dots" onReady={arrive} />
       </figure>
@@ -123,6 +117,7 @@ export default function Hero() {
               data-c="ring"
               data-prev={s.prev}
               data-ph={s.ph}
+              data-icon={s.icon}
               data-cap={s.cap}
             >
               {s.label}

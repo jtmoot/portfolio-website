@@ -5,7 +5,7 @@ export default function Contact() {
   return (
     <section id="contact" aria-labelledby="contact-h">
       <h2 id="contact-h">Contact</h2>
-      <p>Email is the best way to reach me.</p>
+      <p>Feel free to message me on LinkedIn or send an email!</p>
       <p className="contact-links">
         {SOCIALS.map((s) => (
           <a
@@ -17,6 +17,7 @@ export default function Contact() {
             data-c="ring"
             data-prev={s.prev}
             data-ph={s.ph}
+            data-icon={s.icon}
             data-cap={s.cap}
           >
             {s.label}

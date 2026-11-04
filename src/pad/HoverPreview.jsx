@@ -3,9 +3,21 @@ import { CARD, clampPreview } from "../lib/preview.js";
 
 const finePointer = () => typeof matchMedia === "function" && matchMedia("(hover: hover) and (pointer: fine)").matches;
 
+/** A line-drawn envelope, its flap folded down to a point. */
+function Envelope() {
+  return (
+    <svg viewBox="0 0 48 32" aria-hidden="true">
+      <rect x="2" y="2" width="44" height="28" rx="1.5" />
+      <path d="M2.8 3.2 24 18.5 45.2 3.2" />
+      <path d="M2.8 28.8 18.6 14.6M45.2 28.8 29.4 14.6" />
+    </svg>
+  );
+}
+
 /**
  * One floating card for the whole page. Any element with data-prev (image url), data-ph
- * (placeholder text) or data-cap (caption) shows it while hovered.
+ * (placeholder text) or data-cap (caption) shows it while hovered; data-icon="mail" draws an
+ * envelope above the placeholder text.
  */
 export default function HoverPreview() {
   const [card, setCard] = useState(null);
@@ -25,7 +37,7 @@ export default function HoverPreview() {
       const t = e.target.closest?.("[data-prev],[data-ph]");
       if (!t) return;
       place(e);
-      setCard({ src: t.dataset.prev || null, ph: t.dataset.ph || null, cap: t.dataset.cap || "" });
+      setCard({ src: t.dataset.prev || null, ph: t.dataset.ph || null, icon: t.dataset.icon || null, cap: t.dataset.cap || "" });
       clearTimeout(timer.current);
       timer.current = setTimeout(() => setShown(true), 120);
     };
@@ -48,7 +60,16 @@ export default function HoverPreview() {
 
   return (
     <div ref={el} className={`preview${shown ? " on" : ""}`} aria-hidden="true">
-      {card?.src ? <img src={card.src} alt="" /> : <div className="preview-ph">{card?.ph}</div>}
+      {card?.src ? (
+        <img src={card.src} alt="" />
+      ) : card?.icon === "mail" ? (
+        <div className="preview-ph preview-mail">
+          <Envelope />
+          <span>{card.ph}</span>
+        </div>
+      ) : (
+        <div className="preview-ph">{card?.ph}</div>
+      )}
       {card?.cap && <div className="preview-cap">{card.cap}</div>}
     </div>
   );

@@ -1,7 +1,7 @@
 /** The intro, one array of tokens per paragraph; marked tokens get the highlighter. */
 export const INTRO = [
   [
-    { text: "I enjoy building the " },
+    { text: "I'm Josh, an engineer based in Pittsburgh. I enjoy building the " },
     { text: "systems around models", mark: true },
     { text: ": inference that runs faster and cheaper, and " },
     { text: "agents", mark: true },
@@ -24,7 +24,7 @@ export const ROLE = "ML systems and AI engineer";
 export const SOCIALS = [
   { label: "GitHub", href: "https://github.com/jtmoot", prev: "/previews/github.jpg", cap: "GitHub, jtmoot" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/joshua-moorehead", prev: "/previews/linkedin.jpg", cap: "LinkedIn, joshua-moorehead" },
-  { label: "Email", href: "mailto:josh.moorehead@outlook.com", ph: "josh.moorehead@outlook.com", cap: "Email" },
+  { label: "Email", href: "mailto:josh.moorehead@outlook.com", ph: "josh.moorehead@outlook.com", icon: "mail", cap: "Email" },
 ];
 
 /** Featured projects, in the order of docs/project-rankings.md. Media lives in public/media. */
@@ -133,7 +133,7 @@ export const EXPERIENCE = [
     site: "https://corenaturalresources.com/",
     company: "Core Natural Resources",
     kind: "Internship",
-    role: "Cloud & Data Engineering Intern",
+    role: "AI & Data Engineering Intern",
     dates: "May 2026 — Present",
     place: "Canonsburg, PA",
     now: true,

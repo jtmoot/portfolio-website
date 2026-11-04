@@ -1,5 +1,5 @@
-/** How long the polaroid takes to appear in the middle and float left into place; the name starts as it lands. */
-export const ARRIVE_MS = 1100;
+/** How long the polaroid takes to swoop in from the room; the name starts as it lands. */
+export const ARRIVE_MS = 1350;
 
 /** The longest the opening waits on the portrait before starting without it. */
 export const READY_CAP_MS = 1500;
