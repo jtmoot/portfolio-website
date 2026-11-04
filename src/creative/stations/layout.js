@@ -92,12 +92,17 @@ export const LAYOUT = {
       { x: 5.2, y: 32.2, w: 5.6, h: 5.6 },
       { x: 5.8, y: 55.4, w: 6.4, h: 6.4 },
     ],
-    // He sits inside the chair's outline: the seat and far arm draw behind him, the back and near arm in front.
+    // He sits inside the chair's outline: the seat and far arm draw behind him, the back and near arm
+    // in front. The seat opens toward +x (away from the camera), so until he is in it he draws over
+    // the front layer too, instead of losing his legs behind the chair as he walks up.
     paint: { x: 5, y: 32, w: 18, h: 8.5 },
-    frontPaint: { x: 5, y: 40.5, w: 18, h: 21.5 },
+    frontPaint: { x: 5, y: 40.5, w: 18, h: 21.5, open: "+x" },
     link: "/shelf",
     labelAt: { x: 7, y: 70, z: 0 },
     standAt: { x: 14.7, y: 46 },
+    // He comes to the seat from here, straight in between the arms along the seat's far half, so
+    // his legs clear the near arm on screen instead of seeming to step over it.
+    approachAt: { x: 28.5, y: 44.2 },
   },
   corkboard: {
     id: "corkboard",
