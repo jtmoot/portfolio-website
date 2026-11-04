@@ -1,7 +1,7 @@
 const FILES = { typing: "/audio/typing.mp3", click: "/audio/click.mp3", flip: "/audio/flip.mp3", ambient: "/audio/ambient.mp3" };
 const MUTE_KEY = "pad.muted";
-/** Playback volume per clip: the typing sits quietly under the page, the creative-mode music lower still. */
-const VOLUME = { typing: 0.5, click: 0.8, flip: 0.9, ambient: 0.14 };
+/** Playback volume per clip: the typing is clear but under the clicks, the creative-mode music far lower. */
+const VOLUME = { typing: 0.75, click: 0.8, flip: 0.9, ambient: 0.14 };
 const FADE_MS = 300;
 const cache = {};
 const playing = new Set();

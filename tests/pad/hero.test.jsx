@@ -72,7 +72,7 @@ describe("Hero portrait", () => {
   });
 });
 
-describe("the polaroid floats in from the middle", () => {
+describe("the polaroid swoops in from the room", () => {
   const mountWith = async (reduced) => {
     vi.resetModules();
     vi.useFakeTimers();
@@ -91,14 +91,12 @@ describe("the polaroid floats in from the middle", () => {
     vi.unstubAllGlobals();
   };
 
-  it("starts it at the window's centre once the portrait is ready, and starts the name only as it lands", async () => {
+  it("brings it in once the portrait is ready, and starts the name only as it lands", async () => {
     const { ARRIVE_MS } = await import("../../src/lib/opening.js");
     const m = await mountWith(false);
     expect(m.hero.hasAttribute("data-go")).toBe(false);
     await act(async () => m.card.querySelector("img").dispatchEvent(new Event("load")));
     expect(m.card.hasAttribute("data-ready")).toBe(true);
-    // jsdom lays the card out at 0,0 with no size, so the way to the centre is half the window.
-    expect(m.card.style.getPropertyValue("--arrive-x")).toBe(`${Math.round(window.innerWidth / 2)}px`);
     await act(async () => vi.advanceTimersByTime(ARRIVE_MS - 50));
     expect(m.hero.hasAttribute("data-go")).toBe(false);
     await act(async () => vi.advanceTimersByTime(100));
@@ -146,12 +144,21 @@ describe("the opening's CSS reads what Hero sets", () => {
     expect(css).toMatch(/@keyframes mark-draw-1/);
   });
 
-  it("hides the empty card until it is ready, then floats it from the centre into place, with no drop or tilt", () => {
-    expect(css).toMatch(/\.stage\[data-mode="pad"\] \.polaroid:not\(\[data-ready\]\) \{\s*opacity: 0;/);
-    expect(css).toMatch(/\.polaroid\[data-ready\] \{\s*animation: arrive 1\.1s linear backwards;/);
-    expect(css).toMatch(/@keyframes arrive \{\s*0% \{\s*opacity: 0;\s*translate: var\(--arrive-x, 0px\) 0;/);
-    expect(css).toMatch(/100% \{\s*opacity: 1;\s*translate: 0 0;/);
-    expect(css).not.toMatch(/@keyframes settle/);
+  it("hides the card until ready without opacity (its creative-mode opacity transition would re-fade it as it lands)", () => {
+    expect(css).toMatch(/\.stage\[data-mode="pad"\] \.polaroid:not\(\[data-ready\]\) \{\s*visibility: hidden;\s*\}/);
+    expect(css).not.toMatch(/\.polaroid:not\(\[data-ready\]\) \{\s*opacity/);
+  });
+
+  it("swoops it from where it stands in the room: small and low on the right, along a curve, growing into place", () => {
+    // Across and down on separate properties with different easings, so the path bends.
+    expect(css).toMatch(/\.polaroid\[data-ready\] \{\s*animation:\s*swoop-across 1\.4s cubic-bezier\(0\.75, 0, 0\.4, 1\) backwards,\s*swoop-down 1\.4s cubic-bezier\(0\.45, 0, 0\.2, 1\) backwards,\s*swoop-fade 0\.35s ease backwards;/);
+    // The drop is the outer translate, so the card's own shrink and tilt (inside transform) never scale it.
+    expect(css).toMatch(/@keyframes swoop-across \{\s*from \{\s*transform: translateX\(var\(--swoop-x\)\) rotate\(8deg\) scale\(0\.36\);/);
+    expect(css).toMatch(/@keyframes swoop-down \{\s*from \{\s*translate: 0 var\(--swoop-y\);/);
+    // From the card's own centre to the room's spot for it (FIGURE_START, in cqw).
+    expect(css).toContain("--swoop-x: calc(var(--to-x) * 1cqw - 31.3cqw);");
+    expect(css).toContain("--swoop-y: calc(var(--to-y) * 1cqw - 14.1cqw);");
+    expect(css).not.toMatch(/@keyframes arrive/);
   });
 
   it("keeps the name, role, intro and links hidden until the polaroid has landed", () => {

@@ -155,10 +155,10 @@ describe("audio, the typing sound", () => {
     return { audio, clips };
   };
 
-  it("plays the typing quietly, at 0.5, and fades it out when stopped", async () => {
+  it("plays the typing at 0.75, clear but under the clicks, and fades it out when stopped", async () => {
     const { audio, clips } = await live();
     const stop = audio.loop("typing");
-    expect(clips[0].volume).toBeCloseTo(0.5, 5);
+    expect(clips[0].volume).toBeCloseTo(0.75, 5);
     stop();
     expect(clips[0].pause).not.toHaveBeenCalled();
     vi.advanceTimersByTime(400);
