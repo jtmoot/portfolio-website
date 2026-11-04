@@ -78,11 +78,13 @@ describe("paintOrder", () => {
       { id: "chess", footprint: { x: 9, y: 60, w: 27, h: 14 } },
       { id: "desk", footprint: { x: 38, y: 0, w: 32, h: 16 } },
     ];
-    // Just behind the chess chair (x past its back-right face): after the kitchen and desk, before chess.
+    // Just behind the chess chair (x past its back-right face): before chess.
     const order = paintOrder(boxes, { x: 38, y: 66 });
-    expect(order.indexOf("figure")).toBeGreaterThan(order.indexOf("kitchen"));
-    expect(order.indexOf("figure")).toBeGreaterThan(order.indexOf("desk"));
     expect(order.indexOf("figure")).toBeLessThan(order.indexOf("chess"));
+    // In front of the desk, which rises behind him on screen, and behind the chess table: between them.
+    const between = paintOrder(boxes, { x: 54, y: 30 });
+    expect(between.indexOf("figure")).toBeGreaterThan(between.indexOf("desk"));
+    expect(between.indexOf("figure")).toBeLessThan(between.indexOf("chess"));
     // In front of the chess table: after everything.
     expect(paintOrder(boxes, { x: 24, y: 80 }).at(-1)).toBe("figure");
   });
