@@ -274,7 +274,7 @@ export function drawBookcase(c, { interactive = false } = {}) {
   const nu = at(N3(-ns + 1, 0, 0.2));
   const nv = at(N3(-ns, 1, 0.2));
   const nm = [nu[0] - no[0], nu[1] - no[1], nv[0] - no[0], nv[1] - no[1], no[0], no[1]].map((n) => n.toFixed(3)).join(" ");
-  const noteLines = ["Never stop the", "intellectual", "struggle..."];
+  const noteLines = ["Never stop the", "intellectual", "struggle"];
   out.push(`<g class="bk-note-text" transform="matrix(${nm})">${noteLines.map((t, i) => `<text x="1.1" y="${(5.2 + i * 3.1).toFixed(2)}" font-size="1.85">${esc(t)}</text>`).join("")}</g>`);
 
   if (interactive) {

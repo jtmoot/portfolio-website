@@ -72,7 +72,7 @@ describe("Shelf extras", () => {
   it("has his sticky note drawn on top of the bookcase, in his hand", async () => {
     const { host, root } = await mount();
     const note = host.querySelector(".bookcase svg .bk-note-text");
-    expect([...note.querySelectorAll("text")].map((t) => t.textContent)).toEqual(["Never stop the", "intellectual", "struggle..."]);
+    expect([...note.querySelectorAll("text")].map((t) => t.textContent)).toEqual(["Never stop the", "intellectual", "struggle"]);
     expect(host.querySelector(".bookcase svg .m-sticky")).not.toBeNull();
     expect(host.querySelector(".sticky-note")).toBeNull();
     await act(async () => root.unmount());

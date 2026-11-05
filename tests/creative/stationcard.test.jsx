@@ -70,7 +70,7 @@ describe("the station lines", () => {
       kitchen: "Short ribs, braised in my Dutch oven.",
       gym: "Functional fitness.",
       chess: "A Caro-Kann type of guy",
-      reading: "Coffee usually. Tea sometimes. Bone broth occasionally...",
+      reading: "Coffee usually. Tea sometimes. Bone broth occasionally",
       corkboard: "Highly recommended!",
     });
   });
